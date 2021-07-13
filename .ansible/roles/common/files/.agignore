@@ -1,0 +1,10 @@
+.git
+.github
+.svn
+.idea
+.sass-cache
+assets
+assets_en
+svn
+logs
+

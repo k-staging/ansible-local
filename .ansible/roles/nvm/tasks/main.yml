@@ -1,0 +1,21 @@
+---
+- name: download .nvm
+  ansible.builtin.git:
+    repo: "https://github.com/nvm-sh/nvm.git"
+    dest: "~/.nvm"
+    update: no
+
+- name: install node
+  ansible.builtin.shell: ". ~/.nvm/nvm.sh && nvm install {{ item }}"
+  args:
+    executable: bash
+  with_items:
+    - "{{ node_versions }}"
+
+- name: install npm global packages
+  ansible.builtin.shell: ". ~/.nvm/nvm.sh && nvm use {{ item }} && ~/.nvm/versions/node/v{{ item }}/bin/npm install -g {{ npm_packages }}"
+  args:
+    executable: bash
+  with_items:
+    - "{{ node_versions }}"
+

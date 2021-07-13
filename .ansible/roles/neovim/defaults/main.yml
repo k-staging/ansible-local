@@ -1,0 +1,26 @@
+---
+neovim_version: "0.5.0"
+neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
+neovim_dir:
+  - "{{ neovim_plugin_path }}"
+  - "~/.config/nvim"
+  - "~/.nvim/session"
+  - "/usr/local/src/nvim"
+neovim_plugins:
+  - "neovim/nvim-lspconfig"
+  - "hrsh7th/nvim-compe"
+  - "preservim/nerdtree"
+  - "jistr/vim-nerdtree-tabs"
+  - "morhetz/gruvbox"
+  - "vim-airline/vim-airline"
+  - "vim-airline/vim-airline-themes"
+  - "airblade/vim-gitgutter"
+  - "tpope/vim-fugitive"
+  - "Shougo/deol.nvim"
+  - "mhinz/vim-startify"
+  - "ctrlpvim/ctrlp.vim"
+  - "Xuyuanp/nerdtree-git-plugin"
+  - "skanehira/preview-markdown.vim"
+  - "junegunn/fzf"
+  - "junegunn/fzf.vim"
+

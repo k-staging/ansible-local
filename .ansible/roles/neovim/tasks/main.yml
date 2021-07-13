@@ -1,0 +1,66 @@
+---
+- name: create directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ neovim_dir }}"
+
+- name: install neovim (mac)
+  block:
+    - name: symbolic link 作成 (この処理不要なら削除する)
+      ansible.builtin.file:
+        src: "/usr/local/include"
+        dest: "/usr/local/bin/include"
+        state: link
+      become: yes
+
+    - name: download neovim (mac)
+      ansible.builtin.unarchive:
+        src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos.tar.gz"
+        dest: "/usr/local/src/nvim/"
+        remote_src: yes
+        extra_opts: ["--strip-components=1"]
+  when: ansible_distribution == 'MacOSX' 
+
+- name: download neovim (linux)
+  ansible.builtin.unarchive:
+    src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-linux64.tar.gz"
+    dest: "/usr/local/src/nvim/"
+    remote_src: yes
+    extra_opts: ["--strip-components=1"]
+  when: ansible_distribution == 'Ubuntu' 
+
+- name: create neovim symlink
+  ansible.builtin.file:
+    src: "/usr/local/src/nvim/bin/nvim"
+    dest: "/usr/local/bin/nvim"
+    state: link
+    force: yes
+  become: yes
+
+- name: copy init.vim
+  ansible.builtin.copy:
+    src: "init.vim"
+    dest: "~/.config/nvim/init.vim"
+
+- name: install neovim plugin
+  ansible.builtin.git:
+    repo: "https://github.com/{{ item }}.git"
+    dest: "{{ neovim_plugin_path }}/{{ item.split('/')[-1] }}"
+    update: no
+  with_items:
+    - "{{ neovim_plugins }}"
+
+- name: install fzf
+  ansible.builtin.shell: ./install --all
+  args:
+    chdir: "{{ neovim_plugin_path }}/fzf"
+
+- name: copy .NERDTreeBookmarks
+  ansible.builtin.template:
+    src: .NERDTreeBookmarks.j2
+    dest: ~/.NERDTreeBookmarks
+    mode: 0644
+

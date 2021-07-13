@@ -1,0 +1,58 @@
+---
+- name: download goenv
+  ansible.builtin.git:
+    repo: "https://github.com/syndbg/goenv.git"
+    dest: "~/.goenv"
+    update: no
+
+- name: check installed go
+  ansible.builtin.stat:
+    path: "~/.goenv/versions/{{ go_version }}/bin/go"
+  register: check_installed_go
+
+- name: install go
+  block:
+    - name: install go
+      ansible.builtin.shell: "~/.goenv/bin/goenv install {{ go_version }}"
+
+    - name: goenv rehash
+      ansible.builtin.shell: "~/.goenv/bin/goenv rehash"
+
+    - name: set go global version
+      ansible.builtin.shell: "~/.goenv/bin/goenv global {{ go_version }}"
+  when: check_installed_go.stat.exists == false
+
+- name: download terraform
+  ansible.builtin.git:
+    repo: "https://github.com/hashicorp/terraform.git"
+    dest: "/usr/local/src/terraform"
+    version: "{{ terraform_version }}"
+
+- name: install terraform
+  ansible.builtin.shell: "~/.goenv/versions/{{ go_version }}/bin/go install"
+  args:
+    chdir: "/usr/local/src/terraform"
+
+- name: download glow
+  ansible.builtin.git:
+    repo: "https://github.com/charmbracelet/glow.git"
+    dest: "/usr/local/src/glow"
+    update: no
+
+- name: install glow
+  ansible.builtin.shell: "~/.goenv/versions/{{ go_version }}/bin/go build"
+  args:
+    chdir: "/usr/local/src/glow"
+
+- name: copy glow
+  ansible.builtin.copy:
+    src: /usr/local/src/glow/glow
+    dest: /usr/local/bin/glow
+    mode: 0755
+  become: yes
+
+- name: go get
+  ansible.builtin.shell: "~/.goenv/versions/{{ go_version }}/bin/go get {{ item }}"
+  with_items:
+    - "{{ go_pkg }}"
+

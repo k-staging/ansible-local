@@ -1,0 +1,54 @@
+---
+- name: brew install
+  community.general.homebrew:
+    name: "{{ brew_pkg }}"
+    state: latest
+    update_homebrew: yes
+  when: ansible_distribution == 'MacOSX' 
+
+- name: 必要なものをインストール
+  ansible.builtin.apt:
+    pkg: "{{ apt_pkg }}"
+    update_cache: yes
+    force: yes
+  become: yes
+  when: ansible_distribution in ['Ubuntu', 'Debian']
+
+- name: download tmux
+  ansible.builtin.git:
+    repo: "https://github.com/tmux/tmux.git"
+    dest: "/usr/local/src/tmux"
+    update: no
+
+- name: execute autogen
+  ansible.builtin.shell: sh ./autogen.sh
+  args:
+    chdir: "/usr/local/src/tmux"
+
+- name: execute configure
+  ansible.builtin.shell: ./configure
+  args:
+    chdir: "/usr/local/src/tmux"
+
+- name: make tmux
+  community.general.make:
+    chdir: "/usr/local/src/tmux"
+
+- name: make install tmux
+  community.general.make:
+    chdir: "/usr/local/src/tmux"
+    target: install
+  become: yes
+
+- name: download tmux plugin manager
+  ansible.builtin.git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "~/.tmux/plugins/tpm"
+    update: no
+
+- name: copy tmux.conf
+  ansible.builtin.copy:
+    src: ".tmux.conf"
+    dest: "~/.tmux.conf"
+    mode: 0644
+

@@ -1,0 +1,4 @@
+# wsl用設定
+# ビープ音を消す
+set bell-style none
+

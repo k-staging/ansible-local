@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  connection: local
+  roles:
+    - role: common
+      tags: common
+    - role: nvm
+      tags: nvm
+    - role: tmux
+      tags: tmux
+    - role: neovim
+      tags: neovim
+    - role: goenv
+      tags: goenv
+    - role: rbenv
+      tags: rbenv
+  post_tasks:
+    - name: reboot wsl
+      shell: "[ -e /mnt/c/Windows/system32/wsl.exe ] && /mnt/c/Windows/system32/wsl.exe -t Ubuntu-20.04"
+      become: yes
+

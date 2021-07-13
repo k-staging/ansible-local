@@ -1,0 +1,73 @@
+---
+common_pkg:
+  - git
+  - git-lfs
+  - htop
+  - jq
+  - pwgen
+  - tree
+  - unzip
+apt_pkg:
+  - g++
+  - language-pack-ja
+  - language-pack-ja-base
+  - libaio1
+  - libmysqlclient-dev
+  - mysql-client
+  - ntp
+  - silversearcher-ag
+  - tcl
+  - whois
+  - zip 
+brew_pkg:
+  - ag
+  - bash
+  - bash-completion@2
+  - curl
+  - gdbm
+  - gettext
+  - glow
+  - gnu-tar
+  - gnu-sed
+  - gpg2
+  - hashicorp/tap/terraform-ls
+  - heroku
+  - libidn2
+  - libpq
+  - libunistring
+  - lz4
+  - make
+  - mysql-client@5.7
+  - ncurses
+  - openssl
+  - popt
+  - pstree
+  - readline
+  - rsync
+  - sqlite
+  - telnet
+  - wget
+  - watch
+  - xxhash
+  - xz
+  - zstd
+brew_cask_pkg:
+  - google-chrome
+  - iterm2
+  - slack
+  - zoom
+config_files:
+  - .agignore
+  - .bashrc
+  - .bash_aliases
+  - .bash_profile
+  - .gitignore
+  - .inputrc
+git_user_name: "{{ ansible_user_id }}"
+git_email: "{{ ansible_user_id }}@users.noreply.github.com"
+redis_version: "6.2.4"
+working_directory:
+  - .aws
+  - bin
+  - src
+

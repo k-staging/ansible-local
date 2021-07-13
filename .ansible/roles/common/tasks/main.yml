@@ -1,0 +1,150 @@
+---
+- name: create directory
+  ansible.builtin.file:
+    path: "~/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ working_directory }}"
+
+- name: change permission /usr/local/src
+  ansible.builtin.file:
+    path: /usr/local/src
+    state: directory
+    mode: 0777
+  become: yes
+
+- name: setup Ubuntu
+  block:
+    - name: apt install
+      ansible.builtin.apt:
+        pkg: "{{ item }}"
+        update_cache: yes
+        force: yes
+      become: yes
+      with_items:
+        - "{{ common_pkg }}"
+        - "{{ apt_pkg }}"
+
+    - name: create a symbolic link
+      ansible.builtin.file:
+        src: /usr/share/zoneinfo/Asia/Tokyo
+        dest: /etc/localtime
+        owner: root
+        group: root
+        state: link
+        force: yes
+      become: yes
+
+    - name:
+      ansible.builtin.unarchive:
+        src: "https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip"
+        dest: "~/bin"
+        mode: "0755"
+        remote_src: True
+
+    - name: update wsl.conf
+      ansible.builtin.template:
+        src: wsl.conf.j2
+        dest: /etc/wsl.conf
+        owner: root
+        group: root
+      become: yes
+  when: ansible_distribution in ['Ubuntu', 'Debian']
+
+- name: setup MacOSX
+  block:
+    - name: brew tap
+      community.general.homebrew_tap:
+        name: heroku/brew
+
+    - name: brew install
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: latest
+        update_homebrew: yes
+      with_items:
+        - "{{ common_pkg }}"
+        - "{{ brew_pkg }}"
+
+    - name: brew_cask install
+      community.general.homebrew_cask:
+        name: "{{ brew_cask_pkg }}"
+        state: present
+
+    - name: create sh symlink
+      ansible.builtin.file:
+        src: /usr/local/bin/bash
+        dest: /usr/local/bin/sh
+        state: link
+
+    - name: edit /etc/shells
+      ansible.builtin.lineinfile:
+        dest: /etc/shells
+        line: "/usr/local/bin/bash"
+      become: yes
+
+    - name: chsh
+      ansible.builtin.command: "chsh -s /usr/local/bin/bash {{ ansible_user_id }}"
+      become: yes
+
+    - name: download aws cli v2
+      ansible.builtin.shell: curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+      args:
+        chdir: "/usr/local/src"
+
+    - name: install aws cli v2
+      ansible.builtin.shell: "installer -pkg ./AWSCLIV2.pkg -target /"
+      args:
+        chdir: "/usr/local/src"
+      become: yes
+
+    - name: download iTerm2-Color-Schemes
+      ansible.builtin.git:
+        repo: "https://github.com/mbadolato/iTerm2-Color-Schemes.git"
+        dest: "~/Downloads/iTerm2-Color-Schemes"
+        update: no
+
+    - name: set gruvbox dark
+      ansible.builtin.shell: sh ./tools/import-scheme.sh "Gruvbox Dark"
+      args:
+        chdir: "~/Downloads/iTerm2-Color-Schemes"
+  when: ansible_distribution == 'MacOSX' 
+
+- name: download redis
+  ansible.builtin.unarchive:
+    src: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+    dest: "/usr/local/src/"
+    remote_src: yes
+
+- name: make redis
+  community.general.make:
+    chdir: "/usr/local/src/redis-{{ redis_version }}"
+
+- name: copy redis-cli
+  ansible.builtin.copy:
+    src: "/usr/local/src/redis-{{ redis_version }}/src/redis-cli"
+    dest: "/usr/local/bin/redis-cli"
+    mode: 0755
+  become: yes
+
+- name: copy config files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/{{ item }}"
+    mode: 0644
+  with_items:
+    - "{{ config_files }}"
+
+- name: copy ssh config files
+  ansible.builtin.copy:
+    src: "config"
+    dest: "~/.ssh/config"
+    mode: 0644
+
+- name: copy .gitconfig
+  ansible.builtin.template:
+    src: .gitconfig.j2
+    dest: ~/.gitconfig
+    mode: 0644
+
