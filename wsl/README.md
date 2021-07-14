@@ -39,8 +39,8 @@ WSL を起動 ( Windows キーを押し、 "ubuntu" と入力し Enter ) し、�
 ```
 $ add-apt-repository -y ppa:git-core/ppa && apt update && apt install -y git
 $ mkdir ~/src
-$ git clone git@github.com:k-staging/ansible-local.git ~/src/ansible_playbooks
-$ cd ~/src/ansible_playbooks/wsl && bash ./install.sh
+$ git clone https://github.com/k-staging/ansible-local.git ~/src/ansible-local
+$ cd ~/src/ansible-local/wsl && bash ./install.sh
 ```
 
 # インストール済みの Ubuntu を初期化したい場合

@@ -15,7 +15,7 @@ sudo_settings() {
 }
 
 run_ansible() {
-    # init.sh 再実行時に tmux を起動してしまう為、 .bash_profile は一旦削除する
+    # install.sh 再実行時に tmux を起動してしまう為、 .bash_profile は一旦削除する
     rm -f ${USER_HOME}/.bash_profile
     # pyenv セットアップと ansible の実行
     sudo su - ${USER_NAME} -c "$(cat << EOF

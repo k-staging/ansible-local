@@ -2,7 +2,9 @@
 CURRENT_DIR="$(cd $(dirname 0) && pwd)"
 USER_NAME="$(/mnt/c/Windows/System32/whoami.exe |awk -F "\\" '{print $NF}' | sed -e "s/[\r\n]\+//g")"
 USER_HOME="/home/${USER_NAME}"
-ANSIBLE_DIR="~/src/ansible_playbooks/.ansible"
+ANSIBLE_DIR="~/src/ansible-local/.ansible"
+
+# ベースの install.sh を読み込む
 source ../.ansible/install.sh
 
 # wsl で使うためのユーザーを作成する
@@ -18,7 +20,7 @@ create_user() {
     if [ -e /mnt/c/Users/${USER_NAME}/.ssh/id_rsa.pub ]; then
         cat /mnt/c/Users/${USER_NAME}/.ssh/id_rsa.pub > ${USER_HOME}/.ssh/id_rsa.pub
     fi
-    cp -a ${CURRENT_DIR}/../../ansible_playbooks ${USER_HOME}/src/
+    cp -a ${CURRENT_DIR}/../../ansible-local ${USER_HOME}/src/
     chown -R ${USER_NAME}:${USER_NAME} ${USER_HOME}
 EOF
 )"

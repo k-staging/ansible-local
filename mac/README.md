@@ -1,7 +1,7 @@
 # Mac ローカル環境構築
 
 ### 対象バージョン
-macOS Big Sur ( バージョン 11.4 )  
+macOS Big Sur ( バージョン 11.4 )  で動作確認済みです。
 
 ### セットアップ
 以下コマンドを順次実行してください。  
@@ -11,8 +11,8 @@ macOS Big Sur ( バージョン 11.4 )
 
 # このリポジトリを clone
 mkdir ~/src
-git clone git@github.com:k-staging/ansible-local.git ~/src/ansible_playbooks
-cd ~/src/ansible_playbooks/mac
+git clone https://github.com/k-staging/ansible-local.git ~/src/ansible-local
+cd ~/src/ansible-local/mac
 
 # init.sh 実行
 bash install.sh
