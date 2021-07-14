@@ -28,6 +28,7 @@ ADD_ENVIRONMENT_PATH=$(cat << EOS
 ~/.pyenv/bin
 ~/.rbenv/bin
 ~/bin
+~/go/bin
 EOS
 )
 for ADD_PATH in ${ADD_ENVIRONMENT_PATH};do

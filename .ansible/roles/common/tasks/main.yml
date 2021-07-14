@@ -142,9 +142,3 @@
     dest: "~/.ssh/config"
     mode: 0644
 
-- name: copy .gitconfig
-  ansible.builtin.template:
-    src: .gitconfig.j2
-    dest: ~/.gitconfig
-    mode: 0644
-
