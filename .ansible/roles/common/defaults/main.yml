@@ -63,8 +63,6 @@ config_files:
   - .bash_profile
   - .gitignore
   - .inputrc
-git_user_name: "{{ ansible_user_id }}"
-git_email: "{{ ansible_user_id }}@users.noreply.github.com"
 redis_version: "6.2.4"
 working_directory:
   - .aws
