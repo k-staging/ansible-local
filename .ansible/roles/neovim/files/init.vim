@@ -33,12 +33,6 @@ au User NERDTreeInit let b:NERDTreeRoot = b:NERDTree.root
 " Gitgutter
 set  signcolumn=yes
 
-" Nnoremap
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
 " Deol.nvim
 let g:deol#shell_history_path='~/.bash_history'
 tnoremap <Esc> <C-\><C-n>
@@ -123,9 +117,28 @@ let g:preview_markdown_vertical = 1
 let g:preview_markdown_auto_update = 1
 nnoremap <S-d> :<C-u>PreviewMarkdown<CR>
 
-" 表示行単位の上下移動
+" universal ctags
+set tags+=.tags;~
+function! s:execute_ctags() abort
+  let tag_name = '.tags'
+  let tags_path = findfile(tag_name, '.;')
+  if tags_path ==# ''
+    return
+  endif
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+endfunction
+
+" tagbar
+nnoremap <S-o> :TagbarToggle<CR>
+
+" キーバインド変更
 nnoremap j gj
 nnoremap k gk
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 " インデント関連の設定
 set tabstop=8
@@ -153,9 +166,6 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-
-"grep, vimgrepの結果を quickfix-window で開くようにする
-autocmd QuickFixCmdPost *grep* cwindow
 
 " 前回開いた行数から再開する
 augroup vimrcEx
