@@ -64,3 +64,34 @@
     dest: ~/.NERDTreeBookmarks
     mode: 0644
 
+- name: download gnu global
+  ansible.builtin.unarchive:
+    src: "https://ftp.gnu.org/pub/gnu/global/global-{{ gnu_global_version }}.tar.gz"
+    dest: "/usr/local/src/"
+    remote_src: yes
+
+- name: configure gnu global
+  ansible.builtin.shell: ./configure
+  args:
+    chdir: "/usr/local/src/global-{{ gnu_global_version }}"
+
+- name: make gnu global
+  community.general.make:
+    chdir: "/usr/local/src/global-{{ gnu_global_version }}"
+
+- name: make install tmux
+  community.general.make:
+    chdir: "/usr/local/src/global-{{ gnu_global_version }}"
+    target: install
+  become: yes
+
+- name: copy globalrc
+  ansible.builtin.copy:
+    src: ".globalrc"
+    dest: "~/.globalrc"
+
+- name: copy gtags.vim
+  ansible.builtin.copy:
+    src: "/usr/local/share/gtags/gtags.vim"
+    dest: "~/.local/share/nvim/site/pack/plugins/start/gtags/plugin/gtags.vim"
+

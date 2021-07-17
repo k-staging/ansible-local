@@ -1,8 +1,10 @@
 ---
+gnu_global_version: "6.6.7"
 neovim_version: "0.5.0"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
+  - "~/.local/share/nvim/site/pack/plugins/start/gtags/plugin/"
   - "~/.config/nvim"
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
@@ -23,4 +25,5 @@ neovim_plugins:
   - "skanehira/preview-markdown.vim"
   - "junegunn/fzf"
   - "junegunn/fzf.vim"
+  - "jsfaint/gen_tags.vim"
 
