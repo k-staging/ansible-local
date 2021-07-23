@@ -20,7 +20,6 @@ neovim_plugins:
   - "tpope/vim-fugitive"
   - "Shougo/deol.nvim"
   - "mhinz/vim-startify"
-  - "ctrlpvim/ctrlp.vim"
   - "Xuyuanp/nerdtree-git-plugin"
   - "skanehira/preview-markdown.vim"
   - "junegunn/fzf"
