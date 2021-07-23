@@ -118,16 +118,11 @@ let g:preview_markdown_auto_update = 1
 nnoremap <S-d> :<C-u>PreviewMarkdown<CR>
 
 " universal ctags
-set tags+=.tags;~
-function! s:execute_ctags() abort
-  let tag_name = '.tags'
-  let tags_path = findfile(tag_name, '.;')
-  if tags_path ==# ''
-    return
-  endif
-  let tags_dirpath = fnamemodify(tags_path, ':p:h')
-  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
-endfunction
+set tags+=.git/tags
+let g:auto_ctags = 1
+let g:auto_ctags_directory_list = ['.git']
+let g:auto_ctags_tags_name = 'tags'
+let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
 
 " tagbar
 nnoremap <S-o> :TagbarToggle<CR>

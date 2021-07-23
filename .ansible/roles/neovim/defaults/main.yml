@@ -23,4 +23,5 @@ neovim_plugins:
   - "junegunn/fzf"
   - "junegunn/fzf.vim"
   - "preservim/tagbar"
+  - "soramugi/auto-ctags.vim"
 
