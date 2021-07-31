@@ -27,8 +27,6 @@ let g:nerdtree_tabs_open_on_console_startup=1
 let NERDTreeShowHidden = 1
 let NERDTreeShowBookmarks=1
 let g:NERDTreeGitStatusShowIgnored=1
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-au User NERDTreeInit let b:NERDTreeRoot = b:NERDTree.root
 
 " Gitgutter
 set  signcolumn=yes
@@ -97,6 +95,7 @@ EOF
 nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
 
 " vim-startify
+let g:startify_change_to_dir = 0
 let g:startify_session_dir = '~/.nvim/session'
 let g:startify_session_persistence = 1
 let g:startify_custom_header = [
@@ -146,7 +145,6 @@ set backspace=indent,eol,start
 
 " その他
 set number
-set autoindent
 set splitright
 set hls
 set whichwrap=b,s,h,l,<,>,[,]
