@@ -117,10 +117,9 @@ let g:preview_markdown_auto_update = 1
 nnoremap <S-d> :<C-u>PreviewMarkdown<CR>
 
 " universal ctags
-set tags+=.git/tags
+set tags+=.tags
 let g:auto_ctags = 1
-let g:auto_ctags_directory_list = ['.git']
-let g:auto_ctags_tags_name = 'tags'
+let g:auto_ctags_tags_name = '.tags'
 let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
 
 " tagbar
