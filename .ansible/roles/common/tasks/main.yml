@@ -74,8 +74,8 @@
 
     - name: create sh symlink
       ansible.builtin.file:
-        src: /usr/local/bin/bash
-        dest: /usr/local/bin/sh
+        src: "/usr/local/bin/bash"
+        dest: "/usr/local/bin/sh"
         state: link
 
     - name: edit /etc/shells
@@ -102,13 +102,13 @@
     - name: download iTerm2-Color-Schemes
       ansible.builtin.git:
         repo: "https://github.com/mbadolato/iTerm2-Color-Schemes.git"
-        dest: "~/Downloads/iTerm2-Color-Schemes"
+        dest: "/usr/local/src/iTerm2-Color-Schemes"
         update: no
 
     - name: set gruvbox dark
       ansible.builtin.shell: sh ./tools/import-scheme.sh "Gruvbox Dark"
       args:
-        chdir: "~/Downloads/iTerm2-Color-Schemes"
+        chdir: "/usr/local/src/iTerm2-Color-Schemes"
   when: ansible_distribution == 'MacOSX' 
 
 - name: download redis

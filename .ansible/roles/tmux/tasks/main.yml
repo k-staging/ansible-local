@@ -26,9 +26,16 @@
     chdir: "/usr/local/src/tmux"
 
 - name: execute configure
+  ansible.builtin.shell: ./configure --disable-utf8proc
+  args:
+    chdir: "/usr/local/src/tmux"
+  when: ansible_distribution == 'MacOSX' 
+
+- name: execute configure
   ansible.builtin.shell: ./configure
   args:
     chdir: "/usr/local/src/tmux"
+  when: ansible_distribution != 'MacOSX' 
 
 - name: make tmux
   community.general.make:

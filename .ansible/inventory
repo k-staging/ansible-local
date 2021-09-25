@@ -4,6 +4,6 @@
 [localhost:vars]
 ANSIBLE_SSH_ARGS="-o StrictHostKeyChecking=no"
 ansible_python_interpreter="python3"
-python3_version="3.9.5"
+python3_version="3.8.11"
 pip_version="21.1.2"
 
