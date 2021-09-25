@@ -36,6 +36,13 @@ for ADD_PATH in ${ADD_ENVIRONMENT_PATH};do
 done
 
 ####################
+# homebrew
+####################
+if [ $(which brew) != "" ]; then
+    eval $(brew shellenv)
+fi
+
+####################
 # tmux
 ####################
 alias tmux="TERM=xterm-256color tmux"

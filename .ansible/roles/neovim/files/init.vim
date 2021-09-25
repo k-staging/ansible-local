@@ -53,7 +53,7 @@ command! -bang -nargs=* Ag
 " Neovim lsp
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = {'bashls', 'gopls', 'pyls', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels'}
+local servers  = { 'bashls', 'gopls', 'pylsp', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
