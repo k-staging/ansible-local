@@ -9,13 +9,6 @@
 
 - name: install neovim (mac)
   block:
-    - name: symbolic link 作成 (この処理不要なら削除する)
-      ansible.builtin.file:
-        src: "/usr/local/include"
-        dest: "/usr/local/bin/include"
-        state: link
-      become: yes
-
     - name: download neovim (mac)
       ansible.builtin.unarchive:
         src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos.tar.gz"

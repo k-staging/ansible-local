@@ -32,6 +32,7 @@ brew_pkg:
   - gpg2
   - hashicorp/tap/terraform-ls
   - heroku
+  - libevent
   - libidn2
   - libpq
   - libunistring
