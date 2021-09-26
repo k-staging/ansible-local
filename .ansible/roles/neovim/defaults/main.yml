@@ -15,6 +15,7 @@ neovim_plugins:
   - "junegunn/fzf"
   - "junegunn/fzf.vim"
   - "mattn/vim-findroot"
+  - "mattn/vim-sqlfmt"
   - "mhinz/vim-startify"
   - "morhetz/gruvbox"
   - "neovim/nvim-lspconfig"
