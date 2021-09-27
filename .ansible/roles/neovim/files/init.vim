@@ -57,6 +57,18 @@ local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'terrafo
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
+require'lspconfig'.sqls.setup{
+  settings = {
+    sqls = {
+      connections = {
+        {
+          driver = 'postgresql',
+          dataSourceName = 'host=127.0.0.1 port=5432 user=postgres',
+        },
+      },
+    },
+  },
+}
 
 require'compe'.setup {
   enabled = true;

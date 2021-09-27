@@ -2,5 +2,6 @@
 go_version: "1.16.4"
 terraform_version: "v1.0.0"
 go_pkg:
+  - "github.com/lighttiger2505/sqls"
   - "golang.org/x/tools/gopls"
 
