@@ -39,7 +39,7 @@
     dest: "~/.config/nvim/init.vim"
 
 - name: copy config.yml.j2
-  ansible.builtin.templates:
+  ansible.builtin.template:
     src: "config.yml.j2"
     dest: "~/.config/sqls/config.yml"
 
