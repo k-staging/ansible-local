@@ -53,10 +53,22 @@ command! -bang -nargs=* Ag
 " Neovim lsp
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'gopls', 'pylsp', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels' }
+local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
+require'lspconfig'.sqls.setup{
+  on_attach = function(client)
+      client.resolved_capabilities.execute_command = true
+      require'sqls'.setup{
+        cmd = { "sqls" },
+        settings = {
+            sqls = {
+            }
+        }
+      }
+  end
+}
 
 require'compe'.setup {
   enabled = true;

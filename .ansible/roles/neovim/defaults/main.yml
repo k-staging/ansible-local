@@ -4,6 +4,7 @@ neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
+  - "~/.config/sqls"
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
 neovim_plugins:
@@ -14,6 +15,7 @@ neovim_plugins:
   - "jistr/vim-nerdtree-tabs"
   - "junegunn/fzf"
   - "junegunn/fzf.vim"
+  - "lighttiger2505/sqls"
   - "mattn/vim-findroot"
   - "mhinz/vim-startify"
   - "morhetz/gruvbox"
@@ -25,4 +27,8 @@ neovim_plugins:
   - "tpope/vim-fugitive"
   - "vim-airline/vim-airline"
   - "vim-airline/vim-airline-themes"
+postgres_user: "postgres"
+postgres_password: ""
+postgres_dbname: "postgres"
+postgres_sslmode: "disable"
 
