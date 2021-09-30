@@ -27,4 +27,8 @@ neovim_plugins:
   - "tpope/vim-fugitive"
   - "vim-airline/vim-airline"
   - "vim-airline/vim-airline-themes"
+postgres_user: "postgres"
+postgres_password: ""
+postgres_dbname: "postgres"
+postgres_sslmode: "disable"
 

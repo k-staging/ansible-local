@@ -4,11 +4,11 @@ connections:
   - alias: postgres
     driver: postgresql
     proto: tcp
-    user: postgres
-    passwd: ""
+    user: {{ postgres_user }}
+    passwd: {{ postgres_password }}
     host: 127.0.0.1
     port: 5432
-    dbName: postgres
+    dbName: {{ postgres_dbname }}
     params:
-      sslmode: disable
+      sslmode: {{ postgres_sslmode }}
 

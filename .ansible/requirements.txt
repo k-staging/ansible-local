@@ -49,7 +49,6 @@ resolvelib==0.5.4
 rope==0.20.1
 six==1.16.0
 snowballstemmer==2.1.0
-sqlparse==0.4.2
 texttable==1.6.3
 toml==0.10.2
 ujson==4.0.2
