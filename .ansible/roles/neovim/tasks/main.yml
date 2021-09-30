@@ -38,6 +38,11 @@
     src: "init.vim"
     dest: "~/.config/nvim/init.vim"
 
+- name: copy config.yml
+  ansible.builtin.copy:
+    src: "config.yml"
+    dest: "~/.config/sqls/config.yml"
+
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item }}.git"

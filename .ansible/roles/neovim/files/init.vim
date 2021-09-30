@@ -58,16 +58,16 @@ for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
 require'lspconfig'.sqls.setup{
-  settings = {
-    sqls = {
-      connections = {
-        {
-          driver = 'postgresql',
-          dataSourceName = 'host=127.0.0.1 port=5432 user=postgres',
-        },
-      },
-    },
-  },
+  on_attach = function(client)
+      client.resolved_capabilities.execute_command = true
+      require'sqls'.setup{
+        cmd = { "sqls" },
+        settings = {
+            sqls = {
+            }
+        }
+      }
+  end
 }
 
 require'compe'.setup {
