@@ -49,7 +49,7 @@ command! -bang -nargs=* Ag
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%', '?'),
   \   <bang>0)
-" fzf.vim ( quickfix )
+" fzf.vim ( 検索結果をquickfixで開く )
 " Ag -> ctrl-a -> ctrl-q -> Enter
 function! s:build_quickfix_list(lines)
   call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
@@ -189,6 +189,15 @@ augroup vimrcEx
   au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
   \ exe "normal g`\"" | endif
 augroup END
+
+" 新しいファイルは新規タブで開く
+autocmd BufWinEnter * NERDTreeMirror
+function OpenFilesToTabs()
+  if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
+    execute 'tabnew | tablast | bp'
+  endif
+endfunction
+autocmd BufNewFile,BufRead * :call OpenFilesToTabs()
 
 " wsl用設定
 if system('uname -a | grep microsoft') != ''
