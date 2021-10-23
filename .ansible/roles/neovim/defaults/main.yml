@@ -8,6 +8,7 @@ neovim_dir:
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
 neovim_plugins:
+  - "aklt/plantuml-syntax"
   - "Shougo/deol.nvim"
   - "Xuyuanp/nerdtree-git-plugin"
   - "airblade/vim-gitgutter"
