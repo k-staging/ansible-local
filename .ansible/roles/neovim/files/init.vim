@@ -190,15 +190,6 @@ augroup vimrcEx
   \ exe "normal g`\"" | endif
 augroup END
 
-" 新しいファイルは新規タブで開く
-autocmd BufWinEnter * NERDTreeMirror
-function OpenFilesToTabs()
-  if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
-    execute 'tabnew | tablast | bp'
-  endif
-endfunction
-autocmd BufNewFile,BufRead * :call OpenFilesToTabs()
-
 " wsl用設定
 if system('uname -a | grep microsoft') != ''
   augroup Yank
