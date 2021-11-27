@@ -125,8 +125,8 @@ let g:startify_custom_header = [
   \ '    ============================================',
   \]
 let g:startify_lists = [
-          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
           \ { 'type': 'sessions',  'header': ['    Sessions'] },
+          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
           \ ]
 
 " fern.vim
@@ -137,6 +137,7 @@ set tags+=.tags
 let g:auto_ctags = 1
 let g:auto_ctags_tags_name = '.tags'
 let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+let g:auto_ctags_directory_list = ['.git']
 nnoremap <F3> :<C-u>tab stj <C-R>=expand('<cword>')<CR><CR>
 
 " tagbar
