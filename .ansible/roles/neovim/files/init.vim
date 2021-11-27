@@ -22,12 +22,6 @@ nmap <C-t> <Plug>AirlineSelectPrevTab
 nmap <S-t> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
-" NerdTree
-let g:nerdtree_tabs_open_on_console_startup=1
-let NERDTreeShowHidden = 1
-let NERDTreeShowBookmarks=1
-let g:NERDTreeGitStatusShowIgnored=1
-
 " Gitgutter
 set  signcolumn=yes
 
@@ -49,7 +43,7 @@ command! -bang -nargs=* Ag
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%', '?'),
   \   <bang>0)
-" fzf.vim ( 検索結果をquickfixで開く )
+" fzf.vim
 " Ag -> ctrl-a -> ctrl-q -> Enter
 function! s:build_quickfix_list(lines)
   call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
@@ -121,31 +115,29 @@ nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
 
 " vim-startify
 let g:startify_change_to_dir = 0
-let g:startify_session_dir = '~/.nvim/session'
+let g:startify_session_autoload = 1
 let g:startify_session_persistence = 1
+let g:startify_session_dir = '~/.nvim/session'
+let g:startify_session_number = 5
 let g:startify_custom_header = [
-  \ '============================================',
-  \ ' VIM - Vi IMproved ',
-  \ '============================================',
+  \ '    ============================================',
+  \ '     Neovim ( v0.5.0 ) ',
+  \ '    ============================================',
   \]
-autocmd VimEnter *
-  \   if !argc()
-  \ |   Startify
-  \ |   NERDTree
-  \ |   wincmd w
-  \ | endif
+let g:startify_lists = [
+          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
+          \ { 'type': 'sessions',  'header': ['    Sessions'] },
+          \ ]
 
-" preview-markdown
-let g:preview_markdown_parser = "glow"
-let g:preview_markdown_vertical = 1
-let g:preview_markdown_auto_update = 1
-nnoremap <S-d> :<C-u>PreviewMarkdown<CR>
+" fern.vim
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
 " universal ctags
 set tags+=.tags
 let g:auto_ctags = 1
 let g:auto_ctags_tags_name = '.tags'
 let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+nnoremap <F3> :<C-u>tab stj <C-R>=expand('<cword>')<CR><CR>
 
 " tagbar
 nnoremap <S-o> :TagbarToggle<CR>
