@@ -60,7 +60,7 @@ let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 " Neovim lsp
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels' }
+local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'tsserver', 'vimls', 'vuels' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
