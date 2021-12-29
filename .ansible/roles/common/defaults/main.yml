@@ -2,12 +2,14 @@
 common_pkg:
   - git
   - git-lfs
+  - graphviz
   - htop
   - jq
   - pwgen
   - tree
   - unzip
 apt_pkg:
+  - default-jre
   - g++
   - language-pack-ja
   - language-pack-ja-base
@@ -32,6 +34,7 @@ brew_pkg:
   - gpg2
   - hashicorp/tap/terraform-ls
   - heroku
+  - java
   - libevent
   - libidn2
   - libpq
@@ -69,4 +72,5 @@ working_directory:
   - .aws
   - bin
   - src
+  - lib/java
 
