@@ -22,12 +22,6 @@ nmap <C-t> <Plug>AirlineSelectPrevTab
 nmap <S-t> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
-" NerdTree
-let g:nerdtree_tabs_open_on_console_startup=1
-let NERDTreeShowHidden = 1
-let NERDTreeShowBookmarks=1
-let g:NERDTreeGitStatusShowIgnored=1
-
 " Gitgutter
 set  signcolumn=yes
 
@@ -49,25 +43,35 @@ command! -bang -nargs=* Ag
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%', '?'),
   \   <bang>0)
+" fzf.vim
+" Ag -> ctrl-a -> ctrl-q -> Enter
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
 " Neovim lsp
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'terraformls', 'tsserver', 'vimls', 'vuels' }
+local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'tsserver', 'vimls', 'vuels' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
-require'lspconfig'.sqls.setup{
-  on_attach = function(client)
-      client.resolved_capabilities.execute_command = true
-      require'sqls'.setup{
-        cmd = { "sqls" },
-        settings = {
-            sqls = {
-            }
-        }
-      }
-  end
+
+require('lspconfig').sqls.setup{
+    on_attach = function(client)
+        client.resolved_capabilities.execute_command = true
+        client.commands = require('sqls').commands
+
+        require('sqls').setup{}
+    end
 }
 
 require'compe'.setup {
@@ -103,36 +107,67 @@ require'compe'.setup {
     luasnip = true;
   };
 }
+function goimports(timeout_ms)
+  local context = { only = { "source.organizeImports" } }
+  vim.validate { context = { context, "t", true } }
+
+  local params = vim.lsp.util.make_range_params()
+  params.context = context
+
+  -- See the implementation of the textDocument/codeAction callback
+  -- (lua/vim/lsp/handler.lua) for how to do this properly.
+  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+  if not result or next(result) == nil then return end
+  local actions = result[1].result
+  if not actions then return end
+  local action = actions[1]
+
+  -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
+  -- is a CodeAction, it can have either an edit, a command or both. Edits
+  -- should be executed first.
+  if action.edit or type(action.command) == "table" then
+    if action.edit then
+      vim.lsp.util.apply_workspace_edit(action.edit)
+    end
+    if type(action.command) == "table" then
+      vim.lsp.buf.execute_command(action.command)
+    end
+  else
+    vim.lsp.buf.execute_command(action)
+  end
+end
 EOF
 nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
+autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
+autocmd BufWritePre *.go lua goimports(1000)
+
 
 " vim-startify
 let g:startify_change_to_dir = 0
-let g:startify_session_dir = '~/.nvim/session'
+let g:startify_session_autoload = 1
 let g:startify_session_persistence = 1
+let g:startify_session_dir = '~/.nvim/session'
+let g:startify_session_number = 5
 let g:startify_custom_header = [
-  \ '============================================',
-  \ ' VIM - Vi IMproved ',
-  \ '============================================',
+  \ '    ============================================',
+  \ '     Neovim ( v0.5.0 ) ',
+  \ '    ============================================',
   \]
-autocmd VimEnter *
-  \   if !argc()
-  \ |   Startify
-  \ |   NERDTree
-  \ |   wincmd w
-  \ | endif
+let g:startify_lists = [
+          \ { 'type': 'sessions',  'header': ['    Sessions'] },
+          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
+          \ ]
 
-" preview-markdown
-let g:preview_markdown_parser = "glow"
-let g:preview_markdown_vertical = 1
-let g:preview_markdown_auto_update = 1
-nnoremap <S-d> :<C-u>PreviewMarkdown<CR>
+" fern.vim
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
 " universal ctags
 set tags+=.tags
 let g:auto_ctags = 1
 let g:auto_ctags_tags_name = '.tags'
 let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+let g:auto_ctags_directory_list = ['.git']
+nnoremap <F3> :<C-u>tab stj <C-R>=expand('<cword>')<CR><CR>
 
 " tagbar
 nnoremap <S-o> :TagbarToggle<CR>
@@ -185,4 +220,3 @@ if system('uname -a | grep microsoft') != ''
   augroup END
   noremap <silent> p :call setreg('"',system('win32yank.exe -o'))<CR>""p
 endif
-

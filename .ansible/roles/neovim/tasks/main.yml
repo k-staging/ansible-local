@@ -45,8 +45,9 @@
 
 - name: install neovim plugin
   ansible.builtin.git:
-    repo: "https://github.com/{{ item }}.git"
-    dest: "{{ neovim_plugin_path }}/{{ item.split('/')[-1] }}"
+    repo: "https://github.com/{{ item.name }}.git"
+    dest: "{{ neovim_plugin_path }}/{{ item.name.split('/')[-1] }}"
+    version: "{{ item.version }}"
     update: no
   with_items:
     - "{{ neovim_plugins }}"
@@ -87,4 +88,24 @@
     chdir: "/usr/local/src/ctags"
     target: install
   become: yes
+
+- name: download plantuml
+  ansible.builtin.get_url:
+    url: "https://jaist.dl.sourceforge.net/project/plantuml/1.2021.12/plantuml.1.2021.12.jar"
+    dest: "~/lib/java/plantuml.jar"
+    mode: 0755
+
+- name: copy plantuml
+  ansible.builtin.copy:
+    src: "plantuml"
+    dest: "/usr/local/bin/plantuml"
+    mode: 0755
+
+- name: create java symlink
+  ansible.builtin.file:
+    src: "/usr/local/opt/openjdk/libexec/openjdk.jdk"
+    dest: "/Library/Java/JavaVirtualMachines/openjdk.jdk"
+    state: link
+  become: yes
+  when: ansible_distribution == 'MacOSX' 
 
