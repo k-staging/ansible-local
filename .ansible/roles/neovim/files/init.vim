@@ -150,7 +150,7 @@ let g:startify_session_dir = '~/.nvim/session'
 let g:startify_session_number = 5
 let g:startify_custom_header = [
   \ '    ============================================',
-  \ '     Neovim ( v0.5.0 ) ',
+  \ '     Neovim ( v0.6.0 ) ',
   \ '    ============================================',
   \]
 let g:startify_lists = [
