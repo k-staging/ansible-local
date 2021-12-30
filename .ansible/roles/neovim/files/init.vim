@@ -25,16 +25,11 @@ nmap <C-c> :tablast <bar> tabnew<CR>
 " Gitgutter
 set  signcolumn=yes
 
-" Deol.nvim
-let g:deol#shell_history_path='~/.bash_history'
-tnoremap <Esc> <C-\><C-n>
-nnoremap <C-d> :<C-u>Deol -split=vertical<CR>
-tnoremap <Esc> <C-W>N
-tnoremap <Esc><Esc> <C-W>N
-set timeout timeoutlen=1000
-set ttimeout ttimeoutlen=100
-
 " fzf.vim
+nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
+nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> se  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+xnoremap se  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'source': 'ag --hidden --ignore .git -g ""'}), <bang>0)
 command! -bang -nargs=* Ag
@@ -43,19 +38,6 @@ command! -bang -nargs=* Ag
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%', '?'),
   \   <bang>0)
-" fzf.vim
-" Ag -> ctrl-a -> ctrl-q -> Enter
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
 " Neovim lsp
 lua << EOF
@@ -140,7 +122,6 @@ EOF
 nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
 autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
 autocmd BufWritePre *.go lua goimports(1000)
-
 
 " vim-startify
 let g:startify_change_to_dir = 0
