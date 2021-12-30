@@ -37,7 +37,7 @@ neovim_plugins:
   - name: "morhetz/gruvbox"
     version: "HEAD"
   - name: "neovim/nvim-lspconfig"
-    version: "382712c4ecba5816f398379dd9d8c8200b025ca3"
+    version: "0d2fb782cac8a19df0c0d7715ad4cdab4c582e15"
   - name: "preservim/tagbar"
     version: "HEAD"
   - name: "soramugi/auto-ctags.vim"
