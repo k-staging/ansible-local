@@ -28,6 +28,8 @@ set  signcolumn=yes
 " fzf.vim
 nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
 nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
+nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
 nnoremap <silent> se  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
 xnoremap se  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
 command! -bang -nargs=? -complete=dir Files
