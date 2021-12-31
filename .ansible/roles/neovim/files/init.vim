@@ -18,8 +18,8 @@ let g:airline#extensions#virtualenv#enabled = 1
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-nmap <C-t> <Plug>AirlineSelectPrevTab
-nmap <S-t> <Plug>AirlineSelectNextTab
+nmap <Tab> <Plug>AirlineSelectPrevTab
+nmap <S-Tab> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
 " Gitgutter
