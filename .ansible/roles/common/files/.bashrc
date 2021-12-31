@@ -12,13 +12,14 @@ HISTTIMEFORMAT='%y/%m/%d %H:%M:%S '
 ##################
 # プロンプト設定
 ##################
-[ -f ~/bin/.git-completion.bash ] && source ~/bin/.git-completion.bash
-[ -f ~/bin/.git-prompt.sh ] && source ~/bin/.git-prompt.sh
+[ -f ~/bin/git-completion.bash ] && source ~/bin/git-completion.bash
+[ -f ~/bin/git-prompt.sh ] && source ~/bin/git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUPSTREAM=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 export GIT_PS1_SHOWSTASHSTATE=1
-export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\w\[\033[1;31m\]$(__git_ps1)\[\033[00m\] \$ '
+export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[00m\]\$ '
+[ -f ~/bin/git-completion.bash ] && [ -f ~/bin/git-prompt.sh ] && export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[1;31m\]$(__git_ps1)\[\033[00m\]\$ '
 
 ###############
 # ls

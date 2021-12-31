@@ -25,21 +25,35 @@ nmap <C-c> :tablast <bar> tabnew<CR>
 " Gitgutter
 set  signcolumn=yes
 
+" Deol.nvim
+let g:deol#shell_history_path='~/.bash_history'
+tnoremap <Esc> <C-\><C-n>
+nnoremap <C-d> :<C-u>Deol -split=vertical<CR>
+tnoremap <Esc> <C-W>N
+tnoremap <Esc><Esc> <C-W>N
+set timeout timeoutlen=1000
+set ttimeout ttimeoutlen=100
+
 " fzf.vim
 nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
 nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
 nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
 nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
-nnoremap <silent> se  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
-xnoremap se  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'source': 'ag --hidden --ignore .git -g ""'}), <bang>0)
-command! -bang -nargs=* Ag
-  \ call fzf#vim#grep(
-  \   'ag --column --color --hidden --ignore .git '.shellescape(<q-args>), 0,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%', '?'),
-  \   <bang>0)
+nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+let g:fzf_preview_custom_processes = {
+            \ 'open-file': {
+            \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
+            \     'ctrl-f': 'FzfPreviewOpenFileCtrlQ',
+            \     'ctrl-t': 'FzfPreviewOpenFileCtrlT',
+            \     'ctrl-v': 'FzfPreviewOpenFileCtrlV',
+            \     'ctrl-x': 'FzfPreviewOpenFileCtrlX',
+            \     'enter': 'FzfPreviewOpenFileEnter'
+            \ },
+            \ 'register': {
+            \     'enter': 'FzfPreviewRegisterEnter'
+            \ }
+\ }
 
 " Neovim lsp
 lua << EOF

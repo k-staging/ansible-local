@@ -40,6 +40,8 @@ neovim_plugins:
     version: "HEAD"
   - name: "soramugi/auto-ctags.vim"
     version: "HEAD"
+  - name: "Shougo/deol.nvim"
+    version: "HEAD"
   - name: "tpope/vim-fugitive"
     version: "HEAD"
   - name: "vim-airline/vim-airline"
