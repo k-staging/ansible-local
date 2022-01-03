@@ -12,14 +12,17 @@ HISTTIMEFORMAT='%y/%m/%d %H:%M:%S '
 ##################
 # プロンプト設定
 ##################
-[ -f ~/bin/git-completion.bash ] && source ~/bin/git-completion.bash
-[ -f ~/bin/git-prompt.sh ] && source ~/bin/git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUPSTREAM=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 export GIT_PS1_SHOWSTASHSTATE=1
-export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[00m\]\$ '
-[ -f ~/bin/git-completion.bash ] && [ -f ~/bin/git-prompt.sh ] && export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[1;31m\]$(__git_ps1)\[\033[00m\]\$ '
+if [ -f ~/bin/git-completion.bash ] && [ -f ~/bin/git-prompt.sh ]; then
+    source ~/bin/git-completion.bash
+    source ~/bin/git-prompt.sh
+    export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[1;31m\]$(__git_ps1)\[\033[00m\]\$ '
+else
+    export PS1='\[\033[1;34m\]\u\[\033[00m\]:\[\033[1;33m\]\W\[\033[00m\]\$ '
+fi
 
 ###############
 # ls
@@ -77,4 +80,17 @@ if [ -e /usr/bin/sw_vers ]; then
         export BASH_ENV='~/.bash_aliases'
     fi
 fi
+
+############
+# nvim
+############
+[ -d ~/.nvm ] && [ "$CURRENT_NODE_VERSION" != "" ] && nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
+function nvim() {
+  export CURRENT_NODE_VERSION=$(node --version |sed -e 's/v//g')
+  NVIM_NODE_VERSION='14.17.3'
+  nvm use $NVIM_NODE_VERSION > /dev/null 2>&1
+  /usr/local/bin/nvim $1
+  nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
+  export CURRENT_NODE_VERSION=""
+}
 

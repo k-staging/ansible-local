@@ -25,14 +25,10 @@ nmap <C-c> :tablast <bar> tabnew<CR>
 " Gitgutter
 set  signcolumn=yes
 
-" Deol.nvim
-let g:deol#shell_history_path='~/.bash_history'
+" terminal
 tnoremap <Esc> <C-\><C-n>
-nnoremap <C-d> :<C-u>Deol -split=vertical<CR>
-tnoremap <Esc> <C-W>N
-tnoremap <Esc><Esc> <C-W>N
-set timeout timeoutlen=1000
-set ttimeout ttimeoutlen=100
+command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
+autocmd TermOpen * startinsert
 
 " fzf.vim
 nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
