@@ -4,4 +4,6 @@ go_pkg:
   - "github.com/lib/pq"
   - "github.com/lighttiger2505/sqls"
   - "golang.org/x/tools/gopls"
+  - "github.com/x-motemen/gore/cmd/gore"
+  - "github.com/mdempsky/gocode"
 
