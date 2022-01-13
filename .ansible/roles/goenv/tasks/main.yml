@@ -22,24 +22,6 @@
       ansible.builtin.shell: "~/.goenv/bin/goenv global {{ go_version }}"
   when: check_installed_go.stat.exists == false
 
-- name: download glow
-  ansible.builtin.git:
-    repo: "https://github.com/charmbracelet/glow.git"
-    dest: "/usr/local/src/glow"
-    update: no
-
-- name: install glow
-  ansible.builtin.shell: "~/.goenv/versions/{{ go_version }}/bin/go build"
-  args:
-    chdir: "/usr/local/src/glow"
-
-- name: copy glow
-  ansible.builtin.copy:
-    src: /usr/local/src/glow/glow
-    dest: /usr/local/bin/glow
-    mode: 0755
-  become: yes
-
 - name: go get
   ansible.builtin.shell: "~/.goenv/versions/{{ go_version }}/bin/go get {{ item }}"
   with_items:
