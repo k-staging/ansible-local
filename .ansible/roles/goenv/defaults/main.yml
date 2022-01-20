@@ -6,5 +6,5 @@ go_pkg:
   - "golang.org/x/tools/gopls"
   - "github.com/x-motemen/gore/cmd/gore"
   - "github.com/mdempsky/gocode"
-  - "github.com/d4l3k/go-pry"
+  - "github.com/go-delve/delve/cmd/dlv"
 

@@ -51,7 +51,13 @@ let g:fzf_preview_custom_processes = {
             \ }
 \ }
 
-" Neovim lsp
+" nvim-dap
+lua << EOF
+require('dap-go').setup()
+require('dapui').setup()
+EOF
+
+" nvim-lspconfig
 lua << EOF
 local nvim_lsp = require('lspconfig')
 local servers  = { 'bashls', 'cssmodules_ls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'vimls' }
