@@ -22,7 +22,7 @@ neovim_plugins:
     version: "HEAD"
   - name: "lambdalisue/fern-git-status.vim"
     version: "HEAD"
-  - name: "leoluz/nvim-dap-go.git"
+  - name: "leoluz/nvim-dap-go"
     version: "6e6ed5f82b2e5f4a8e6f12765d5b9c6f2797cb4d"
   - name: "lighttiger2505/sqls"
     version: "dc11c61398b89a8a3fc533e06dabad236aacb365"
