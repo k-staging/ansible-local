@@ -18,49 +18,49 @@ let g:airline#extensions#virtualenv#enabled = 1
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-nmap <C-t> <Plug>AirlineSelectPrevTab
-nmap <S-t> <Plug>AirlineSelectNextTab
+nmap <Tab> <Plug>AirlineSelectPrevTab
+nmap <S-Tab> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
 " Gitgutter
 set  signcolumn=yes
 
-" Deol.nvim
-let g:deol#shell_history_path='~/.bash_history'
+" terminal
 tnoremap <Esc> <C-\><C-n>
-nnoremap <C-d> :<C-u>Deol -split=vertical<CR>
-tnoremap <Esc> <C-W>N
-tnoremap <Esc><Esc> <C-W>N
-set timeout timeoutlen=1000
-set ttimeout ttimeoutlen=100
+command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
+autocmd TermOpen * startinsert
 
 " fzf.vim
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'source': 'ag --hidden --ignore .git -g ""'}), <bang>0)
-command! -bang -nargs=* Ag
-  \ call fzf#vim#grep(
-  \   'ag --column --color --hidden --ignore .git '.shellescape(<q-args>), 0,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%', '?'),
-  \   <bang>0)
-" fzf.vim
-" Ag -> ctrl-a -> ctrl-q -> Enter
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
+nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
+nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
+nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
+nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+let g:fzf_preview_custom_processes = {
+            \ 'open-file': {
+            \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
+            \     'ctrl-f': 'FzfPreviewOpenFileCtrlQ',
+            \     'ctrl-t': 'FzfPreviewOpenFileCtrlT',
+            \     'ctrl-v': 'FzfPreviewOpenFileCtrlV',
+            \     'ctrl-x': 'FzfPreviewOpenFileCtrlX',
+            \     'enter': 'FzfPreviewOpenFileEnter'
+            \ },
+            \ 'register': {
+            \     'enter': 'FzfPreviewRegisterEnter'
+            \ }
+\ }
 
-" Neovim lsp
+" nvim-dap
+lua << EOF
+require('dap-go').setup()
+require('dapui').setup()
+EOF
+
+" nvim-lspconfig
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'tsserver', 'vimls', 'vuels' }
+local servers  = { 'bashls', 'cssmodules_ls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'vimls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
@@ -141,7 +141,6 @@ nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
 autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
 autocmd BufWritePre *.go lua goimports(1000)
 
-
 " vim-startify
 let g:startify_change_to_dir = 0
 let g:startify_session_autoload = 1
@@ -150,7 +149,7 @@ let g:startify_session_dir = '~/.nvim/session'
 let g:startify_session_number = 5
 let g:startify_custom_header = [
   \ '    ============================================',
-  \ '     Neovim ( v0.5.0 ) ',
+  \ '     Neovim ( v0.6.0 ) ',
   \ '    ============================================',
   \]
 let g:startify_lists = [
@@ -159,6 +158,7 @@ let g:startify_lists = [
           \ ]
 
 " fern.vim
+let g:fern#default_hidden=1
 nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
 " universal ctags

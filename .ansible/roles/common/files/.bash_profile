@@ -47,7 +47,7 @@ fi
 ####################
 alias tmux="TERM=xterm-256color tmux"
 if [ $SHLVL = 1 ]; then
-  tmux
+  tmux a -t default
 fi
 
 ####################
