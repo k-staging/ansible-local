@@ -34,8 +34,8 @@
   become: yes
 
 - name: copy init.vim
-  ansible.builtin.copy:
-    src: "init.vim"
+  ansible.builtin.template:
+    src: "init.vim.j2"
     dest: "~/.config/nvim/init.vim"
 
 - name: copy config.yml.j2
