@@ -22,6 +22,9 @@ nmap <Tab> <Plug>AirlineSelectPrevTab
 nmap <S-Tab> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
+" Eslint
+autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
+
 " Gitgutter
 set  signcolumn=yes
 
@@ -60,7 +63,7 @@ EOF
 " nvim-lspconfig
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'cssmodules_ls', 'gopls', 'graphql', 'pylsp', 'solargraph', 'vimls' }
+local servers  = { 'bashls', 'eslint', 'gopls', 'graphql', 'pylsp', 'ruby_ls', 'vimls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {}
 end
