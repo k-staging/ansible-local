@@ -57,12 +57,6 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
-- name: copy .NERDTreeBookmarks
-  ansible.builtin.template:
-    src: .NERDTreeBookmarks.j2
-    dest: ~/.NERDTreeBookmarks
-    mode: 0644
-
 - name: download ctags
   ansible.builtin.git:
     repo: "https://github.com/universal-ctags/ctags.git"
