@@ -1,5 +1,5 @@
 ---
 node_versions:
   - "14.17.3"
-npm_packages: "bash-language-server cssmodules-language-server graphql-language-service-cli vim-language-server yarn"
+npm_packages: "bash-language-server graphql-language-service-cli vim-language-server vscode-langservers-extracted yarn"
 
