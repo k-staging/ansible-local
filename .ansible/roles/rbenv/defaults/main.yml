@@ -3,5 +3,5 @@ ruby_version: "3.0.2"
 gem_pkg:
   - "bundler -v 2.2.23"
   - "rails -v 6.1.4"
-  - "solargraph -v 0.42.4"
+  - "ruby-lsp -v 0.3.6"
 
