@@ -94,10 +94,11 @@
     src: "plantuml"
     dest: "/usr/local/bin/plantuml"
     mode: 0755
+  become: yes
 
 - name: create java symlink
   ansible.builtin.file:
-    src: "/usr/local/opt/openjdk/libexec/openjdk.jdk"
+    src: "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk"
     dest: "/Library/Java/JavaVirtualMachines/openjdk.jdk"
     state: link
   become: yes

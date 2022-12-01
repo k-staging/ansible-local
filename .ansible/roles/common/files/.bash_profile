@@ -22,6 +22,8 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 # PATH 設定
 ##############
 ADD_ENVIRONMENT_PATH=$(cat << EOS
+/opt/homebrew/bin
+/opt/homebrew/opt
 /usr/local/opt/mysql-client@5.7/bin
 /usr/local/opt/libpq/bin
 ~/.goenv/bin

@@ -1,9 +1,10 @@
 ---
 - name: create directory
   ansible.builtin.file:
-    path: "~/{{ item }}"
+    path: "{{ item }}"
     state: directory
     mode: 0755
+  become: yes
   with_items:
     - "{{ working_directory }}"
 
@@ -72,31 +73,21 @@
         name: "{{ brew_cask_pkg }}"
         state: present
 
-    - name: create sh symlink
+    - name: create a symbolic link
       ansible.builtin.file:
-        src: "/usr/local/bin/bash"
-        dest: "/usr/local/bin/sh"
+        src: /usr/local/bin/tar
+        dest: /opt/homebrew/opt/gnu-tar
         state: link
+      become: yes
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
         dest: /etc/shells
-        line: "/usr/local/bin/bash"
+        line: "/opt/homebrew/bin/bash"
       become: yes
 
     - name: chsh
-      ansible.builtin.command: "chsh -s /usr/local/bin/bash {{ ansible_user_id }}"
-      become: yes
-
-    - name: download aws cli v2
-      ansible.builtin.shell: curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-      args:
-        chdir: "/usr/local/src"
-
-    - name: install aws cli v2
-      ansible.builtin.shell: "installer -pkg ./AWSCLIV2.pkg -target /"
-      args:
-        chdir: "/usr/local/src"
+      ansible.builtin.command: "chsh -s /opt/homebrew/bin/bash {{ ansible_user_id }}"
       become: yes
 
     - name: download iTerm2-Color-Schemes
@@ -153,4 +144,3 @@
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     dest: ~/bin/git-prompt.sh
     mode: 0755
-
