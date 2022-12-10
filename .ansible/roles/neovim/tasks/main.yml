@@ -57,32 +57,6 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
-- name: download ctags
-  ansible.builtin.git:
-    repo: "https://github.com/universal-ctags/ctags.git"
-    dest: "/usr/local/src/ctags"
-    update: no
-
-- name: execute autogen.sh
-  ansible.builtin.shell: ./autogen.sh
-  args:
-    chdir: "/usr/local/src/ctags"
-
-- name: execute configure
-  ansible.builtin.shell: ./configure
-  args:
-    chdir: "/usr/local/src/ctags"
-
-- name: make ctags
-  community.general.make:
-    chdir: "/usr/local/src/ctags"
-
-- name: make install ctags
-  community.general.make:
-    chdir: "/usr/local/src/ctags"
-    target: install
-  become: yes
-
 - name: download plantuml
   ansible.builtin.get_url:
     url: "https://jaist.dl.sourceforge.net/project/plantuml/1.2021.12/plantuml.1.2021.12.jar"

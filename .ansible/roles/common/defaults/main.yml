@@ -65,6 +65,7 @@ brew_cask_pkg:
   - docker
   - sequel-ace
   - postman
+  - wireshark
 config_files:
   - .agignore
   - .bashrc
