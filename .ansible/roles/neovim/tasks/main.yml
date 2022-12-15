@@ -40,8 +40,8 @@
 
 - name: copy config.yml.j2
   ansible.builtin.template:
-    src: "config.yml.j2"
-    dest: "~/.config/sqls/config.yml"
+   src: "config.yml.j2"
+   dest: "~/.config/sqls/config.yml"
 
 - name: install neovim plugin
   ansible.builtin.git:
