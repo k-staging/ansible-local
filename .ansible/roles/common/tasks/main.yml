@@ -72,6 +72,7 @@
       community.general.homebrew_cask:
         name: "{{ brew_cask_pkg }}"
         state: present
+      ignore_errors: yes
 
     - name: create a symbolic link
       ansible.builtin.file:
@@ -79,15 +80,21 @@
         dest: /opt/homebrew/opt/gnu-tar
         state: link
       become: yes
+      ignore_errors: yes
+
+    - name: get bash path
+      shell: brew --prefix bash
+      register: bash_path
+      changed_when: false
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
         dest: /etc/shells
-        line: "/opt/homebrew/bin/bash"
+        line: "{{ bash_path.stdout }}/bin/bash"
       become: yes
 
     - name: chsh
-      ansible.builtin.command: "chsh -s /opt/homebrew/bin/bash {{ ansible_user_id }}"
+      ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_user_id }}"
       become: yes
 
     - name: download iTerm2-Color-Schemes

@@ -77,4 +77,5 @@
     state: link
   become: yes
   when: ansible_distribution == 'MacOSX' 
+  ignore_errors: yes
 
