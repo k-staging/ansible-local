@@ -54,8 +54,15 @@
     update: no
 
 - name: copy tmux.conf
-  ansible.builtin.copy:
-    src: ".tmux.conf"
+  ansible.builtin.template:
+    src: ".tmux.conf.j2"
     dest: "~/.tmux.conf"
     mode: 0644
+
+- name: edit ~/.tmux.conf
+  ansible.builtin.lineinfile:
+    dest: ~/.tmux.conf
+    line: "new-window -c {{ item }}"
+  with_items:
+    - "{{ tmux_sub_dir }}"
 
