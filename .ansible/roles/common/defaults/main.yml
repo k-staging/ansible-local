@@ -63,9 +63,6 @@ brew_cask_pkg:
   - zoom
   - discord
   - docker
-  - sequel-ace
-  - postman
-  - wireshark
 config_files:
   - .agignore
   - .bashrc
