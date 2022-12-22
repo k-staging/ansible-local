@@ -55,10 +55,6 @@
 
 - name: setup MacOSX
   block:
-    - name: brew tap
-      community.general.homebrew_tap:
-        name: heroku/brew
-
     - name: brew install
       community.general.homebrew:
         name: "{{ item }}"
@@ -74,13 +70,17 @@
         state: present
       ignore_errors: yes
 
+    - name: get gnu-tar prefix
+      shell: brew --prefix gnu-tar
+      register: gnu_tar_prefix
+      changed_when: false
+
     - name: create a symbolic link
       ansible.builtin.file:
-        src: /usr/local/bin/tar
-        dest: /opt/homebrew/opt/gnu-tar
+        src: "{{ gnu_tar_prefix.stdout }}/bin/gtar"
+        dest: /usr/local/bin/tar
         state: link
       become: yes
-      ignore_errors: yes
 
     - name: get bash path
       shell: brew --prefix bash

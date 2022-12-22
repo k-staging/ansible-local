@@ -34,7 +34,6 @@ brew_pkg:
   - gnu-sed
   - gpg2
   - hashicorp/tap/terraform-ls
-  - heroku
   - java
   - libevent
   - libidn2
@@ -60,8 +59,6 @@ brew_cask_pkg:
   - google-chrome
   - iterm2
   - slack
-  - zoom
-  - discord
   - docker
 config_files:
   - .agignore
