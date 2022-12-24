@@ -1,5 +1,5 @@
 ---
-neovim_version: "0.8.0"
+neovim_version: "0.8.1"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
@@ -14,8 +14,8 @@ neovim_plugins:
     version: "HEAD"
   - name: "junegunn/fzf"
     version: "46877e0a92d5e18bfc143ac98bb55b22eaef81ac"
-  - name: "junegunn/fzf.vim"
-    version: "9ceac718026fd39498d95ff04fa04d3e40c465d7"
+  - name: "yuki-yano/fzf-preview.vim"
+    version: "fb268bb248a83165abcc75509832f93be9741b3b"
   - name: "lambdalisue/fern.vim"
     version: "HEAD"
   - name: "lambdalisue/fern-git-status.vim"

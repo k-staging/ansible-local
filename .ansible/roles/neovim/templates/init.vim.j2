@@ -33,17 +33,26 @@ tnoremap <Esc> <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
 
-" fzf.vim
-nnoremap <silent> <C-p>  :<C-u>Files<CR>
-nnoremap <silent> gs  :<C-u>GFiles?<CR>
-nnoremap <silent> gc  :<C-u>Commits<CR>
-nnoremap <silent> gr  :<C-u>Rg<Space>
-xnoremap gr  "sy:Rg<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
-let $FZF_DEFAULT_COMMAND='rg --files --hidden -g "!.git" '
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --hidden -g "!.git" --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
+" fzf-preview.vim
+nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
+nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
+nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
+nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+let g:fzf_preview_custom_processes = {
+            \ 'open-file': {
+            \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
+            \     'ctrl-f': 'FzfPreviewOpenFileCtrlQ',
+            \     'ctrl-t': 'FzfPreviewOpenFileCtrlT',
+            \     'ctrl-v': 'FzfPreviewOpenFileCtrlV',
+            \     'ctrl-x': 'FzfPreviewOpenFileCtrlX',
+            \     'enter': 'FzfPreviewOpenFileEnter'
+            \ },
+            \ 'register': {
+            \     'enter': 'FzfPreviewRegisterEnter'
+            \ }
+\ }
 
 " nvim-cmp, nvim-lspconfig
 set completeopt=menu,menuone,noselect
