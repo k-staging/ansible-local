@@ -5,9 +5,6 @@
     dest: "~/.nodenv"
     update: no
 
-      #- name: init nodenv
-      #  ansible.builtin.shell: "~/.nodenv/libexec/nodenv init"
-
 - name: make plugin directory
   ansible.builtin.file:
     path: "~/.nodenv/plugins"
