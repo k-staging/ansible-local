@@ -24,6 +24,8 @@ neovim_plugins:
     version: "41710c31fffa76d08b8cfcd53d5defa7c07a3fc6"
   - name: "lambdalisue/fern-git-status.vim"
     version: "151336335d3b6975153dad77e60049ca7111da8e"
+  # 2022/12/29 時点で sqls はアーカイブされているが
+  # かなり便利なプラグインなので引き続き使う
   - name: "lighttiger2505/sqls"
     version: "20c88ed63207c2853935c925e2d269e4189c2504"
   - name: "nanotee/sqls.nvim"
@@ -48,7 +50,7 @@ neovim_plugins:
     version: "dd81554c2231e438f6d0e8056ea38fd0e80ac02a"
   - name: "thinca/vim-qfreplace"
     version: "db1c4b0161931c9a63942f4f562a0d0f4271ac14"
-  # 以降は nvim-cmp 関連のプラグイン
+  # 以降は nvim-cmp (補完関連) のプラグイン
   - name: "hrsh7th/cmp-nvim-lsp"
     version: "59224771f91b86d1de12570b4070fe4ad7cd1eeb"
   - name: "hrsh7th/cmp-buffer"
