@@ -35,11 +35,9 @@ export PATH="$GOROOT/bin:$PATH"
 export PATH="$PATH:$GOPATH/bin"
 
 #####################
-# nvm
+# nodenv
 #####################
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
 
 #####################
 # pyenv

@@ -24,6 +24,8 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 ADD_ENVIRONMENT_PATH=$(cat << EOS
 /usr/local/opt/libpq/bin
 ~/.goenv/bin
+~/.nodenv/bin
+~/.nodenv/shims
 ~/.pyenv/bin
 ~/.rbenv/bin
 ~/bin

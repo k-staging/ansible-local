@@ -1,0 +1,43 @@
+---
+- name: download nodenv
+  ansible.builtin.git:
+    repo: "https://github.com/nodenv/nodenv.git"
+    dest: "~/.nodenv"
+    update: no
+
+      #- name: init nodenv
+      #  ansible.builtin.shell: "~/.nodenv/libexec/nodenv init"
+
+- name: make plugin directory
+  ansible.builtin.file:
+    path: "~/.nodenv/plugins"
+    state: directory
+    mode: 0755
+
+- name: download node-build
+  ansible.builtin.git:
+    repo: "https://github.com/nodenv/node-build.git"
+    dest: "~/.nodenv/plugins/node-build"
+    update: no
+
+- name: check_installed_node
+  ansible.builtin.stat:
+    path: "~/.nodenv/versions/{{ node_version }}/bin/node"
+  register: check_installed_node
+
+- name: install node
+  block:
+    - name: install node
+      ansible.builtin.shell: "~/.nodenv/bin/nodenv install {{ node_version }}"
+
+    - name: set node global version
+      ansible.builtin.shell: "~/.nodenv/bin/nodenv global {{ node_version }}"
+  when: check_installed_node.stat.exists == false
+
+- name: npm package install 
+  ansible.builtin.shell: "~/.nodenv/bin/nodenv exec npm install -g {{ item }}"
+  with_items:
+    - "{{ npm_packages }}"
+
+- name: nodenv rehash
+  ansible.builtin.shell: "~/.nodenv/bin/nodenv rehash"

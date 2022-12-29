@@ -1,0 +1,3 @@
+---
+node_version: "14.17.3"
+npm_packages: "bash-language-server@2.1.0 vscode-langservers-extracted@4.5.0"
