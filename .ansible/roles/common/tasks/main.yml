@@ -70,18 +70,6 @@
         state: present
       ignore_errors: yes
 
-    - name: get gnu-tar prefix
-      shell: brew --prefix gnu-tar
-      register: gnu_tar_prefix
-      changed_when: false
-
-    - name: create a symbolic link
-      ansible.builtin.file:
-        src: "{{ gnu_tar_prefix.stdout }}/bin/gtar"
-        dest: /usr/local/bin/tar
-        state: link
-      become: yes
-
     - name: get bash path
       shell: brew --prefix bash
       register: bash_path
