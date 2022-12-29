@@ -1,4 +1,6 @@
 ---
+# neovim のバージョンは暫く 0.7.2 で固定
+# 0.8.0 以降にアップデートすると、ステータスバーでコピペできなくなる為
 neovim_version: "0.7.2"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
@@ -9,11 +11,13 @@ neovim_dir:
   - "/usr/local/src/nvim"
 neovim_plugins:
   - name: "aklt/plantuml-syntax"
-    version: "HEAD"
+    version: "845abb56dcd3f12afa6eb47684ef5ba3055802b8"
   - name: "airblade/vim-gitgutter"
     version: "HEAD"
   - name: "junegunn/fzf"
     version: "46877e0a92d5e18bfc143ac98bb55b22eaef81ac"
+  # fzf-preview.vim のバージョンは暫くこのコミットで固定
+  # 最新コミットにしたら何故か動かなくなった為
   - name: "yuki-yano/fzf-preview.vim"
     version: "fb268bb248a83165abcc75509832f93be9741b3b"
   - name: "lambdalisue/fern.vim"
@@ -35,16 +39,16 @@ neovim_plugins:
   - name: "neovim/nvim-lspconfig"
     version: "c96ec574eacfff8ad8dd4bdb6e96a1b3dbd268fd"
   - name: "preservim/tagbar"
-    version: "HEAD"
+    version: "af3ce7c3cec81f2852bdb0a0651d2485fcd01214"
   - name: "tpope/vim-fugitive"
     version: "5b0b138483de17a8fd8dfcec0b491782c8fbf102"
   - name: "vim-airline/vim-airline"
-    version: "HEAD"
+    version: "9e2d021fc6088a2027315d7e7ae8bafa94f16a7d"
   - name: "vim-airline/vim-airline-themes"
-    version: "HEAD"
+    version: "dd81554c2231e438f6d0e8056ea38fd0e80ac02a"
   - name: "thinca/vim-qfreplace"
     version: "db1c4b0161931c9a63942f4f562a0d0f4271ac14"
-  # nvim-cmp 関連のプラグイン
+  # 以降は nvim-cmp 関連のプラグイン
   - name: "hrsh7th/cmp-nvim-lsp"
     version: "59224771f91b86d1de12570b4070fe4ad7cd1eeb"
   - name: "hrsh7th/cmp-buffer"
