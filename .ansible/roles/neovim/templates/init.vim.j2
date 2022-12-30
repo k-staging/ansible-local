@@ -22,119 +22,40 @@ nmap <Tab> <Plug>AirlineSelectPrevTab
 nmap <S-Tab> <Plug>AirlineSelectNextTab
 nmap <C-c> :tablast <bar> tabnew<CR>
 
-" Eslint
+" eslint
 autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 
-" Gitgutter
+" vim-gitgutter
 set  signcolumn=yes
+
+" fugitive.vim
+nnoremap <silent> gb  :<C-u>Git blame<CR>
 
 " terminal
 tnoremap <Esc> <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
 
-" fzf.vim
-nnoremap <silent> <C-p>  :<C-u>Files<CR>
-nnoremap <silent> gs  :<C-u>GFiles?<CR>
-nnoremap <silent> gc  :<C-u>Commits<CR>
-nnoremap <silent> gr  :<C-u>Rg<Space>
-xnoremap gr  "sy:Rg<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
-let $FZF_DEFAULT_COMMAND='rg --files --hidden -g "!.git" '
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --hidden -g "!.git" --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
-
-
-" nvim-dap
-lua << EOF
-require('dap-go').setup()
-require('dapui').setup()
-EOF
-
-" nvim-lspconfig
-lua << EOF
-local nvim_lsp = require('lspconfig')
-local servers  = { 'bashls', 'eslint', 'gopls', 'graphql', 'pylsp', 'ruby_ls', 'vimls' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {}
-end
-
-require('lspconfig').sqls.setup{
-    on_attach = function(client)
-        client.resolved_capabilities.execute_command = true
-        client.commands = require('sqls').commands
-
-        require('sqls').setup{}
-    end
-}
-
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = {
-    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 120,
-    min_width = 60,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-  };
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    luasnip = true;
-  };
-}
-function goimports(timeout_ms)
-  local context = { only = { "source.organizeImports" } }
-  vim.validate { context = { context, "t", true } }
-
-  local params = vim.lsp.util.make_range_params()
-  params.context = context
-
-  -- See the implementation of the textDocument/codeAction callback
-  -- (lua/vim/lsp/handler.lua) for how to do this properly.
-  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
-  if not result or next(result) == nil then return end
-  local actions = result[1].result
-  if not actions then return end
-  local action = actions[1]
-
-  -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
-  -- is a CodeAction, it can have either an edit, a command or both. Edits
-  -- should be executed first.
-  if action.edit or type(action.command) == "table" then
-    if action.edit then
-      vim.lsp.util.apply_workspace_edit(action.edit)
-    end
-    if type(action.command) == "table" then
-      vim.lsp.buf.execute_command(action.command)
-    end
-  else
-    vim.lsp.buf.execute_command(action)
-  end
-end
-EOF
-nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
-autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
-autocmd BufWritePre *.go lua goimports(1000)
+" fzf-preview.vim
+nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
+nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
+nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
+nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+let g:fzf_preview_custom_processes = {
+            \ 'open-file': {
+            \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
+            \     'ctrl-f': 'FzfPreviewOpenFileCtrlQ',
+            \     'ctrl-t': 'FzfPreviewOpenFileCtrlT',
+            \     'ctrl-v': 'FzfPreviewOpenFileCtrlV',
+            \     'ctrl-x': 'FzfPreviewOpenFileCtrlX',
+            \     'enter': 'FzfPreviewOpenFileEnter'
+            \ },
+            \ 'register': {
+            \     'enter': 'FzfPreviewRegisterEnter'
+            \ }
+\ }
 
 " vim-startify
 let g:startify_change_to_dir = 0
@@ -156,16 +77,98 @@ let g:startify_lists = [
 let g:fern#default_hidden=1
 nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
-" universal ctags
-set tags+=.tags
-let g:auto_ctags = 1
-let g:auto_ctags_tags_name = '.tags'
-let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
-let g:auto_ctags_directory_list = ['.git']
-nnoremap <F3> :<C-u>tab stj <C-R>=expand('<cword>')<CR><CR>
-
 " tagbar
 nnoremap <S-o> :TagbarToggle<CR>
+
+" nvim-cmp, nvim-lspconfig
+set completeopt=menu,menuone,noselect
+lua <<EOF
+  -- Set up nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+      { name = 'path' },
+    })
+  })
+
+  -- Set up lspconfig.
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local nvim_lsp = require('lspconfig')
+  local servers  = { 'bashls', 'eslint', 'gopls', 'pylsp', 'solargraph' }
+  for _, lsp in ipairs(servers) do
+    nvim_lsp[lsp].setup {
+      capabilities = capabilities
+    }
+  end
+  nvim_lsp.sqls.setup{
+    on_attach = function(client, bufnr)
+        capabilities = capabilities
+        require('sqls').on_attach(client, bufnr)
+    end
+  }
+
+  -- Set up gopls
+  function goimports(timeout_ms)
+    local context = { only = { "source.organizeImports" } }
+    vim.validate { context = { context, "t", true } }
+
+    local params = vim.lsp.util.make_range_params()
+    params.context = context
+
+    -- See the implementation of the textDocument/codeAction callback
+    -- (lua/vim/lsp/handler.lua) for how to do this properly.
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+    if not result or next(result) == nil then return end
+    local actions = result[1].result
+    if not actions then return end
+    local action = actions[1]
+
+    -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
+    -- is a CodeAction, it can have either an edit, a command or both. Edits
+    -- should be executed first.
+    if action.edit or type(action.command) == "table" then
+      if action.edit then
+        vim.lsp.util.apply_workspace_edit(action.edit)
+      end
+      if type(action.command) == "table" then
+        vim.lsp.buf.execute_command(action.command)
+      end
+    else
+      vim.lsp.buf.execute_command(action)
+    end
+  end
+EOF
+nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
+autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
+autocmd BufWritePre *.go lua goimports(1000)
 
 " キーバインド変更
 nnoremap j gj

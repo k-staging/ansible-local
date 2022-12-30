@@ -35,11 +35,9 @@ export PATH="$GOROOT/bin:$PATH"
 export PATH="$PATH:$GOPATH/bin"
 
 #####################
-# nvm
+# nodenv
 #####################
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
 
 #####################
 # pyenv
@@ -75,17 +73,3 @@ if [ -e /usr/bin/sw_vers ]; then
         export BASH_ENV='~/.bash_aliases'
     fi
 fi
-
-############
-# nvim
-############
-[ -d ~/.nvm ] && [ "$CURRENT_NODE_VERSION" != "" ] && nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
-function nvim() {
-  export CURRENT_NODE_VERSION=$(node --version |sed -e 's/v//g')
-  NVIM_NODE_VERSION='14.17.3'
-  nvm use $NVIM_NODE_VERSION > /dev/null 2>&1
-  /usr/local/bin/nvim $1
-  nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
-  export CURRENT_NODE_VERSION=""
-}
-

@@ -4,8 +4,8 @@
   roles:
     - role: common
       tags: common
-    - role: nvm
-      tags: nvm
+    - role: nodenv
+      tags: nodenv
     - role: tmux
       tags: tmux
     - role: neovim
