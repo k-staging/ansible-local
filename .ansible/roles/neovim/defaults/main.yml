@@ -13,7 +13,7 @@ neovim_plugins:
   - name: "aklt/plantuml-syntax"
     version: "845abb56dcd3f12afa6eb47684ef5ba3055802b8"
   - name: "airblade/vim-gitgutter"
-    version: "HEAD"
+    version: "00df1089b6267f47c7c0f13536789feb9db1e65b"
   - name: "junegunn/fzf"
     version: "46877e0a92d5e18bfc143ac98bb55b22eaef81ac"
   # fzf-preview.vim のバージョンは暫くこのコミットで固定
