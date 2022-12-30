@@ -57,31 +57,3 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
-- name: download plantuml
-  ansible.builtin.get_url:
-    url: "https://jaist.dl.sourceforge.net/project/plantuml/1.2021.12/plantuml.1.2021.12.jar"
-    dest: "~/lib/java/plantuml.jar"
-    mode: 0755
-
-- name: copy plantuml
-  ansible.builtin.copy:
-    src: "plantuml"
-    dest: "/usr/local/bin/plantuml"
-    mode: 0755
-  become: yes
-
-- name: get brew prefix
-  shell: brew --prefix
-  register: brew_prefix
-  changed_when: false
-  when: ansible_distribution == 'MacOSX' 
-
-- name: create java symlink
-  ansible.builtin.file:
-    src: "{{ brew_prefix.stdout }}/opt/openjdk/libexec/openjdk.jdk"
-    dest: "/Library/Java/JavaVirtualMachines/openjdk.jdk"
-    state: link
-  become: yes
-  when: ansible_distribution == 'MacOSX' 
-  ignore_errors: yes
-

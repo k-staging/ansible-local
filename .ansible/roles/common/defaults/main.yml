@@ -34,7 +34,6 @@ brew_pkg:
   - gnu-sed
   - gpg2
   - hashicorp/tap/terraform-ls
-  - java
   - libevent
   - libidn2
   - libpq
@@ -72,5 +71,4 @@ working_directory:
   - .aws
   - bin
   - src
-  - lib/java
 
