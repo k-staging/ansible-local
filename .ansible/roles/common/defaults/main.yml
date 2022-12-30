@@ -69,8 +69,8 @@ config_files:
   - .inputrc
 redis_version: "6.2.4"
 working_directory:
-  - ~/.aws
-  - ~/bin
-  - ~/src
-  - ~/lib/java
+  - .aws
+  - bin
+  - src
+  - lib/java
 
