@@ -4,9 +4,15 @@
     path: "{{ item }}"
     state: directory
     mode: 0755
-  become: yes
   with_items:
     - "{{ working_directory }}"
+
+- name: create /usr/local/bin
+  ansible.builtin.file:
+    path: /usr/local/bin
+    state: directory
+    mode: 0755
+  become: yes
 
 - name: change permission /usr/local/src
   ansible.builtin.file:
