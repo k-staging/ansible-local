@@ -73,17 +73,3 @@ if [ -e /usr/bin/sw_vers ]; then
         export BASH_ENV='~/.bash_aliases'
     fi
 fi
-
-############
-# nvim
-############
-[ -d ~/.nvm ] && [ "$CURRENT_NODE_VERSION" != "" ] && nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
-function nvim() {
-  export CURRENT_NODE_VERSION=$(node --version |sed -e 's/v//g')
-  NVIM_NODE_VERSION='14.17.3'
-  nvm use $NVIM_NODE_VERSION > /dev/null 2>&1
-  /usr/local/bin/nvim $1
-  nvm use $CURRENT_NODE_VERSION > /dev/null 2>&1
-  export CURRENT_NODE_VERSION=""
-}
-
