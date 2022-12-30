@@ -62,5 +62,4 @@ if-shell "uname -a | grep -q microsoft" "bind-key -T copy-mode-vi y send -X copy
 if-shell "uname -a | grep -q microsoft" "bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel 'win32yank.exe -i'"
 
 # デフォルトで開くセッションの設定
-new-session -d -s default -c ~/src
-
+new-session -d -s default -c {{ tmux_main_dir }}

@@ -8,4 +8,7 @@ apt_pkg:
   - libncurses5-dev
 brew_pkg:
   - automake
+tmux_main_dir: "~/"
+tmux_sub_dir:
+  - "~/src"
 

@@ -7,6 +7,13 @@
   with_items:
     - "{{ working_directory }}"
 
+- name: create /usr/local/bin
+  ansible.builtin.file:
+    path: /usr/local/bin
+    state: directory
+    mode: 0755
+  become: yes
+
 - name: change permission /usr/local/src
   ansible.builtin.file:
     path: /usr/local/src
@@ -54,10 +61,6 @@
 
 - name: setup MacOSX
   block:
-    - name: brew tap
-      community.general.homebrew_tap:
-        name: heroku/brew
-
     - name: brew install
       community.general.homebrew:
         name: "{{ item }}"
@@ -71,32 +74,21 @@
       community.general.homebrew_cask:
         name: "{{ brew_cask_pkg }}"
         state: present
+      ignore_errors: yes
 
-    - name: create sh symlink
-      ansible.builtin.file:
-        src: "/usr/local/bin/bash"
-        dest: "/usr/local/bin/sh"
-        state: link
+    - name: get bash path
+      shell: brew --prefix bash
+      register: bash_path
+      changed_when: false
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
         dest: /etc/shells
-        line: "/usr/local/bin/bash"
+        line: "{{ bash_path.stdout }}/bin/bash"
       become: yes
 
     - name: chsh
-      ansible.builtin.command: "chsh -s /usr/local/bin/bash {{ ansible_user_id }}"
-      become: yes
-
-    - name: download aws cli v2
-      ansible.builtin.shell: curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-      args:
-        chdir: "/usr/local/src"
-
-    - name: install aws cli v2
-      ansible.builtin.shell: "installer -pkg ./AWSCLIV2.pkg -target /"
-      args:
-        chdir: "/usr/local/src"
+      ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_user_id }}"
       become: yes
 
     - name: download iTerm2-Color-Schemes
@@ -153,4 +145,3 @@
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     dest: ~/bin/git-prompt.sh
     mode: 0755
-

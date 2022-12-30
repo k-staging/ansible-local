@@ -22,9 +22,10 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 # PATH 設定
 ##############
 ADD_ENVIRONMENT_PATH=$(cat << EOS
-/usr/local/opt/mysql-client@5.7/bin
 /usr/local/opt/libpq/bin
 ~/.goenv/bin
+~/.nodenv/bin
+~/.nodenv/shims
 ~/.pyenv/bin
 ~/.rbenv/bin
 ~/bin
@@ -38,8 +39,13 @@ done
 ####################
 # homebrew
 ####################
-if [ $(which brew) != "" ]; then
+BREW_PATH="/opt/homebrew/bin"
+if [ -e ${BREW_PATH} ]; then
+    export PATH="$BREW_PATH:$PATH"
+fi
+if [ "$(which brew)" != "" ]; then
     eval $(brew shellenv)
+    export PATH="$(brew --prefix)/opt/mysql-client@5.7/bin:$PATH"
 fi
 
 ####################

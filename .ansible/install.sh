@@ -26,7 +26,8 @@ run_ansible() {
     fi
     ~/.pyenv/versions/${PYTHON3_VERSION}/bin/pip install pip==${PIP_VERSION}
     ~/.pyenv/versions/${PYTHON3_VERSION}/bin/pip install -r ${ANSIBLE_DIR}/requirements.txt
-    PATH="/usr/sbin:$PATH" && ~/.pyenv/versions/${PYTHON3_VERSION}/bin/ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
+    sudo mkdir -p /usr/local/bin
+    export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:~/.pyenv/plugins/pyenv-virtualenv/shims:~/.pyenv/shims" && ~/.pyenv/versions/${PYTHON3_VERSION}/bin/ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
 EOF
 )"
 }
