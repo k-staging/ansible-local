@@ -32,7 +32,6 @@ brew_pkg:
   - glow
   - gnu-tar
   - gnu-sed
-  - gpg2
   - hashicorp/tap/terraform-ls
   - imagemagick@6
   - libevent
