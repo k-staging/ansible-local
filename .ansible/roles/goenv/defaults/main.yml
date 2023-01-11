@@ -1,8 +1,7 @@
 ---
 go_version: "1.17.1"
 go_pkg:
-  - "github.com/lib/pq@v1.10.3"
-  - "github.com/lighttiger2505/sqls@v0.2.22"
+  - "github.com/lighttiger2505/sqls@v0.2.20"
   - "golang.org/x/tools/gopls@v0.11.0"
   - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
   - "github.com/mdempsky/gocode@latest"
