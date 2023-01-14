@@ -56,6 +56,30 @@ fi
 [ -e ~/.rbenv/bin/rbenv ] && eval "$(rbenv init - bash)"
 
 #################
+# llvm
+#################
+if [ "$(which brew)" != "" ]; then
+  LLVM_PREFIX_PATH=$(brew --prefix llvm)
+  [ -e "${LLVM_PREFIX_PATH}/bin" ] && export PATH="${LLVM_PREFIX_PATH}/bin:$PATH" && export LDFLAGS="-L${LLVM_PREFIX_PATH}/lib" && export CPPFLAGS="-I${LLVM_PREFIX_PATH}/include"
+fi
+
+#################
+# openssl
+#################
+if [ "$(which brew)" != "" ]; then
+  OPENSSL_PREFIX_PATH=$(brew --prefix openssl@3)
+  [ -e "${OPENSSL_PREFIX_PATH}/bin" ] && export PATH="${OPENSSL_PREFIX_PATH}/bin:$PATH"
+fi
+
+#################
+# imagemagick
+#################
+if [ "$(which brew)" != "" ]; then
+  IMAGE_MAGIC_PREFIX_PATH=$(brew --prefix imagemagick@6)
+  [ -e "${IMAGE_MAGIC_PREFIX_PATH}/lib/pkgconfig" ] && export PKG_CONFIG_PATH="${IMAGE_MAGIC_PREFIX_PATH}/lib/pkgconfig"
+fi
+
+#################
 # fzf
 #################
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

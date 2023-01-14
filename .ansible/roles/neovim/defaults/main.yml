@@ -38,8 +38,6 @@ neovim_plugins:
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
   - name: "neovim/nvim-lspconfig"
     version: "c96ec574eacfff8ad8dd4bdb6e96a1b3dbd268fd"
-  - name: "preservim/tagbar"
-    version: "af3ce7c3cec81f2852bdb0a0651d2485fcd01214"
   - name: "tpope/vim-fugitive"
     version: "5b0b138483de17a8fd8dfcec0b491782c8fbf102"
   - name: "vim-airline/vim-airline"

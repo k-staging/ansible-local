@@ -32,12 +32,13 @@ brew_pkg:
   - glow
   - gnu-tar
   - gnu-sed
-  - gpg2
   - hashicorp/tap/terraform-ls
+  - imagemagick@6
   - libevent
   - libidn2
   - libpq
   - libunistring
+  - llvm
   - lz4
   - make
   - mysql-client@5.7
@@ -47,6 +48,7 @@ brew_pkg:
   - pstree
   - readline
   - rsync
+  - shared-mime-info
   - sqlite
   - telnet
   - wget
