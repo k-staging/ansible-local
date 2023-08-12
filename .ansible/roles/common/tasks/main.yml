@@ -23,6 +23,10 @@
 
 - name: setup Ubuntu
   block:
+    - name: add redis apt repository
+      ansible.builtin.apt_repository:
+      repo: ppa:redislabs/redis
+
     - name: apt install
       ansible.builtin.apt:
         pkg: "{{ item }}"
@@ -75,10 +79,34 @@
         name: pkg-config
         state: linked
 
-    - name: brew_cask install
+    - name: install google-chrome
       community.general.homebrew_cask:
-        name: "{{ brew_cask_pkg }}"
-        state: upgraded
+        name: "google-chrome"
+        state: present
+      ignore_errors: yes
+
+    - name: install iterm2
+      community.general.homebrew_cask:
+        name: "iterm2"
+        state: present
+      ignore_errors: yes
+
+    - name: install slack
+      community.general.homebrew_cask:
+        name: "slack"
+        state: present
+      ignore_errors: yes
+
+    - name: install docker
+      community.general.homebrew_cask:
+        name: "docker"
+        state: present
+      ignore_errors: yes
+
+    - name: install dotnet-sdk
+      community.general.homebrew_cask:
+        name: "dotnet-sdk"
+        state: present
       ignore_errors: yes
 
     - name: get bash path
@@ -109,23 +137,6 @@
       args:
         chdir: "/usr/local/src/iTerm2-Color-Schemes"
   when: ansible_distribution == 'MacOSX' 
-
-- name: download redis
-  ansible.builtin.unarchive:
-    src: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
-    dest: "/usr/local/src/"
-    remote_src: yes
-
-- name: make redis
-  community.general.make:
-    chdir: "/usr/local/src/redis-{{ redis_version }}"
-
-- name: copy redis-cli
-  ansible.builtin.copy:
-    src: "/usr/local/src/redis-{{ redis_version }}/src/redis-cli"
-    dest: "/usr/local/bin/redis-cli"
-    mode: 0755
-  become: yes
 
 - name: copy config files
   ansible.builtin.copy:

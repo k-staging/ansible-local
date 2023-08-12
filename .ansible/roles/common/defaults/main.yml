@@ -6,11 +6,13 @@ common_pkg:
   - htop
   - jq
   - pwgen
+  - redis
   - ripgrep
   - tree
   - unzip
 apt_pkg:
   - default-jre
+  - dotnet-sdk-6.0
   - g++
   - language-pack-ja
   - language-pack-ja-base
@@ -70,9 +72,9 @@ config_files:
   - .bash_profile
   - .gitignore
   - .inputrc
-redis_version: "6.2.4"
 working_directory:
   - .aws
+  - .dotnet/tools
   - bin
   - src
 
