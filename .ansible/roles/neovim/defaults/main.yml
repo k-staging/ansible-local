@@ -1,14 +1,12 @@
 ---
 # neovim のバージョンは暫く 0.7.2 で固定
 # 0.8.0 以降にアップデートすると、ステータスバーでコピペできなくなる為
-neovim_version: "0.9.0"
+neovim_version: "0.9.1"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/nvim/dadbod-ui"
-  - "~/.config/sqls"
-  - "~/.config/sql-language-server"
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
 neovim_plugins:
@@ -24,28 +22,26 @@ neovim_plugins:
     version: "41710c31fffa76d08b8cfcd53d5defa7c07a3fc6"
   - name: "lambdalisue/fern-git-status.vim"
     version: "151336335d3b6975153dad77e60049ca7111da8e"
-  # 2022/12/29 時点で sqls はアーカイブされているが
-  # かなり便利なプラグインなので引き続き使う
-  - name: "lighttiger2505/sqls"
-    version: "20c88ed63207c2853935c925e2d269e4189c2504"
-  - name: "nanotee/sqls.nvim"
-    version: "a0048b7018c99b68456f91b4aa42ce288f0c0774"
+  # SQL 関連
   - name: "mattn/vim-sqlfmt"
     version: "db6365103e38d274efe7689a002646a4419ae821"
-  - name: "mattn/vim-findroot"
-    version: "76af2f097cf8196b00f049054444966d10c82f95"
-  - name: "mhinz/vim-startify"
-    version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
-  - name: "morhetz/gruvbox"
-    version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
-  - name: "neovim/nvim-lspconfig"
-    version: "c96ec574eacfff8ad8dd4bdb6e96a1b3dbd268fd"
   - name: "tpope/vim-dadbod"
     version: "7d80bbd11c407a09e0f7b869c38f3dec3902805f"
   - name: "kristijanhusak/vim-dadbod-completion"
     version: "fc7321a17f4c55db11fae89a884ddf4724020bae"
   - name: "kristijanhusak/vim-dadbod-ui"
     version: "200aebf70e6fc4b0eb1d3ecf0d57028e198d8dc6"
+  - name: "mattn/vim-findroot"
+    version: "76af2f097cf8196b00f049054444966d10c82f95"
+  # 起動画面
+  - name: "mhinz/vim-startify"
+    version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
+  # カラースキーマ
+  - name: "morhetz/gruvbox"
+    version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
+  # その他
+  - name: "neovim/nvim-lspconfig"
+    version: "c96ec574eacfff8ad8dd4bdb6e96a1b3dbd268fd"
   - name: "tpope/vim-fugitive"
     version: "5b0b138483de17a8fd8dfcec0b491782c8fbf102"
   - name: "vim-airline/vim-airline"
