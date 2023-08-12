@@ -166,4 +166,5 @@
 
 - name: install dotnet
   ansible.builtin.command: "dotnet tool install --global csharp-ls"
+  ignore_errors: yes
 

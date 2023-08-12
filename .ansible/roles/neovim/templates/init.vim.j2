@@ -59,7 +59,7 @@ let g:fzf_preview_custom_processes = {
 let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 
 " vim-dadbod
-autocmd FileType sql,mysql,plsql lua require('cmp').setup.buffer({ sources = {{ name = 'vim-dadbod-completion' }} })
+autocmd FileType sql,mysql,plsql lua require('cmp').setup.buffer({ sources = {% raw %}{{ name = 'vim-dadbod-completion' }}{% endraw %} })
 let g:db_ui_save_location = '~/.config/nvim/dadbod-ui'
 
 " vim-startify
