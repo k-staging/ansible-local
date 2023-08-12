@@ -56,6 +56,16 @@ let g:fzf_preview_custom_processes = {
             \     'enter': 'FzfPreviewRegisterEnter'
             \ }
 \ }
+let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
+
+" vim-dadbod
+autocmd FileType sql,mysql,plsql lua require('cmp').setup.buffer({ sources = {{ name = 'vim-dadbod-completion' }} })
+let g:completion_chain_complete_list = {
+    \   'sql': [
+    \    {'complete_items': ['vim-dadbod-completion']},
+    \   ],
+    \ }
+let g:db_ui_save_location = '~/.config/nvim/dadbod-ui'
 
 " vim-startify
 let g:startify_change_to_dir = 0
@@ -65,7 +75,7 @@ let g:startify_session_dir = '~/.nvim/session'
 let g:startify_session_number = 5
 let g:startify_custom_header = [
   \ '    ============================================',
-  \ '     Neovim ( v{{ neovim_version }} ) ',
+  \ '     Neovim ( v0.9.1 ) ',
   \ '    ============================================',
   \]
 let g:startify_lists = [
@@ -80,6 +90,44 @@ nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " nvim-cmp, nvim-lspconfig
 set completeopt=menu,menuone,noselect
 lua <<EOF
+  -- Global mappings.
+  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+  -- Use LspAttach autocommand to only map the following keys
+  -- after the language server attaches to the current buffer
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = function(ev)
+      -- Enable completion triggered by <c-x><c-o>
+      vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+      -- Buffer local mappings.
+      -- See `:help vim.lsp.*` for documentation on any of the below functions
+      local opts = { buffer = ev.buf }
+      vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+      vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+      vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+      vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+      vim.keymap.set('n', '<space>wl', function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+      end, opts)
+      vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+      vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+      vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+      vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+      vim.keymap.set('n', '<space>f', function()
+        vim.lsp.buf.format { async = true }
+      end, opts)
+    end,
+  })
+
   -- Set up nvim-cmp.
   local cmp = require'cmp'
 
@@ -116,21 +164,12 @@ lua <<EOF
     })
   })
 
-  -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  local nvim_lsp = require('lspconfig')
-  local servers  = { 'bashls', 'eslint', 'gopls', 'pylsp', 'solargraph' }
+  -- Add the server that troubles you here
+  local lspconfig = require('lspconfig')
+  local servers  = { 'bashls', 'csharp_ls', 'eslint', 'gopls', 'pylsp', 'solargraph'}
   for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-      capabilities = capabilities
-    }
+    lspconfig[lsp].setup {}
   end
-  nvim_lsp.sqls.setup{
-    on_attach = function(client, bufnr)
-        capabilities = capabilities
-        require('sqls').on_attach(client, bufnr)
-    end
-  }
 
   -- Set up gopls
   function goimports(timeout_ms)

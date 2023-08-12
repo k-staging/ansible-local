@@ -38,10 +38,10 @@
     src: "init.vim.j2"
     dest: "~/.config/nvim/init.vim"
 
-- name: copy config.yml.j2
+- name: copy connections.json.j2
   ansible.builtin.template:
-    src: "config.yml.j2"
-    dest: "~/.config/sqls/config.yml"
+    src: "connections.json.j2"
+    dest: "~/.config/nvim/dadbod-ui/connections.json"
 
 - name: install neovim plugin
   ansible.builtin.git:

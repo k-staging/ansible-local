@@ -70,16 +70,23 @@
         - "{{ common_pkg }}"
         - "{{ brew_pkg }}"
 
+    - name: brew linked pkg-config
+      community.general.homebrew:
+        name: pkg-config
+        state: linked
+
     - name: brew_cask install
       community.general.homebrew_cask:
         name: "{{ brew_cask_pkg }}"
-        state: present
+        state: upgraded
       ignore_errors: yes
 
     - name: get bash path
       shell: brew --prefix bash
       register: bash_path
       changed_when: false
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
@@ -145,3 +152,7 @@
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     dest: ~/bin/git-prompt.sh
     mode: 0755
+
+- name: install dotnet
+  ansible.builtin.command: "dotnet tool install --global csharp-ls"
+
