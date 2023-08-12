@@ -25,7 +25,7 @@
   block:
     - name: add redis apt repository
       ansible.builtin.apt_repository:
-      repo: ppa:redislabs/redis
+        repo: ppa:redislabs/redis
 
     - name: apt install
       ansible.builtin.apt:
