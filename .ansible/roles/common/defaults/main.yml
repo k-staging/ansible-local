@@ -59,12 +59,6 @@ brew_pkg:
   - xxhash
   - xz
   - zstd
-brew_cask_pkg:
-  - google-chrome
-  - iterm2
-  - slack
-  - docker
-  - dotnet-sdk
 config_files:
   - .agignore
   - .bashrc
