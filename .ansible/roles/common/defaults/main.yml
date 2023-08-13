@@ -20,6 +20,7 @@ apt_pkg:
   - libmysqlclient-dev
   - mysql-client
   - ntp
+  - postgresql
   - silversearcher-ag
   - tcl
   - whois
@@ -48,6 +49,7 @@ brew_pkg:
   - openssl
   - pkg-config
   - popt
+  - postgresql@15
   - pstree
   - readline
   - rsync

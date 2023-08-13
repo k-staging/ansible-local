@@ -46,7 +46,7 @@ if [ -e ${BREW_PATH} ]; then
 fi
 if [ "$(which brew)" != "" ]; then
     eval $(brew shellenv)
-    export PATH="$(brew --prefix)/opt/mysql-client@5.7/bin:$PATH"
+    export PATH="$(brew --prefix)/opt/mysql-client@5.7/bin:$(brew --prefix)/opt/postgresql@15/bin:$PATH"
 fi
 
 ####################
