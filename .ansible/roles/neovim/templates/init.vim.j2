@@ -62,6 +62,8 @@ let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 " vim-dadbod
 autocmd FileType sql,mysql,plsql lua require('cmp').setup.buffer({ sources = {% raw %}{{ name = 'vim-dadbod-completion' }}{% endraw %} })
 let g:db_ui_save_location = '~/.config/nvim/dadbod-ui'
+" 折り畳みを無効にする
+set nofoldenable
 
 " vim-startify
 let g:startify_change_to_dir = 0
