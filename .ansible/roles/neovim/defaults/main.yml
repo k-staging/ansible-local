@@ -2,6 +2,7 @@
 # neovim のバージョンは暫く 0.7.2 で固定
 # 0.8.0 以降にアップデートすると、ステータスバーでコピペできなくなる為
 neovim_version: "0.9.1"
+nerdfonts_version: "3.0.2"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
@@ -39,6 +40,11 @@ neovim_plugins:
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
+  # NerdFont 関連
+  - name: "lambdalisue/nerdfont.vim"
+    version: "85dcc800c94f7ab04e13900d6668faf86a0cdc78"
+  - name: "lambdalisue/fern-renderer-nerdfont.vim"
+    version: "1e90a78ab5510fbcedc85abeb9a251d978726935"
   # その他
   - name: "neovim/nvim-lspconfig"
     version: "c96ec574eacfff8ad8dd4bdb6e96a1b3dbd268fd"
