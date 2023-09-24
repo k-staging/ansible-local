@@ -1,7 +1,9 @@
 ---
 ruby_version: "3.0.2"
 gem_pkg:
-  - "bundler -v 2.2.23"
-  - "rails -v 6.1.7"
+  - "bundler -v 1.17.2"
+  - "rubocop -v 1.56.3"
+  - "rubocop-ast -v 1.29.0"
+  - "rubocop-github -v 0.20.0"
   - "solargraph -v 0.48.0"
 

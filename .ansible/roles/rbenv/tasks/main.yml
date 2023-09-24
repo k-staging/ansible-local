@@ -25,7 +25,7 @@
 - name: install ruby
   block:
     - name: install ruby
-      ansible.builtin.shell: "RUBY_CFLAGS=\"-w\" ~/.rbenv/bin/rbenv install {{ ruby_version }}"
+      ansible.builtin.shell: "RUBY_CFLAGS=\"-w -DUSE_FFI_CLOSURE_ALLOC\" ~/.rbenv/bin/rbenv install {{ ruby_version }}"
 
     - name: set ruby global version
       ansible.builtin.shell: "~/.rbenv/bin/rbenv global {{ ruby_version }}"

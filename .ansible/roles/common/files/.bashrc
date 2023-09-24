@@ -56,6 +56,11 @@ fi
 [ -e ~/.rbenv/bin/rbenv ] && eval "$(rbenv init - bash)"
 
 #################
+# solargraph 
+#################
+[ -e ~/.rbenv/bin/rbenv ] && export RBENV_VERSION="$(cat ~/.rbenv/version |awk '{print $1}')"
+
+#################
 # llvm
 #################
 if [ "$(which brew)" != "" ]; then
