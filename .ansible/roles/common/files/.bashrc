@@ -58,7 +58,7 @@ fi
 #################
 # solargraph 
 #################
-[ -e ~/.rbenv/bin/rbenv ] && export RBENV_VERSION="$(cat ~/.rbenv/version |awk '{print $1}')"
+[ -e ~/.rbenv/bin/rbenv ] && export RBENV_VERSION="$(cat ~/.rbenv/version |awk '{print $1}')" && export BUNDLE_GEMFILE=~/.rbenv/versions/${RBENV_VERSION}/Gemfile
 
 #################
 # llvm
