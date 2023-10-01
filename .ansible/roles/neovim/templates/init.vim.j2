@@ -181,7 +181,7 @@ lua <<EOF
 
   -- Add the server that troubles you here
   local lspconfig = require('lspconfig')
-  local servers  = { 'bashls', 'csharp_ls', 'eslint', 'gopls', 'pylsp', 'solargraph'}
+  local servers  = { 'bashls', 'csharp_ls', 'eslint', 'gopls', 'html', 'pylsp', 'solargraph'}
   for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {}
   end
