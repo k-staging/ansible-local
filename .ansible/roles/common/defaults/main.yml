@@ -6,11 +6,13 @@ common_pkg:
   - htop
   - jq
   - pwgen
+  - redis
   - ripgrep
   - tree
   - unzip
 apt_pkg:
   - default-jre
+  - dotnet-sdk-6.0
   - g++
   - language-pack-ja
   - language-pack-ja-base
@@ -18,6 +20,7 @@ apt_pkg:
   - libmysqlclient-dev
   - mysql-client
   - ntp
+  - postgresql
   - silversearcher-ag
   - tcl
   - whois
@@ -44,7 +47,9 @@ brew_pkg:
   - mysql-client@5.7
   - ncurses
   - openssl
+  - pkg-config
   - popt
+  - postgresql@15
   - pstree
   - readline
   - rsync
@@ -56,11 +61,6 @@ brew_pkg:
   - xxhash
   - xz
   - zstd
-brew_cask_pkg:
-  - google-chrome
-  - iterm2
-  - slack
-  - docker
 config_files:
   - .agignore
   - .bashrc
@@ -68,9 +68,9 @@ config_files:
   - .bash_profile
   - .gitignore
   - .inputrc
-redis_version: "6.2.4"
 working_directory:
   - .aws
+  - .dotnet/tools
   - bin
   - src
 

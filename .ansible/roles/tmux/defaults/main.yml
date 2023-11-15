@@ -8,6 +8,8 @@ apt_pkg:
   - libncurses5-dev
 brew_pkg:
   - automake
+# tmux バージョン ( master の最新コミットを指定 )
+tmux_version: "11e69f6025f5783fe17d43247de1c3f659a19b69"
 tmux_main_dir: "~/"
 tmux_sub_dir:
   - "~/src"

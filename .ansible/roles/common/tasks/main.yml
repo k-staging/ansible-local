@@ -23,6 +23,10 @@
 
 - name: setup Ubuntu
   block:
+    - name: add redis apt repository
+      ansible.builtin.apt_repository:
+        repo: ppa:redislabs/redis
+
     - name: apt install
       ansible.builtin.apt:
         pkg: "{{ item }}"
@@ -70,9 +74,38 @@
         - "{{ common_pkg }}"
         - "{{ brew_pkg }}"
 
-    - name: brew_cask install
+    - name: brew linked pkg-config
+      community.general.homebrew:
+        name: pkg-config
+        state: linked
+
+    - name: install google-chrome
       community.general.homebrew_cask:
-        name: "{{ brew_cask_pkg }}"
+        name: "google-chrome"
+        state: present
+      ignore_errors: yes
+
+    - name: install iterm2
+      community.general.homebrew_cask:
+        name: "iterm2"
+        state: present
+      ignore_errors: yes
+
+    - name: install slack
+      community.general.homebrew_cask:
+        name: "slack"
+        state: present
+      ignore_errors: yes
+
+    - name: install docker
+      community.general.homebrew_cask:
+        name: "docker"
+        state: present
+      ignore_errors: yes
+
+    - name: install dotnet-sdk
+      community.general.homebrew_cask:
+        name: "dotnet-sdk"
         state: present
       ignore_errors: yes
 
@@ -80,6 +113,8 @@
       shell: brew --prefix bash
       register: bash_path
       changed_when: false
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
@@ -102,23 +137,6 @@
       args:
         chdir: "/usr/local/src/iTerm2-Color-Schemes"
   when: ansible_distribution == 'MacOSX' 
-
-- name: download redis
-  ansible.builtin.unarchive:
-    src: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
-    dest: "/usr/local/src/"
-    remote_src: yes
-
-- name: make redis
-  community.general.make:
-    chdir: "/usr/local/src/redis-{{ redis_version }}"
-
-- name: copy redis-cli
-  ansible.builtin.copy:
-    src: "/usr/local/src/redis-{{ redis_version }}/src/redis-cli"
-    dest: "/usr/local/bin/redis-cli"
-    mode: 0755
-  become: yes
 
 - name: copy config files
   ansible.builtin.copy:
@@ -145,3 +163,8 @@
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     dest: ~/bin/git-prompt.sh
     mode: 0755
+
+- name: install dotnet
+  ansible.builtin.command: "dotnet tool install --global csharp-ls"
+  ignore_errors: yes
+
