@@ -37,6 +37,9 @@ neovim_plugins:
   # 起動画面
   - name: "mhinz/vim-startify"
     version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
+  # copilot
+  - name: "github/copilot.vim"
+    version: "7097b09e52621a97d11f254e04de5e5a0f26e5f5"
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
