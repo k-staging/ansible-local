@@ -38,10 +38,21 @@
     src: "init.vim.j2"
     dest: "~/.config/nvim/init.vim"
 
-- name: copy config.yml.j2
+- name: copy connections.json.j2
   ansible.builtin.template:
-    src: "config.yml.j2"
-    dest: "~/.config/sqls/config.yml"
+    src: "connections.json.j2"
+    dest: "~/.config/nvim/dadbod-ui/connections.json"
+
+- name: download nerd-fonts
+  ansible.builtin.unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/archive/refs/tags/v{{ nerdfonts_version }}.tar.gz"
+    dest: "/usr/local/src/"
+    remote_src: yes
+
+- name: install nerd-fonts
+  ansible.builtin.command: "./install.sh"
+  args:
+    chdir: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
 
 - name: install neovim plugin
   ansible.builtin.git:
