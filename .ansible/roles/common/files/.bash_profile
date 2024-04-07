@@ -23,6 +23,7 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 ##############
 ADD_ENVIRONMENT_PATH=$(cat << EOS
 /usr/local/opt/libpq/bin
+~/.dotnet/tools
 ~/.goenv/bin
 ~/.nodenv/bin
 ~/.nodenv/shims
@@ -45,7 +46,7 @@ if [ -e ${BREW_PATH} ]; then
 fi
 if [ "$(which brew)" != "" ]; then
     eval $(brew shellenv)
-    export PATH="$(brew --prefix)/opt/mysql-client@5.7/bin:$PATH"
+    export PATH="$(brew --prefix)/opt/mysql-client@5.7/bin:$(brew --prefix)/opt/postgresql@15/bin:$PATH"
 fi
 
 ####################

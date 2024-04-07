@@ -25,16 +25,28 @@
 - name: install ruby
   block:
     - name: install ruby
-      ansible.builtin.shell: "RUBY_CFLAGS=\"-w\" ~/.rbenv/bin/rbenv install {{ ruby_version }}"
+      ansible.builtin.shell: "RUBY_CFLAGS=\"-w -DUSE_FFI_CLOSURE_ALLOC\" ~/.rbenv/bin/rbenv install {{ ruby_version }}"
 
     - name: set ruby global version
       ansible.builtin.shell: "~/.rbenv/bin/rbenv global {{ ruby_version }}"
   when: check_installed_ruby.stat.exists == false
 
-- name: gem install 
-  ansible.builtin.shell: "~/.rbenv/bin/rbenv exec gem install {{ item }}"
-  with_items:
-    - "{{ gem_pkg }}"
+- name: copy Gemfile
+  ansible.builtin.copy:
+    src: "Gemfile"
+    dest: "~/.rbenv/versions/{{ ruby_version }}/Gemfile"
+    mode: 0644
+
+- name: copy Gemfile.lock
+  ansible.builtin.copy:
+    src: "Gemfile.lock"
+    dest: "~/.rbenv/versions/{{ ruby_version }}/Gemfile.lock"
+    mode: 0644
+
+- name: bundle install
+  ansible.builtin.shell: "~/.rbenv/bin/rbenv exec bundle install"
+  args:
+    chdir: "~/.rbenv/versions/{{ ruby_version }}"
 
 - name: rbenv rehash
   ansible.builtin.shell: "~/.rbenv/bin/rbenv rehash"
@@ -44,10 +56,3 @@
     path: "~/.bundle"
     state: directory
     mode: 0755
-
-- name: copy bundler config
-  ansible.builtin.copy:
-    src: "config"
-    dest: "~/.bundle/config"
-    mode: 0644
-
