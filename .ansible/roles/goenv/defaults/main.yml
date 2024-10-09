@@ -4,6 +4,6 @@ go_pkg:
   - "github.com/lighttiger2505/sqls@v0.2.20"
   - "golang.org/x/tools/gopls@v0.11.0"
   - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
-  - "github.com/mdempsky/gocode@latest"
+  - "github.com/mdempsky/gocode@v.20150303"
   - "github.com/go-delve/delve/cmd/dlv@v1.20.1"
 

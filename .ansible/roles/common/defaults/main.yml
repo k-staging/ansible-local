@@ -44,7 +44,7 @@ brew_pkg:
   - llvm
   - lz4
   - make
-  - mysql-client@5.7
+  - mysql-client@8.0
   - ncurses
   - openssl
   - pkg-config
