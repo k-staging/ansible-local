@@ -23,7 +23,7 @@
   when: check_installed_go.stat.exists == false
 
 - name: go get
-  ansible.builtin.shell: "export GOROOT=~/.goenv/versions/{{ go_version }} && ~/.goenv/versions/{{ go_version }}/bin/go install {{ item }}"
+  ansible.builtin.shell: "export GOROOT=~/.goenv/versions/{{ go_version }} && export GOPATH=~/go/{{ go_version }} && ~/.goenv/versions/{{ go_version }}/bin/go install {{ item }}"
   with_items:
     - "{{ go_pkg }}"
 

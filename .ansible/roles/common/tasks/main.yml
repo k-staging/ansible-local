@@ -109,6 +109,12 @@
         state: present
       ignore_errors: yes
 
+    - name: install gcloud
+      community.general.homebrew_cask:
+        name: "google-cloud-sdk"
+        state: present
+      ignore_errors: yes
+
     - name: get bash path
       shell: brew --prefix bash
       register: bash_path

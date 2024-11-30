@@ -38,10 +38,10 @@
     src: "init.vim.j2"
     dest: "~/.config/nvim/init.vim"
 
-- name: copy connections.json.j2
+- name: copy config.yml.j2
   ansible.builtin.template:
-    src: "connections.json.j2"
-    dest: "~/.config/nvim/dadbod-ui/connections.json"
+    src: "config.yml.j2"
+    dest: "~/.config/sqls/config.yml"
 
 - name: download nerd-fonts
   ansible.builtin.unarchive:
