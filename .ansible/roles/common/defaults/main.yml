@@ -30,6 +30,7 @@ brew_pkg:
   - bash
   - bash-completion@2
   - curl
+  - deno
   - gdbm
   - gettext
   - glow
@@ -41,10 +42,11 @@ brew_pkg:
   - libidn2
   - libpq
   - libunistring
+  - libyaml
   - llvm
   - lz4
   - make
-  - mysql-client@5.7
+  - mysql-client@8.0
   - ncurses
   - openssl
   - pkg-config
@@ -60,6 +62,7 @@ brew_pkg:
   - watch
   - xxhash
   - xz
+  - yq
   - zstd
 config_files:
   - .agignore

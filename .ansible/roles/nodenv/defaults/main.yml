@@ -1,5 +1,4 @@
 ---
-node_version: "14.17.6"
 # bash-language-server はしばらく 2.1.0 で固定
 # 環境によっては MODULE_NOT_FOUND が発生してしまう為
-npm_packages: "bash-language-server@2.1.0 vscode-langservers-extracted@4.5.0"
+npm_packages: "bash-language-server@5.4.2 vscode-langservers-extracted@4.5.0"
