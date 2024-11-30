@@ -93,9 +93,9 @@ let g:fern#renderer = 'nerdfont'
 
 " nvim-cmp, nvim-lspconfig
 let $PATH = $HOME . '/.rbenv/shims:' . $PATH
-let $RBENV_VERSION = '3.2.2'
-let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/3.2.2/Gemfile'
-let $NODENV_VERSION = '18.20.4'
+let $RBENV_VERSION = '{{ ruby_version }}'
+let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/{{ ruby_version }}/Gemfile'
+let $NODENV_VERSION = '{{ node_version }}'
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
