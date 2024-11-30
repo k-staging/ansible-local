@@ -42,6 +42,7 @@ brew_pkg:
   - libidn2
   - libpq
   - libunistring
+  - libyaml
   - llvm
   - lz4
   - make
