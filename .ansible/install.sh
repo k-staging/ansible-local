@@ -18,6 +18,7 @@ run_ansible() {
     # install.sh 再実行時に tmux を起動してしまう為、 .bash_profile は一旦削除する
     rm -f ${USER_HOME}/.bash_profile
     # pyenv セットアップと ansible の実行
+    # TODO Ansible実行前に、一度ターミナルを再起動して環境変数を読み込み直すこと
     sudo su - ${USER_NAME} -c "$(cat << EOF
     if [ ! -e ~/.pyenv ]; then
         git clone https://github.com/pyenv/pyenv.git ~/.pyenv
@@ -27,7 +28,7 @@ run_ansible() {
     ~/.pyenv/versions/${PYTHON3_VERSION}/bin/pip install pip==${PIP_VERSION}
     ~/.pyenv/versions/${PYTHON3_VERSION}/bin/pip install -r ${ANSIBLE_DIR}/requirements.txt
     sudo mkdir -p /usr/local/bin
-    export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:~/.pyenv/plugins/pyenv-virtualenv/shims:~/.pyenv/shims" && ~/.pyenv/versions/${PYTHON3_VERSION}/bin/ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
+    export PYTHONHTTPSVERIFY=0 && export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:~/.pyenv/plugins/pyenv-virtualenv/shims:~/.pyenv/shims:/opt/homebrew/bin" && ~/.pyenv/versions/${PYTHON3_VERSION}/bin/ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
 EOF
 )"
 }

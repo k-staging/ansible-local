@@ -1,13 +1,11 @@
 ---
-# neovim のバージョンは暫く 0.7.2 で固定
-# 0.8.0 以降にアップデートすると、ステータスバーでコピペできなくなる為
 neovim_version: "0.9.1"
 nerdfonts_version: "3.0.2"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
-  - "~/.config/nvim/dadbod-ui"
+  - "~/.config/sqls"
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
 neovim_plugins:
@@ -24,16 +22,20 @@ neovim_plugins:
   - name: "lambdalisue/fern-git-status.vim"
     version: "151336335d3b6975153dad77e60049ca7111da8e"
   # SQL 関連
+  - name: "lighttiger2505/sqls"
+    version: "20c88ed63207c2853935c925e2d269e4189c2504"
+  - name: "nanotee/sqls.nvim"
+    version: "a0048b7018c99b68456f91b4aa42ce288f0c0774"
   - name: "mattn/vim-sqlfmt"
     version: "db6365103e38d274efe7689a002646a4419ae821"
-  - name: "tpope/vim-dadbod"
-    version: "7d80bbd11c407a09e0f7b869c38f3dec3902805f"
-  - name: "kristijanhusak/vim-dadbod-completion"
-    version: "fc7321a17f4c55db11fae89a884ddf4724020bae"
-  - name: "kristijanhusak/vim-dadbod-ui"
-    version: "200aebf70e6fc4b0eb1d3ecf0d57028e198d8dc6"
+  # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
+  # GraphQL
+  - name: "vim-denops/denops.vim"
+    version: "ce5d290493b29968fd3afa4c1190ea27a876861d"
+  - name: "skanehira/denops-graphql.vim"
+    version: "9f23b81e5afdc14e24d55ea4d2b970a5c5bc32de"
   # 起動画面
   - name: "mhinz/vim-startify"
     version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
