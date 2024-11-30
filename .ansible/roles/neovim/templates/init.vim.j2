@@ -4,6 +4,10 @@ set background=dark
 set t_Co=256
 colorscheme gruvbox
 
+" GraphQL
+" neovim を 0.10.0 以上にあげたらいらなくなる記述
+let g:denops_disable_version_check = 1
+
 " Airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 0
@@ -63,9 +67,6 @@ let g:fzf_preview_custom_processes = {
 \ }
 let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 
-" vim-dadbod
-autocmd FileType sql,mysql,plsql lua require('cmp').setup.buffer({ sources = {% raw %}{{ name = 'vim-dadbod-completion' }}{% endraw %} })
-let g:db_ui_save_location = '~/.config/nvim/dadbod-ui'
 " 折り畳みを無効にする
 set nofoldenable
 
@@ -91,7 +92,12 @@ nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 let g:fern#renderer = 'nerdfont'
 
 " nvim-cmp, nvim-lspconfig
+let $PATH = $HOME . '/.rbenv/shims:' . $PATH
+let $RBENV_VERSION = '3.2.2'
+let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/3.2.2/Gemfile'
+let $NODENV_VERSION = '18.20.4'
 set completeopt=menu,menuone,noselect
+
 lua <<EOF
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -128,18 +134,6 @@ lua <<EOF
       vim.keymap.set('n', '<space>f', function()
         vim.lsp.buf.format { async = true }
       end, opts)
-      -- Highlight settings
-      vim.cmd [[
-        set updatetime=500
-        highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-        highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-        highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-        augroup lsp_document_highlight
-          autocmd!
-          autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
-          autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
-        augroup END
-      ]]
     end,
   })
 
@@ -179,12 +173,46 @@ lua <<EOF
     })
   })
 
-  -- Add the server that troubles you here
-  local lspconfig = require('lspconfig')
-  local servers  = { 'bashls', 'csharp_ls', 'eslint', 'gopls', 'html', 'pylsp', 'solargraph'}
+  -- Set up LSP servers
+  local nvim_lsp = require('lspconfig')
+  local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local servers = { 'bashls', 'eslint', 'gopls', 'pylsp', 'solargraph' }
   for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup {}
+    nvim_lsp[lsp].setup {
+      on_attach = function(client, bufnr)
+        capabilities = cmp_capabilities
+        on_attach = on_attach
+        vim.cmd [[
+          set updatetime=500
+          highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          augroup lsp_document_highlight
+            autocmd!
+            autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
+          augroup END
+        ]]
+        -- gopls のみで、かつ documentFormattingProvider が有効な場合にフォーマット設定を行う
+        if lsp == "gopls" and client.server_capabilities.documentFormattingProvider then
+          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+          vim.cmd([[
+            augroup GoAutoFormat
+              autocmd!
+              autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
+            augroup END
+          ]])
+        end
+      end
+    }
   end
+
+  nvim_lsp.sqls.setup{
+    on_attach = function(client, bufnr)
+      capabilities = capabilities
+      require('sqls').on_attach(client, bufnr)
+    end
+  }
 
   -- Set up gopls
   function goimports(timeout_ms)

@@ -30,6 +30,7 @@ brew_pkg:
   - bash
   - bash-completion@2
   - curl
+  - deno
   - gdbm
   - gettext
   - glow
@@ -60,6 +61,7 @@ brew_pkg:
   - watch
   - xxhash
   - xz
+  - yq
   - zstd
 config_files:
   - .agignore

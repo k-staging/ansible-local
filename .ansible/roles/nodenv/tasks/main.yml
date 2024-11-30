@@ -17,6 +17,12 @@
     dest: "~/.nodenv/plugins/node-build"
     update: no
 
+- name: download nodenv-yarn-install
+  ansible.builtin.git:
+    repo: "https://github.com/pine/nodenv-yarn-install.git"
+    dest: "~/.nodenv/plugins/nodenv-yarn-install"
+    update: no
+
 - name: check_installed_node
   ansible.builtin.stat:
     path: "~/.nodenv/versions/{{ node_version }}/bin/node"
@@ -25,7 +31,7 @@
 - name: install node
   block:
     - name: install node
-      ansible.builtin.shell: "~/.nodenv/bin/nodenv install {{ node_version }}"
+      ansible.builtin.shell: "arch -x86_64 ~/.nodenv/bin/nodenv install {{ node_version }}"
 
     - name: set node global version
       ansible.builtin.shell: "~/.nodenv/bin/nodenv global {{ node_version }}"

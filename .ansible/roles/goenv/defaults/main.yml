@@ -1,5 +1,5 @@
 ---
-go_version: "1.17.1"
+go_version: "1.17.13"
 go_pkg:
   - "github.com/lighttiger2505/sqls@v0.2.20"
   - "golang.org/x/tools/gopls@v0.11.0"
