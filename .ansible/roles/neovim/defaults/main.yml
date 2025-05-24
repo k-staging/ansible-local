@@ -46,6 +46,11 @@ neovim_plugins:
     version: "f8d8d872bb319f640d5177dad5fbf01f7a16d7d0"
   - name: "zbirenbaum/copilot-cmp"
     version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
+  # claude code
+  - name: "greggh/claude-code.nvim"
+    version: "ffdf35d8566528cb144d9812eccfecee34502edf"
+  - name: "nvim-lua/plenary.nvim"
+    version: "857c5ac632080dba10aae49dba902ce3abf91b35"
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
