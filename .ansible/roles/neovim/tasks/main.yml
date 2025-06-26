@@ -11,7 +11,7 @@
   block:
     - name: download neovim (mac)
       ansible.builtin.unarchive:
-        src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos.tar.gz"
+        src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos-arm64.tar.gz"
         dest: "/usr/local/src/nvim/"
         remote_src: yes
         extra_opts: ["--strip-components=1"]

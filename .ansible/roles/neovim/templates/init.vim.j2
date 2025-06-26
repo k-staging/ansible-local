@@ -96,6 +96,7 @@ let $PATH = $HOME . '/.rbenv/shims:' . $PATH
 let $RBENV_VERSION = '{{ ruby_version }}'
 let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/{{ ruby_version }}/Gemfile'
 let $NODENV_VERSION = '{{ node_version }}'
+let $GOENV_VERSION = '{{ go_version }}'
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
@@ -121,7 +122,7 @@ lua <<EOF
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
       vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-      vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+      vim.keymap.set('n', '<C-m>', vim.lsp.buf.signature_help, opts)
       vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
       vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
       vim.keymap.set('n', '<space>wl', function()
