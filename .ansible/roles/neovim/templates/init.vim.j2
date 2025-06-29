@@ -163,7 +163,6 @@ lua <<EOF
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     }),
     sources = cmp.config.sources({
-      { name = "copilot" },
       { name = 'nvim_lsp' },
       { name = 'vsnip' }, -- For vsnip users.
       -- { name = 'luasnip' }, -- For luasnip users.
@@ -216,15 +215,10 @@ lua <<EOF
     end
   }
 
-  require("copilot").setup({
-    suggestion = { enabled = false },
-    panel = { enabled = false },
-  })
-
   require("claude-code").setup({
     -- Terminal window settings
     window = {
-      split_ratio = 0.3,      -- Percentage of screen for the terminal window (height for horizontal, width for vertical splits)
+      split_ratio = 0.7,      -- Percentage of screen for the terminal window (height for horizontal, width for vertical splits)
       position = "botright",  -- Position of the window: "botright", "topleft", "vertical", "rightbelow vsplit", etc.
       enter_insert = true,    -- Whether to enter insert mode when opening Claude Code
       hide_numbers = true,    -- Hide line numbers in the terminal window

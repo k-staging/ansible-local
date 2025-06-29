@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(app/**)",
+      "Read(lib/**)",
+      "Read(db/migrate/**)",
+      "Read(Gemfile)",
+      "Read(Gemfile.lock)",
+      "Read(README.md)",
+      "Glob(app/**)",
+      "Glob(lib/**)"
+    ],
+    "deny": [
+      "Read(log/**)",
+      "Read(tmp/**)",
+      "Read(node_modules/**)",
+      "Read(storage/**)",
+      "Read(public/assets/**)",
+      "Read(vendor/**)",
+      "Read(db/schema.rb)",
+      "Read(config/**)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Bash(git:*)"
+    ]
+  }
+}

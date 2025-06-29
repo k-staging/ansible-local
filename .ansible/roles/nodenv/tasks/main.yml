@@ -32,10 +32,10 @@
   block:
     - name: install node
       ansible.builtin.shell: "arch -x86_64 ~/.nodenv/bin/nodenv install {{ node_version }}"
-
-    - name: set node global version
-      ansible.builtin.shell: "~/.nodenv/bin/nodenv global {{ node_version }}"
   when: check_installed_node.stat.exists == false
+
+- name: set node global version
+  ansible.builtin.shell: "~/.nodenv/bin/nodenv global {{ node_version }}"
 
 - name: npm package install 
   ansible.builtin.shell: "~/.nodenv/bin/nodenv exec npm install -g {{ item }}"
@@ -44,3 +44,21 @@
 
 - name: nodenv rehash
   ansible.builtin.shell: "~/.nodenv/bin/nodenv rehash"
+
+- name: make .claude directory
+  ansible.builtin.file:
+    path: "~/.claude"
+    state: directory
+    mode: 0755
+
+- name: copy CLAUDE.md
+  ansible.builtin.copy:
+    src: "CLAUDE.md"
+    dest: "~/.claude/CLAUDE.md"
+    mode: 0644
+
+- name: copy settings.json
+  ansible.builtin.copy:
+    src: "settings.json"
+    dest: "~/.claude/settings.json"
+    mode: 0644
