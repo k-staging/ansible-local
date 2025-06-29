@@ -47,7 +47,7 @@
 
 - name: make .claude directory
   ansible.builtin.file:
-    path: "~/.claude/commands"
+    path: "~/.claude"
     state: directory
     mode: 0755
 
