@@ -1,5 +1,6 @@
 ---
 common_pkg:
+  - gh
   - git
   - git-lfs
   - graphviz
