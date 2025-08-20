@@ -5,7 +5,7 @@
 ANSIBLE_SSH_ARGS="-o StrictHostKeyChecking=no"
 ansible_python_interpreter="python3"
 python3_version="3.13.7"
-pip_version="24.2"
+pip_version="25.2"
 ruby_version="3.2.2"
 node_version="18.20.4"
 go_version="1.17.13"
