@@ -31,11 +31,6 @@ neovim_plugins:
   # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
-  # GraphQL
-  - name: "vim-denops/denops.vim"
-    version: "ce5d290493b29968fd3afa4c1190ea27a876861d"
-  - name: "skanehira/denops-graphql.vim"
-    version: "9f23b81e5afdc14e24d55ea4d2b970a5c5bc32de"
   # 起動画面
   - name: "mhinz/vim-startify"
     version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
