@@ -26,6 +26,11 @@ alias ls='ls -G'
 [ -e /etc/lsb-release ] && alias ls='ls --color=auto'
 alias ll='ls -laF'
 
+###############
+# vim/nvim
+###############
+alias vim='nvim'
+
 #####################
 # goenv
 #####################
