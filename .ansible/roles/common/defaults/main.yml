@@ -59,6 +59,7 @@ brew_pkg:
   - shared-mime-info
   - sqlite
   - telnet
+  - terraform
   - wget
   - watch
   - xxhash
