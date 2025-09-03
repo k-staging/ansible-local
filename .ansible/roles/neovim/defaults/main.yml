@@ -8,6 +8,7 @@ neovim_dir:
   - "~/.config/sqls"
   - "~/.nvim/session"
   - "/usr/local/src/nvim"
+  - "~/.claude"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"
     version: "00df1089b6267f47c7c0f13536789feb9db1e65b"

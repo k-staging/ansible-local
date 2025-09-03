@@ -68,3 +68,15 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
+- name: copy settings.json to ~/.claude
+  ansible.builtin.copy:
+    src: "settings.json"
+    dest: "~/.claude/settings.json"
+    mode: 0644
+
+- name: install uv package manager
+  ansible.builtin.pip:
+    name: "uv==0.4.25"
+    executable: "~/.pyenv/versions/{{ python3_version }}/bin/pip"
+    state: present
+
