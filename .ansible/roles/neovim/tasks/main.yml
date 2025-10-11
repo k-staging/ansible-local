@@ -77,9 +77,9 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
-- name: copy settings.json to ~/.claude
-  ansible.builtin.copy:
-    src: "settings.json"
+- name: deploy settings.json to ~/.claude
+  ansible.builtin.template:
+    src: "settings.json.j2"
     dest: "~/.claude/settings.json"
     mode: 0644
 

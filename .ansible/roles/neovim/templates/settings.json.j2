@@ -1,0 +1,60 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(app/**)",
+      "Read(lib/**)",
+      "Read(db/migrate/**)",
+      "Read(Gemfile)",
+      "Read(Gemfile.lock)",
+      "Read(README.md)",
+      "Glob(app/**)",
+      "Glob(lib/**)"
+    ],
+    "deny": [
+      "Read(log/**)",
+      "Read(tmp/**)",
+      "Read(node_modules/**)",
+      "Read(storage/**)",
+      "Read(public/assets/**)",
+      "Read(vendor/**)",
+      "Read(db/schema.rb)",
+      "Read(config/**)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Bash(git:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+{% if ansible_distribution == 'MacOSX' %}
+            "command": "terminal-notifier -title 'Claude Code' -message ' 処理が完了しました' -sound Ping"
+{% else %}
+            "command": "notify-send 'Claude Code' ' 処理が完了しました'"
+{% endif %}
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+{% if ansible_distribution == 'MacOSX' %}
+            "command": "terminal-notifier -title 'Claude Code' -message ' 入力待ちです' -sound Ping"
+{% else %}
+            "command": "notify-send 'Claude Code' ' 入力待ちです'"
+{% endif %}
+          }
+        ]
+      }
+    ]
+  },
+  "alwaysThinkingEnabled": true
+}

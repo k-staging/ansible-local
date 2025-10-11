@@ -19,6 +19,7 @@ apt_pkg:
   - language-pack-ja-base
   - libaio1
   - libmysqlclient-dev
+  - libnotify-bin
   - mysql-client
   - ntp
   - postgresql
