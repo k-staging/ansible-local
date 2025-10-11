@@ -45,6 +45,11 @@ export PATH="$PATH:$GOPATH/bin"
 [ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
 
 #####################
+# flutter
+#####################
+export PATH="$HOME/development/flutter/bin:$PATH"
+
+#####################
 # pyenv
 #####################
 export PYENV_ROOT="$HOME/.pyenv"

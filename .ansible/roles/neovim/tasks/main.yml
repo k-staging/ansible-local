@@ -43,6 +43,15 @@
     src: "config.yml.j2"
     dest: "~/.config/sqls/config.yml"
 
+- name: create common.sql file for sqls
+  ansible.builtin.copy:
+    content: |
+      -- Common SQL file for sqls language server
+      -- This file is used to enable sqls to start properly
+      
+    dest: "~/.local/share/nvim/common.sql"
+    mode: 0644
+
 - name: download nerd-fonts
   ansible.builtin.unarchive:
     src: "https://github.com/ryanoasis/nerd-fonts/archive/refs/tags/v{{ nerdfonts_version }}.tar.gz"
