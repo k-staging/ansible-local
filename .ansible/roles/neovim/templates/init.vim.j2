@@ -43,6 +43,7 @@ nnoremap <silent> gb  :<C-u>Git blame<CR>
 " terminal
 tnoremap <Esc> <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
+autocmd TermOpen * startinsert
 
 " fzf-preview.vim
 nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
