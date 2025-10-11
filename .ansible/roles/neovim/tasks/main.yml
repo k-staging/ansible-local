@@ -57,11 +57,13 @@
     src: "https://github.com/ryanoasis/nerd-fonts/archive/refs/tags/v{{ nerdfonts_version }}.tar.gz"
     dest: "/usr/local/src/"
     remote_src: yes
+    creates: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
 
 - name: install nerd-fonts
   ansible.builtin.command: "./install.sh"
   args:
     chdir: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
+    creates: "~/.local/share/fonts/NerdFonts"
 
 - name: install neovim plugin
   ansible.builtin.git:

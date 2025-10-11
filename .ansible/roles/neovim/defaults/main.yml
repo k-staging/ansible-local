@@ -6,7 +6,6 @@ neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/sqls"
-  - "~/.nvim/session"
   - "/usr/local/src/nvim"
   - "~/.claude"
 neovim_plugins:
@@ -32,9 +31,6 @@ neovim_plugins:
   # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
-  # 起動画面
-  - name: "mhinz/vim-startify"
-    version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
   # claude code
   - name: "greggh/claude-code.nvim"
     version: "ffdf35d8566528cb144d9812eccfecee34502edf"

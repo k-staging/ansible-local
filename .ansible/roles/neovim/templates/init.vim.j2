@@ -70,29 +70,13 @@ let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 " 折り畳みを無効にする
 set nofoldenable
 
-" vim-startify
-let g:startify_change_to_dir = 0
-let g:startify_session_autoload = 1
-let g:startify_session_persistence = 1
-let g:startify_session_dir = '~/.nvim/session'
-let g:startify_session_number = 5
-let g:startify_custom_header = [
-  \ '    ============================================',
-  \ '     Neovim ( v{{ neovim_version }} ) ',
-  \ '    ============================================',
-  \]
-let g:startify_lists = [
-          \ { 'type': 'sessions',  'header': ['    Sessions'] },
-          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
-          \ ]
-
 " fern.vim
 let g:fern#default_hidden=1
 nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 let g:fern#renderer = 'nerdfont'
 
 " nvim-cmp, nvim-lspconfig
-let $PATH = $HOME . '/.rbenv/shims:' . $PATH
+let $PATH = $HOME . '/.nodenv/shims:' . $HOME . '/.rbenv/shims:' . $PATH
 let $RBENV_VERSION = '{{ ruby_version }}'
 let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/{{ ruby_version }}/Gemfile'
 let $NODENV_VERSION = '{{ node_version }}'
@@ -218,7 +202,7 @@ lua <<EOF
   require("claude-code").setup({
     -- Terminal window settings
     window = {
-      split_ratio = 0.7,      -- Percentage of screen for the terminal window (height for horizontal, width for vertical splits)
+      split_ratio = 1.0,      -- Percentage of screen for the terminal window (height for horizontal, width for vertical splits)
       position = "botright",  -- Position of the window: "botright", "topleft", "vertical", "rightbelow vsplit", etc.
       enter_insert = true,    -- Whether to enter insert mode when opening Claude Code
       hide_numbers = true,    -- Hide line numbers in the terminal window
@@ -344,3 +328,37 @@ if system('uname -a | grep microsoft') != ''
   augroup END
   noremap <silent> p :call setreg('"',system('win32yank.exe -o'))<CR>""p
 endif
+
+" 起動時の自動設定
+augroup StartupTabs
+  au!
+  autocmd VimEnter * nested call timer_start(500, {-> s:startup_tabs()})
+augroup END
+
+function! s:startup_tabs()
+  " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
+  if exists(':ClaudeCode')
+    ClaudeCode
+  else
+    " プラグインがまだロードされていない場合は、さらに待つ
+    call timer_start(500, {-> s:retry_claude_toggle()})
+  endif
+
+  " 別タブで空のタブを開く
+  tabnew
+
+  " さらに別タブでcommon.sqlを開く
+  tabnew ~/.local/share/nvim/common.sql
+
+  " 最初のタブ（ClaudeCode）に戻る
+  tabfirst
+endfunction
+
+function! s:retry_claude_toggle()
+  " リトライ時にClaudeCodeコマンドが存在するか確認
+  if exists(':ClaudeCode')
+    " 最初のタブに移動してから起動
+    tabfirst
+    ClaudeCode
+  endif
+endfunction
