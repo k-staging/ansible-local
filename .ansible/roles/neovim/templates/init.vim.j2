@@ -355,6 +355,14 @@ augroup StartupTabs
 augroup END
 
 function! s:startup_tabs()
+  " ファイル引数があるかどうかを記憶
+  let l:has_file = argc() > 0
+
+  " ファイル引数がある場合は、ClaudeCodeを新しいタブで開く
+  if l:has_file
+    tabnew
+  endif
+
   " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
   if exists(':ClaudeCode')
     ClaudeCode
@@ -369,8 +377,14 @@ function! s:startup_tabs()
   " さらに別タブで空のタブを開く
   tabnew
 
-  " 最初のタブ（ClaudeCode）に戻る
-  tabfirst
+  " ファイル引数がない場合のみ、最初のタブ（ClaudeCode）に戻る
+  if !l:has_file
+    tabfirst
+  else
+    " ファイル引数がある場合は、最初のタブ（開いたファイル）に戻る
+    tabrewind
+    stopinsert
+  endif
 endfunction
 
 function! s:retry_claude_toggle()
