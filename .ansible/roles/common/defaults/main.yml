@@ -29,6 +29,8 @@ apt_pkg:
   - zip 
 brew_pkg:
   - ag
+  - autoconf
+  - automake
   - bash
   - bash-completion@2
   - curl
@@ -62,6 +64,7 @@ brew_pkg:
   - telnet
   - terminal-notifier
   - terraform
+  - tesseract
   - wget
   - watch
   - xxhash
