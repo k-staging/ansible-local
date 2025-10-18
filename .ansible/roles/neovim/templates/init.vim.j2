@@ -374,8 +374,9 @@ function! s:startup_tabs()
   " 別タブでcommon.sqlを開く
   tabnew ~/.local/share/nvim/common.sql
 
-  " さらに別タブで空のタブを開く
+  " さらに別タブでターミナルを全画面で開く
   tabnew
+  terminal
 
   " ファイル引数がない場合のみ、最初のタブ（ClaudeCode）に戻る
   if !l:has_file
