@@ -355,37 +355,43 @@ augroup StartupTabs
 augroup END
 
 function! s:startup_tabs()
-  " ファイル引数があるかどうかを記憶
-  let l:has_file = argc() > 0
+  " 引数なしで起動したかどうかを判定
+  " - ファイル引数がある場合は開かない (argc() > 0)
+  " - コマンド引数(-c)がある場合は開かない
+  " - git commit等で呼ばれた場合は開かない
+  let l:should_open_tabs = argc() == 0 && !s:has_command_arg()
 
-  " ファイル引数がある場合は、ClaudeCodeを新しいタブで開く
-  if l:has_file
+  " 引数なしの場合のみタブを開く
+  if l:should_open_tabs
+    " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
+    if exists(':ClaudeCode')
+      ClaudeCode
+    else
+      " プラグインがまだロードされていない場合は、さらに待つ
+      call timer_start(500, {-> s:retry_claude_toggle()})
+    endif
+
+    " 別タブでcommon.sqlを開く
+    tabnew ~/.local/share/nvim/common.sql
+
+    " さらに空の新規タブを開く
     tabnew
-  endif
 
-  " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
-  if exists(':ClaudeCode')
-    ClaudeCode
-  else
-    " プラグインがまだロードされていない場合は、さらに待つ
-    call timer_start(500, {-> s:retry_claude_toggle()})
-  endif
-
-  " 別タブでcommon.sqlを開く
-  tabnew ~/.local/share/nvim/common.sql
-
-  " さらに別タブでターミナルを全画面で開く
-  tabnew
-  terminal
-
-  " ファイル引数がない場合のみ、最初のタブ（ClaudeCode）に戻る
-  if !l:has_file
+    " 最初のタブ（ClaudeCode）に戻る
     tabfirst
-  else
-    " ファイル引数がある場合は、最初のタブ（開いたファイル）に戻る
-    tabrewind
-    stopinsert
   endif
+endfunction
+
+" コマンド引数(-cなど)が指定されているかチェック
+function! s:has_command_arg()
+  " v:argvにはneovimに渡されたすべての引数が含まれる
+  " -c オプションやその他のコマンドオプションをチェック
+  for arg in v:argv
+    if arg =~# '^-c' || arg =~# '^+' || arg =~# '^--cmd'
+      return 1
+    endif
+  endfor
+  return 0
 endfunction
 
 function! s:retry_claude_toggle()
