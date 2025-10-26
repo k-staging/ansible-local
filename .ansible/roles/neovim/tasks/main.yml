@@ -79,6 +79,18 @@
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
 
+- name: make .claude directory
+  ansible.builtin.file:
+    path: "~/.claude"
+    state: directory
+    mode: 0755
+
+- name: copy CLAUDE.md
+  ansible.builtin.copy:
+    src: "CLAUDE.md"
+    dest: "~/.claude/CLAUDE.md"
+    mode: 0644
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"

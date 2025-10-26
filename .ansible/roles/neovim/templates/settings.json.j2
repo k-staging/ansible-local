@@ -2,13 +2,19 @@
   "permissions": {
     "allow": [
       "Read(app/**)",
-      "Read(lib/**)",
+      "Read(config/locales/**)",
       "Read(db/migrate/**)",
       "Read(Gemfile)",
       "Read(Gemfile.lock)",
       "Read(README.md)",
+      "Read(lib/**)",
       "Glob(app/**)",
-      "Glob(lib/**)"
+      "Glob(lib/**)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [
       "Read(log/**)",
@@ -18,10 +24,9 @@
       "Read(public/assets/**)",
       "Read(vendor/**)",
       "Read(db/schema.rb)",
-      "Read(config/**)",
       "Read(.env*)",
       "Read(**/.env*)",
-      "Bash(git:*)"
+      "Bash(git push origin*:*)"
     ]
   },
   "hooks": {
