@@ -84,7 +84,7 @@ neovim_plugins:
     version: "9af1635fe40385ffa3dabf322039cb5ae1fd7d35"
   # ターミナル・Git管理・Docker管理関連
   - name: "akinsho/toggleterm.nvim"
-    version: "v2.14.0"
+    version: "9a88eae817ef395952e08650b3283726786fb5fb"
   - name: "sindrets/diffview.nvim"
     version: "4516612fe98ff56ae0415a259ff6361a89419b0a"
 db_user: "root"
