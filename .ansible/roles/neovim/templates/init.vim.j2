@@ -96,6 +96,10 @@ if status_ok then
       border = 'curved',
       winblend = 0,
     },
+    on_open = function(term)
+      vim.opt_local.number = true
+      vim.opt_local.relativenumber = false
+    end,
   })
 
   -- lazygit 専用のターミナルを作成
