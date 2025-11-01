@@ -29,6 +29,7 @@ ADD_ENVIRONMENT_PATH=$(cat << EOS
 ~/.nodenv/shims
 ~/.pyenv/bin
 ~/.rbenv/bin
+~/.local/bin
 ~/bin
 ~/go/bin
 EOS

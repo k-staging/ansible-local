@@ -115,12 +115,6 @@
         state: present
       ignore_errors: yes
 
-    - name: install claude-code
-      community.general.homebrew_cask:
-        name: "claude-code"
-        state: present
-      ignore_errors: yes
-
     - name: get bash path
       shell: brew --prefix bash
       register: bash_path

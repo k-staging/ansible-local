@@ -195,3 +195,8 @@
       become: yes
   when: ansible_distribution == 'Ubuntu'
 
+- name: install Claude Code CLI
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash
+  args:
+    creates: "~/.local/bin/claude"
+
