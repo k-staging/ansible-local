@@ -31,7 +31,7 @@
 - name: install node
   block:
     - name: install node
-      ansible.builtin.shell: "arch -x86_64 ~/.nodenv/bin/nodenv install {{ node_version }}"
+      ansible.builtin.shell: "~/.nodenv/bin/nodenv install {{ node_version }}"
   when: check_installed_node.stat.exists == false
 
 - name: set node global version
