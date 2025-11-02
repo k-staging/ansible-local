@@ -200,3 +200,43 @@
   args:
     creates: "~/.local/bin/claude"
 
+- name: check if ~/.claude.json exists
+  ansible.builtin.stat:
+    path: "~/.claude.json"
+  register: claude_json_stat
+
+- name: update ~/.claude.json with mcpServers
+  block:
+    - name: copy mcpServers.json
+      ansible.builtin.copy:
+        src: "mcpServers.json"
+        dest: "/tmp/mcpServers.json"
+        mode: 0644
+
+    - name: update ~/.claude.json with mcpServers
+      ansible.builtin.shell: |
+        jq '.mcpServers = $newMcpServers' \
+          --argjson newMcpServers "$(cat /tmp/mcpServers.json)" \
+          ~/.claude.json > /tmp/claude.json.tmp && \
+        mv /tmp/claude.json.tmp ~/.claude.json
+      args:
+        executable: /bin/bash
+
+    - name: remove temporary mcpServers.json
+      ansible.builtin.file:
+        path: "/tmp/mcpServers.json"
+        state: absent
+  when: claude_json_stat.stat.exists
+
+- name: make .serena directory
+  ansible.builtin.file:
+    path: "~/.serena"
+    state: directory
+    mode: 0755
+
+- name: copy serena_config.yml
+  ansible.builtin.copy:
+    src: "serena_config.yml"
+    dest: "~/.serena/serena_config.yml"
+    mode: 0644
+
