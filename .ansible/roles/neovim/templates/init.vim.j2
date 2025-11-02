@@ -68,7 +68,7 @@ set signcolumn=yes
 " 使い方:
 "   <Ctrl-t>        : ターミナルをトグル（表示/非表示）
 "   ターミナル内で:
-"     <Esc><Esc>    : ノーマルモードに切り替え（2回連続で押す）
+"     jk            : ノーマルモードに切り替え（jとkを素早く連続で押す）
 "     i or a        : インサートモードに戻る
 "     <Ctrl-t>      : ターミナルを閉じる
 "
@@ -166,9 +166,9 @@ nnoremap <silent> <leader>df :<C-u>DiffviewOpen<CR>
 " 使い方:
 "   :T <command>    : 下部に分割してターミナルを開く
 "   ターミナル内で:
-"     <Esc><Esc>    : ノーマルモードに切り替え（2回連続で押す）
+"     jk            : ノーマルモードに切り替え（jとkを素早く連続で押す）
 "                     ※ネストされたNeovim内で:wqなどを使えるようにするため
-tnoremap <Esc><Esc> <C-\><C-n>
+tnoremap jk <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
 
