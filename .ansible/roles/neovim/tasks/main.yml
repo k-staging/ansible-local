@@ -91,6 +91,18 @@
     dest: "~/.claude/CLAUDE.md"
     mode: 0644
 
+- name: make .claude/commands directory
+  ansible.builtin.file:
+    path: "~/.claude/commands"
+    state: directory
+    mode: 0755
+
+- name: copy sequential-thinking custom command
+  ansible.builtin.copy:
+    src: "sequential-thinking.md"
+    dest: "~/.claude/commands/sequential-thinking.md"
+    mode: 0644
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
