@@ -109,12 +109,6 @@
     dest: "~/.claude/settings.json"
     mode: 0644
 
-- name: install uv package manager
-  ansible.builtin.pip:
-    name: "uv==0.4.25"
-    executable: "~/.pyenv/versions/{{ python3_version }}/bin/pip"
-    state: present
-
 - name: install oxker (mac)
   block:
     - name: download oxker binary (mac)
@@ -250,5 +244,17 @@
   ansible.builtin.copy:
     src: "serena_config.yml"
     dest: "~/.serena/serena_config.yml"
+    mode: 0644
+
+- name: make .codex directory
+  ansible.builtin.file:
+    path: "~/.codex"
+    state: directory
+    mode: 0755
+
+- name: copy AGENTS.md
+  ansible.builtin.copy:
+    src: "AGENTS.md"
+    dest: "~/.codex/AGENTS.md"
     mode: 0644
 

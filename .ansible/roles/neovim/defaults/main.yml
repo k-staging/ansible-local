@@ -38,6 +38,9 @@ neovim_plugins:
     version: "ffdf35d8566528cb144d9812eccfecee34502edf"
   - name: "nvim-lua/plenary.nvim"
     version: "857c5ac632080dba10aae49dba902ce3abf91b35"
+  # codex
+  - name: "johnseth97/codex.nvim"
+    version: "0bb28eb7017e02600a985a627140595900610fc8"
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
