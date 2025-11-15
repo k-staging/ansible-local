@@ -109,6 +109,27 @@
     dest: "~/.claude/settings.json"
     mode: 0644
 
+- name: make .claude/agents directory
+  ansible.builtin.file:
+    path: "~/.claude/agents"
+    state: directory
+    mode: 0755
+
+- name: copy claude subagent files
+  ansible.builtin.copy:
+    src: "claude-agents/{{ item }}"
+    dest: "~/.claude/agents/{{ item }}"
+    mode: 0644
+  with_items:
+    - ansible-validator.md
+    - infra-reviewer.md
+    - docs-updater.md
+    - rails-test-guardian.md
+    - rails-security-auditor.md
+    - rails-performance-optimizer.md
+    - rails-db-migration-reviewer.md
+    - rails-code-reviewer.md
+
 - name: install oxker (mac)
   block:
     - name: download oxker binary (mac)
