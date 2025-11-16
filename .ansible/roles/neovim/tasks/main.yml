@@ -78,6 +78,7 @@
   ansible.builtin.shell: ./install --all
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
+    creates: "{{ ansible_env.HOME }}/.fzf.bash"
 
 - name: make .claude directory
   ansible.builtin.file:
@@ -225,7 +226,7 @@
 - name: install Claude Code CLI
   ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash
   args:
-    creates: "~/.local/bin/claude"
+    creates: "{{ ansible_env.HOME }}/.local/bin/claude"
 
 - name: check if ~/.claude.json exists
   ansible.builtin.stat:
@@ -278,4 +279,88 @@
     src: "AGENTS.md"
     dest: "~/.codex/AGENTS.md"
     mode: 0644
+
+# ============================================
+# Claude Code YOLO モード環境のセットアップ
+# ============================================
+- name: check if Docker is installed
+  ansible.builtin.command: which docker
+  register: docker_check
+  ignore_errors: yes
+  changed_when: false
+
+- name: setup Claude Code YOLO environment
+  when: docker_check.rc == 0
+  block:
+    - name: install devcontainer.vim (mac)
+      block:
+        - name: download devcontainer.vim binary (mac)
+          ansible.builtin.get_url:
+            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-darwin-arm64"
+            dest: "/tmp/devcontainer.vim"
+            mode: 0755
+
+        - name: install devcontainer.vim binary (mac)
+          ansible.builtin.copy:
+            src: "/tmp/devcontainer.vim"
+            dest: "/usr/local/bin/devcontainer.vim"
+            mode: 0755
+            remote_src: yes
+          become: yes
+      when: ansible_distribution == 'MacOSX'
+
+    - name: install devcontainer.vim (linux)
+      block:
+        - name: download devcontainer.vim binary (linux)
+          ansible.builtin.get_url:
+            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-linux-amd64"
+            dest: "/tmp/devcontainer.vim"
+            mode: 0755
+
+        - name: install devcontainer.vim binary (linux)
+          ansible.builtin.copy:
+            src: "/tmp/devcontainer.vim"
+            dest: "/usr/local/bin/devcontainer.vim"
+            mode: 0755
+            remote_src: yes
+          become: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: create Claude YOLO template directory
+      ansible.builtin.file:
+        path: "~/.config/claude-yolo-template/.devcontainer"
+        state: directory
+        mode: 0755
+
+    - name: copy Claude YOLO devcontainer template files
+      ansible.builtin.copy:
+        src: "claude-yolo/{{ item }}"
+        dest: "~/.config/claude-yolo-template/.devcontainer/{{ item }}"
+        mode: "{{ '0755' if item == 'init-firewall.sh' else '0644' }}"
+      with_items:
+        - Dockerfile
+        - devcontainer.json
+        - devcontainer.vim.json
+        - init-firewall.sh
+
+    - name: display Claude YOLO setup message
+      ansible.builtin.debug:
+        msg: |
+          ✅ Claude Code YOLO モード環境をセットアップしました
+
+          📖 使い方:
+            1. プロジェクトにテンプレートをコピー:
+               cp -r ~/.config/claude-yolo-template/.devcontainer ./
+
+            2. コンテナ起動 + Neovim実行:
+               devcontainer.vim start . --nvim
+
+            3. コンテナ内でClaude Code YOLO起動:
+               <Ctrl-t> でターミナルを開く
+               claude --dangerously-skip-permissions
+
+            4. コンテナ停止:
+               devcontainer.vim stop .
+
+          ⚠️  注意: 初回起動時はイメージビルドに数分かかります
 

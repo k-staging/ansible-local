@@ -1,0 +1,26 @@
+{
+  "name": "Claude Code YOLO Sandbox",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "TZ": "Asia/Tokyo",
+      "CLAUDE_CODE_VERSION": "1.0.24",
+      "GIT_DELTA_VERSION": "0.18.2"
+    }
+  },
+  "runArgs": [
+    "--cap-add=NET_ADMIN"
+  ],
+  "mounts": [
+    "source=claude-yolo-commandhistory,target=/commandhistory,type=volume",
+    "source=claude-yolo-claude-config,target=/home/node/.claude,type=volume"
+  ],
+  "remoteUser": "node",
+  "containerEnv": {
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude",
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+  },
+  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh",
+  "waitFor": "postStartCommand"
+}

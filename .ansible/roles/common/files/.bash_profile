@@ -31,6 +31,7 @@ ADD_ENVIRONMENT_PATH=$(cat << EOS
 ~/.rbenv/bin
 ~/.local/bin
 ~/bin
+~/development/flutter/bin
 ~/go/bin
 EOS
 )

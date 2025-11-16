@@ -328,6 +328,7 @@ lua <<EOF
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
+      { name = "copilot" },
       { name = 'nvim_lsp' },
       { name = 'vsnip' },
     }, {
@@ -403,6 +404,14 @@ lua <<EOF
       end
     end
   }
+
+  -- ============================================
+  -- Copilot 設定
+  -- ============================================
+  require("copilot").setup({
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+  })
 
   -- ============================================
   -- Claude Code 設定

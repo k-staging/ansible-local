@@ -3,6 +3,7 @@ neovim_version: "0.10.3"
 nerdfonts_version: "3.0.2"
 oxker_version: "0.12.0"
 lazygit_version: "0.44.1"
+devcontainer_vim_version: "3.6.0"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
@@ -33,6 +34,13 @@ neovim_plugins:
   # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
+  # copilot
+  - name: "github/copilot.vim"
+    version: "7097b09e52621a97d11f254e04de5e5a0f26e5f5"
+  - name: "zbirenbaum/copilot.lua"
+    version: "f8d8d872bb319f640d5177dad5fbf01f7a16d7d0"
+  - name: "zbirenbaum/copilot-cmp"
+    version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
   # claude code
   - name: "greggh/claude-code.nvim"
     version: "ffdf35d8566528cb144d9812eccfecee34502edf"
