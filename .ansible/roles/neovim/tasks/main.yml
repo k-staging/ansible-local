@@ -131,6 +131,26 @@
     - rails-db-migration-reviewer.md
     - rails-code-reviewer.md
 
+- name: make .claude/skills directories
+  ansible.builtin.file:
+    path: "~/.claude/skills/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - backend-dev
+    - infra-quick-check
+    - sql-helper
+
+- name: copy claude skill files
+  ansible.builtin.copy:
+    src: "claude-skills/{{ item }}/SKILL.md"
+    dest: "~/.claude/skills/{{ item }}/SKILL.md"
+    mode: 0644
+  with_items:
+    - backend-dev
+    - infra-quick-check
+    - sql-helper
+
 - name: install oxker (mac)
   block:
     - name: download oxker binary (mac)
