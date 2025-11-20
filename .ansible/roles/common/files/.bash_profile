@@ -27,8 +27,8 @@ ADD_ENVIRONMENT_PATH=$(cat << EOS
 ~/.goenv/bin
 ~/.nodenv/bin
 ~/.nodenv/shims
-~/.pyenv/bin
 ~/.rbenv/bin
+~/.cargo/bin
 ~/.local/bin
 ~/bin
 ~/development/flutter/bin

@@ -45,15 +45,9 @@ export PATH="$PATH:$GOPATH/bin"
 [ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
 
 #####################
-# pyenv
+# uv (Python package manager)
 #####################
-export PYENV_ROOT="$HOME/.pyenv"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-if [ -e ~/.pyenv ]; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
+export PATH="$HOME/.cargo/bin:$PATH"
 
 #################
 # rbenv

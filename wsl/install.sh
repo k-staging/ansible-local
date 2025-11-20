@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-CURRENT_DIR="$(cd $(dirname 0) && pwd)"
+CURRENT_DIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
 USER_NAME="$(/mnt/c/Windows/System32/whoami.exe |awk -F "\\" '{print $NF}' | sed -e "s/[\r\n]\+//g")"
 USER_HOME="/home/${USER_NAME}"
-ANSIBLE_DIR="~/src/ansible-local/.ansible"
+ANSIBLE_DIR="${CURRENT_DIR}/../.ansible"
 
 # ベースの install.sh を読み込む
 source ../.ansible/install.sh
