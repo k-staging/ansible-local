@@ -104,6 +104,12 @@
     dest: "~/.claude/commands/sequential-thinking.md"
     mode: 0644
 
+- name: copy plan custom command
+  ansible.builtin.copy:
+    src: "plan.md"
+    dest: "~/.claude/commands/plan.md"
+    mode: 0644
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
