@@ -65,15 +65,26 @@ run_ansible() {
     UV_PYTHON_PATH=\$(uv python find ${PYTHON3_VERSION})
     ln -sf "\${UV_PYTHON_PATH}" ~/.local/bin/python3
 
-    # 仮想環境の作成と依存関係のインストール
-    cd ${ANSIBLE_DIR}
-    uv venv
-    uv pip install ansible>=11.9.0 neovim>=0.3.1 pynvim>=0.5.0
+    # グローバルにPythonパッケージをインストール
+    uv pip install --python "\${UV_PYTHON_PATH}" --break-system-packages \
+        ansible>=11.9.0 \
+        neovim>=0.3.1 \
+        pynvim>=0.5.0 \
+        python-lsp-server>=1.12.0 \
+        sqlparse>=0.5.0
+
+    # binファイルへのシンボリックリンクを作成
+    UV_PYTHON_BIN_DIR=\$(dirname "\${UV_PYTHON_PATH}")
+    for cmd in ansible ansible-playbook ansible-galaxy pylsp sqlformat; do
+        if [ -f "\${UV_PYTHON_BIN_DIR}/\${cmd}" ]; then
+            ln -sf "\${UV_PYTHON_BIN_DIR}/\${cmd}" ~/.local/bin/\${cmd}
+        fi
+    done
 
     # Ansible の実行
     sudo mkdir -p /usr/local/bin
     export PATH="\$HOME/.local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/homebrew/bin" && \
-    ${ANSIBLE_DIR}/.venv/bin/ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
+    ansible-playbook ${ANSIBLE_DIR}/site.yml -i ${ANSIBLE_DIR}/inventory
 EOF
 )"
 }
