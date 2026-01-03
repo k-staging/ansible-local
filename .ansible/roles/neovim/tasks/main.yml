@@ -249,10 +249,12 @@
       become: yes
   when: ansible_distribution == 'Ubuntu'
 
+- name: remove Claude Code lock files
+  ansible.builtin.shell: rm -rf ~/.local/state/claude/locks/
+  ignore_errors: yes
+
 - name: install Claude Code CLI
-  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash
-  args:
-    creates: "{{ ansible_env.HOME }}/.local/bin/claude"
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- {{ claude_code_version }}
 
 - name: check if ~/.claude.json exists
   ansible.builtin.stat:
@@ -389,4 +391,45 @@
                devcontainer.vim stop .
 
           ⚠️  注意: 初回起動時はイメージビルドに数分かかります
+
+# ============================================
+# Claude Code LSP プラグイン設定
+# ============================================
+- name: make .claude-plugin directory
+  ansible.builtin.file:
+    path: "~/.claude-plugin"
+    state: directory
+    mode: 0755
+
+- name: deploy plugin.json for Claude Code LSP
+  ansible.builtin.template:
+    src: "plugin.json.j2"
+    dest: "~/.claude-plugin/plugin.json"
+    mode: 0644
+
+- name: check if .zshrc exists
+  ansible.builtin.stat:
+    path: "~/.zshrc"
+  register: zshrc_stat
+
+- name: add Claude Code LSP alias to .zshrc
+  ansible.builtin.lineinfile:
+    path: "~/.zshrc"
+    line: "alias claude-lsp='ENABLE_LSP_TOOL=1 claude --plugin-dir ~/.claude-plugin'"
+    create: yes
+    mode: 0644
+  when: zshrc_stat.stat.exists
+
+- name: check if .bashrc exists
+  ansible.builtin.stat:
+    path: "~/.bashrc"
+  register: bashrc_stat
+
+- name: add Claude Code LSP alias to .bashrc
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    line: "alias claude-lsp='ENABLE_LSP_TOOL=1 claude --plugin-dir ~/.claude-plugin'"
+    create: yes
+    mode: 0644
+  when: bashrc_stat.stat.exists
 

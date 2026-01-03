@@ -10,7 +10,7 @@
       "Edit(config/locales/**)",
       "Glob(**)",
       "Grep(**)",
-      "Bash(**)"
+      "Bash"
     ],
     "deny": [
       "Read(log/**)",
@@ -31,33 +31,32 @@
       "Read(config/credentials.yml.enc)",
       "Read(config/secrets.yml)",
       "Read(config/database.yml)",
-      "Bash(git push*:*)",
-      "Bash(git reset --hard*:*)",
-      "Bash(gh repo delete*:*)",
-      "Bash(gh repo archive*:*)",
-      "Bash(gh release delete*:*)",
-      "Bash(gh secret delete*:*)",
-      "Bash(gh pr close*:*)",
-      "Bash(gh issue close*:*)",
-      "Bash(rm -rf /*:*)",
-      "Bash(dd *:*)",
-      "Bash(mkfs.*:*)",
-      "Bash(curl *|*bash*:*)",
-      "Bash(wget *|*sh*:*)",
-      "Bash(*> /dev/sd*:*)"
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(gh repo archive:*)",
+      "Bash(gh release delete:*)",
+      "Bash(gh secret delete:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh issue close:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(dd :*)",
+      "Bash(mkfs.:*)",
+      "Bash(curl :*| bash:*)",
+      "Bash(wget :*| sh:*)",
+      "Bash(*> /dev/sd*)"
     ]
   },
   "hooks": {
     "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
 {% if ansible_distribution == 'MacOSX' %}
-            "command": "terminal-notifier -title 'Claude Code' -message ' 処理が完了しました' -sound Ping"
+            "command": "terminal-notifier -title 'Claude Code' -message '処理が完了しました' -sound Ping"
 {% else %}
-            "command": "notify-send 'Claude Code' ' 処理が完了しました'"
+            "command": "notify-send 'Claude Code' '処理が完了しました'"
 {% endif %}
           }
         ]
