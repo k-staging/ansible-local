@@ -3,7 +3,6 @@ neovim_version: "0.10.3"
 nerdfonts_version: "3.0.2"
 oxker_version: "0.12.0"
 lazygit_version: "0.44.1"
-claude_code_version: "2.0.76"
 devcontainer_vim_version: "3.6.0"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
@@ -44,7 +43,7 @@ neovim_plugins:
     version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
   # claude code
   - name: "greggh/claude-code.nvim"
-    version: "ffdf35d8566528cb144d9812eccfecee34502edf"
+    version: "c9a31e51069977edaad9560473b5d031fcc5d38b"
   - name: "nvim-lua/plenary.nvim"
     version: "857c5ac632080dba10aae49dba902ce3abf91b35"
   # codex
@@ -102,4 +101,28 @@ neovim_plugins:
 db_user: "root"
 db_password: ""
 db_dbname: "mysql"
+
+# Claude Code LSP plugins
+# https://github.com/anthropics/claude-plugins-official
+claude_code_lsp_plugins:
+  - typescript-lsp
+  - gopls-lsp
+
+# Custom LSP plugins (via custom-lsp marketplace)
+claude_code_custom_lsp_plugins:
+  - name: pylsp-lsp
+    description: "Python Language Server"
+    command: pylsp
+    extensions:
+      ".py": python
+      ".pyi": python
+  - name: solargraph-lsp
+    description: "Ruby Language Server (Solargraph)"
+    command: solargraph
+    args:
+      - stdio
+    extensions:
+      ".rb": ruby
+      ".rake": ruby
+      ".gemspec": ruby
 
