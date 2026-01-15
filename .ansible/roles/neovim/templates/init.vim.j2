@@ -347,7 +347,7 @@ lua <<EOF
   -- ============================================
   local nvim_lsp = require('lspconfig')
   local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-  local servers = { 'bashls', 'eslint', 'gopls', 'pylsp' }
+  local servers = { 'bashls', 'eslint' }
 
   for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
@@ -368,19 +368,72 @@ lua <<EOF
             augroup END
           ]]
         end
-        -- gopls専用: 保存時に自動フォーマット
-        if lsp == "gopls" and client.server_capabilities.documentFormattingProvider then
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
-          vim.cmd([[
-            augroup GoAutoFormat
-              autocmd!
-              autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
-            augroup END
-          ]])
-        end
       end
     }
   end
+
+  -- gopls (Go) 設定
+  nvim_lsp.gopls.setup {
+    cmd = { vim.fn.expand('~/go/bin/gopls') },
+    on_attach = function(client, bufnr)
+      capabilities = cmp_capabilities
+      on_attach = on_attach
+      if client.server_capabilities.documentHighlightProvider then
+        vim.cmd [[
+          set updatetime=500
+          highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          augroup lsp_document_highlight
+            autocmd! * <buffer>
+            autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+        ]]
+      end
+      -- 保存時に自動フォーマット
+      if client.server_capabilities.documentFormattingProvider then
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+        vim.cmd([[
+          augroup GoAutoFormat
+            autocmd!
+            autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
+          augroup END
+        ]])
+      end
+    end
+  }
+
+  -- pylsp (Python) 設定 - uvでインストールしたPythonを使用
+  nvim_lsp.pylsp.setup {
+    cmd = { vim.fn.expand('~/.local/bin/pylsp') },
+    settings = {
+      pylsp = {
+        plugins = {
+          jedi = {
+            environment = vim.fn.expand('~/.local/bin/python3'),
+          },
+        },
+      },
+    },
+    on_attach = function(client, bufnr)
+      capabilities = cmp_capabilities
+      on_attach = on_attach
+      if client.server_capabilities.documentHighlightProvider then
+        vim.cmd [[
+          set updatetime=500
+          highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          augroup lsp_document_highlight
+            autocmd! * <buffer>
+            autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+        ]]
+      end
+    end
+  }
 
   -- Solargraph (Ruby) 設定
   nvim_lsp.solargraph.setup {

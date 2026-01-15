@@ -31,22 +31,8 @@
       ansible.builtin.shell: "~/.rbenv/bin/rbenv global {{ ruby_version }}"
   when: check_installed_ruby.stat.exists == false
 
-- name: copy Gemfile
-  ansible.builtin.copy:
-    src: "Gemfile"
-    dest: "~/.rbenv/versions/{{ ruby_version }}/Gemfile"
-    mode: 0644
-
-- name: copy Gemfile.lock
-  ansible.builtin.copy:
-    src: "Gemfile.lock"
-    dest: "~/.rbenv/versions/{{ ruby_version }}/Gemfile.lock"
-    mode: 0644
-
-- name: bundle install
-  ansible.builtin.shell: "~/.rbenv/bin/rbenv exec bundle install"
-  args:
-    chdir: "~/.rbenv/versions/{{ ruby_version }}"
+- name: install global gems (solargraph, rubocop)
+  ansible.builtin.shell: "~/.rbenv/bin/rbenv exec gem install solargraph rubocop"
 
 - name: rbenv rehash
   ansible.builtin.shell: "~/.rbenv/bin/rbenv rehash"
