@@ -241,9 +241,18 @@ nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " nvim-cmp, nvim-lspconfig - 補完とLSP設定
 " ============================================
 " 環境変数設定
-let $PATH = $HOME . '/.nodenv/shims:' . $HOME . '/.rbenv/shims:' . $PATH
+" 各言語環境のPATH設定（統一フォーマット: shims → versions/bin）
+let $PATH = ''
+      \ . $HOME . '/.rbenv/shims:'
+      \ . $HOME . '/.rbenv/versions/{{ ruby_version }}/bin:'
+      \ . $HOME . '/.goenv/shims:'
+      \ . $HOME . '/go/{{ go_version }}/bin:'
+      \ . $HOME . '/.local/bin:'
+      \ . $HOME . '/.nodenv/shims:'
+      \ . $PATH
 let $NODENV_VERSION = '{{ node_version }}'
 let $GOENV_VERSION = '{{ go_version }}'
+let $RBENV_VERSION = '{{ ruby_version }}'
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
@@ -374,7 +383,7 @@ lua <<EOF
 
   -- gopls (Go) 設定
   nvim_lsp.gopls.setup {
-    cmd = { vim.fn.expand('~/go/bin/gopls') },
+    cmd = { vim.fn.expand('~/go/{{ go_version }}/bin/gopls') },
     on_attach = function(client, bufnr)
       capabilities = cmp_capabilities
       on_attach = on_attach
