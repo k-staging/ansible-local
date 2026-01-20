@@ -362,9 +362,14 @@
         mode: "{{ '0755' if item == 'init-firewall.sh' else '0644' }}"
       with_items:
         - Dockerfile
-        - devcontainer.json
         - devcontainer.vim.json
         - init-firewall.sh
+
+    - name: template Claude YOLO devcontainer.json
+      ansible.builtin.template:
+        src: "devcontainer.json.j2"
+        dest: "~/.config/claude-yolo-template/.devcontainer/devcontainer.json"
+        mode: "0644"
 
     - name: display Claude YOLO setup message
       ansible.builtin.debug:
