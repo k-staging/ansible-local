@@ -1,8 +1,4 @@
 ---
 # bash-language-server はしばらく 2.1.0 で固定
 # 環境によっては MODULE_NOT_FOUND が発生してしまう為
-# claude-code 2.0.69-2.0.76 の LSP レースコンディションは 2.1.x で修正済み
-# https://github.com/anthropics/claude-code/issues/14803
-# claude_code_version はinventoryで一元管理（デフォルト値はフォールバック用）
-claude_code_version: "2.1.12"
-npm_packages: "bash-language-server@5.4.2 vscode-langservers-extracted@4.5.0 typescript-language-server@4.3.3 typescript@5.7.3 @modelcontextprotocol/server-sequential-thinking@2025.7.1 @upstash/context7-mcp@1.0.26 @openai/codex@0.55.0 @anthropic-ai/claude-code@{{ claude_code_version }}"
+npm_packages: "bash-language-server@5.4.2 vscode-langservers-extracted@4.5.0 typescript-language-server@4.3.3 typescript@5.7.3 @modelcontextprotocol/server-sequential-thinking@2025.7.1 @upstash/context7-mcp@1.0.26 @openai/codex@0.55.0"

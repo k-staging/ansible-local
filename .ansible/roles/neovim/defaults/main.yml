@@ -1,18 +1,14 @@
 ---
-# claude_code_version はinventoryで一元管理（デフォルト値はフォールバック用）
-claude_code_version: "2.1.12"
 neovim_version: "0.10.3"
 nerdfonts_version: "3.0.2"
 oxker_version: "0.12.0"
 lazygit_version: "0.44.1"
-devcontainer_vim_version: "3.6.0"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/sqls"
   - "/usr/local/src/nvim"
-  - "~/.claude"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"
     version: "00df1089b6267f47c7c0f13536789feb9db1e65b"
@@ -103,24 +99,4 @@ neovim_plugins:
 db_user: "root"
 db_password: ""
 db_dbname: "mysql"
-
-# Claude Code LSP plugins
-# https://github.com/anthropics/claude-plugins-official
-claude_code_lsp_plugins:
-  - typescript-lsp
-  - gopls-lsp
-
-# Custom LSP plugins (via custom-lsp marketplace)
-# pylsp-lsp は Python環境の問題があるため無効化
-# LSPが必要な場合は Claude Code 標準のLSP機能 (ENABLE_LSP_TOOL=1) を使用
-claude_code_custom_lsp_plugins:
-  - name: solargraph-lsp
-    description: "Ruby Language Server (Solargraph)"
-    command: solargraph
-    args:
-      - stdio
-    extensions:
-      ".rb": ruby
-      ".rake": ruby
-      ".gemspec": ruby
 

@@ -8,6 +8,8 @@
       tags: nodenv
     - role: tmux
       tags: tmux
+    - role: claudecode
+      tags: claudecode
     - role: neovim
       tags: neovim
     - role: goenv
