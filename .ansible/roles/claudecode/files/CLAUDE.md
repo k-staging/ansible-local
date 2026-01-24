@@ -1,3 +1,37 @@
+# CRITICAL RULES - MUST ALWAYS FOLLOW
+
+These rules apply to ALL projects and MUST be followed without exception.
+以下のルールは全プロジェクトに適用され、例外なく必ず守ること。
+
+## 1. TodoWrite - ALWAYS USE
+**MUST use TodoWrite for ANY task** involving:
+- Investigation / 調査
+- Implementation / 実装
+- Modification / 修正
+- Multi-step work / 複数ステップの作業
+
+**ONLY skip for**: Simple yes/no questions or single-line answers.
+**例外**: はい/いいえで答えられる質問、または1行で回答できる質問のみ。
+
+## 2. Skills - INVOKE BEFORE EDITING
+**MUST invoke the corresponding Skill BEFORE editing these files**:
+
+| File Pattern | Skill to Invoke |
+|-------------|-----------------|
+| `.rb`, `.py`, `.sql` | `backend-dev` |
+| `Dockerfile`, `docker-compose*.yml`, `.ansible/`, `*.tf`, k8s manifests | `infra-quick-check` |
+| ActiveRecord queries, raw SQL | `sql-helper` |
+
+## 3. Agents - RUN AFTER COMPLETION
+**MUST run review agents after completing all todos**:
+- Ansible changes → `ansible-validator`, `infra-reviewer`
+- Rails changes → `rails-code-reviewer`, `rails-security-auditor`
+
+## 4. Language
+すべての回答は日本語で行う。
+
+---
+
 # Claude Code グローバル設定
 
 ## 基本設定

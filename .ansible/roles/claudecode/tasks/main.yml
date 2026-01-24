@@ -40,6 +40,12 @@
     dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.md"
     mode: 0644
 
+- name: copy CLAUDE.local.md (highest priority rules)
+  ansible.builtin.copy:
+    src: "CLAUDE.local.md"
+    dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.local.md"
+    mode: 0644
+
 - name: copy sequential-thinking custom command
   ansible.builtin.copy:
     src: "sequential-thinking.md"
