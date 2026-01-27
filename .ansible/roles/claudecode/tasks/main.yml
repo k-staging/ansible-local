@@ -8,18 +8,26 @@
   ignore_errors: true
   changed_when: false
 
+- name: get current claude version
+  ansible.builtin.shell: claude --version | head -1 | awk '{print $1}'
+  register: claude_current_version
+  changed_when: false
+  when: claude_installed_check.rc == 0
+
+- name: set version check result
+  ansible.builtin.set_fact:
+    claude_needs_update: "{{ claude_installed_check.rc != 0 or (claude_current_version.stdout | default('') != claude_code_version) }}"
+
 - name: download Claude Code installer
   ansible.builtin.get_url:
     url: https://claude.ai/install.sh
     dest: /tmp/claude-install.sh
     mode: 0755
-  when: claude_installed_check.rc != 0
+  when: claude_needs_update
 
 - name: run Claude Code installer with version
   ansible.builtin.shell: CLAUDE_CODE_VERSION={{ claude_code_version }} /tmp/claude-install.sh
-  args:
-    creates: "{{ ansible_env.HOME }}/.claude/bin/claude"
-  when: claude_installed_check.rc != 0
+  when: claude_needs_update
 
 # ============================================
 # Claude Code ディレクトリ作成
