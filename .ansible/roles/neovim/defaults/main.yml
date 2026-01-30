@@ -74,7 +74,7 @@ neovim_plugins:
   - name: "hrsh7th/cmp-cmdline"
     version: "23c51b2a3c00f6abc4e922dbd7c3b9aca6992063"
   - name: "hrsh7th/nvim-cmp"
-    version: "d09b0c396aaa078cdfe78316ec06940971136e85"
+    version: "da88697d7f45d16852c6b2769dc52387d1ddc45f"
   - name: "hrsh7th/cmp-vsnip"
     version: "989a8a73c44e926199bfd05fa7a516d51f2d2752"
   - name: "hrsh7th/vim-vsnip"
