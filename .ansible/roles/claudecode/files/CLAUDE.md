@@ -36,6 +36,7 @@ These rules apply to ALL projects and MUST be followed without exception.
 
 ## 基本設定
 - Claude Code による回答は、必ず日本語でお願いします。
+- コマンドを提示する際は、必ず一行で記述すること（コピーしやすくするため）。複数行に分割しない。
 
 ## 編集モード（Shift+Tab で切り替え）
 
