@@ -1,6 +1,6 @@
 ---
 go_pkg:
-  - "github.com/lighttiger2505/sqls@v0.2.20"
+  - "github.com/lighttiger2505/sqls@v0.2.45"
   - "golang.org/x/tools/gopls@v0.11.0"
   - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
   - "github.com/mdempsky/gocode@v.20150303"

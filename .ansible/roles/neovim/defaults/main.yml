@@ -1,5 +1,5 @@
 ---
-neovim_version: "0.10.3"
+neovim_version: "0.11.6"
 nerdfonts_version: "3.0.2"
 oxker_version: "0.12.0"
 lazygit_version: "0.44.1"
@@ -57,7 +57,7 @@ neovim_plugins:
     version: "1e90a78ab5510fbcedc85abeb9a251d978726935"
   # その他
   - name: "neovim/nvim-lspconfig"
-    version: "v1.2.0"
+    version: "v2.5.0"
   - name: "vim-airline/vim-airline"
     version: "9e2d021fc6088a2027315d7e7ae8bafa94f16a7d"
   - name: "vim-airline/vim-airline-themes"

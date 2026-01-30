@@ -74,8 +74,14 @@
   with_items:
     - "{{ neovim_plugins }}"
 
-- name: install fzf
-  ansible.builtin.command: ./install --all
+- name: download fzf binary
+  ansible.builtin.command: ./install --bin
+  args:
+    chdir: "{{ neovim_plugin_path }}/fzf"
+    creates: "{{ neovim_plugin_path }}/fzf/bin/fzf"
+
+- name: install fzf shell integration
+  ansible.builtin.command: ./install --key-bindings --completion --no-update-rc
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
     creates: "{{ ansible_env.HOME }}/.fzf.bash"

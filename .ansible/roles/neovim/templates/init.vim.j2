@@ -39,6 +39,14 @@ let g:airline#extensions#tabline#close_symbol = '×'
 let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#virtualenv#enabled = 1
+
+" ステータスライン - Gitブランチ表示を有効化
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#format = 2  " ブランチ名を短縮表示
+
+" ステータスライン - カレントディレクトリ表示
+let g:airline_section_c = '%<%{getcwd()}'
+
 let g:airline_theme = 'base16_gruvbox_dark_hard'
 let g:airline#extensions#default#layout = [
     \ [ 'z', 'y', 'x' ],
@@ -542,7 +550,6 @@ lua <<EOF
   -- goimports: import文を自動整理する関数
   function goimports(timeout_ms)
     local context = { only = { "source.organizeImports" } }
-    vim.validate { context = { context, "t", true } }
 
     local params = vim.lsp.util.make_range_params()
     params.context = context
@@ -555,7 +562,7 @@ lua <<EOF
 
     if action.edit or type(action.command) == "table" then
       if action.edit then
-        vim.lsp.util.apply_workspace_edit(action.edit)
+        vim.lsp.util.apply_workspace_edit(action.edit, "utf-16")
       end
       if type(action.command) == "table" then
         vim.lsp.buf.execute_command(action.command)
@@ -575,7 +582,7 @@ EOF
 "     - gofmt でフォーマット
 "     - goimports でimport整理
 nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
-autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
+autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
 autocmd BufWritePre *.go lua goimports(1000)
 
 " ============================================
@@ -657,6 +664,10 @@ function! s:startup_tabs()
   if l:should_open_tabs
     " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
     if exists(':ClaudeCode')
+      " 起動時の[No Name]バッファを先に削除
+      if bufname('%') == '' && !&modified
+        enew
+      endif
       ClaudeCode
     else
       " プラグインがまだロードされていない場合は、さらに待つ
@@ -665,9 +676,6 @@ function! s:startup_tabs()
 
     " 別タブでcommon.sqlを開く
     tabnew ~/.local/share/nvim/common.sql
-
-    " さらに空の新規タブを開く
-    tabnew
 
     " 最初のタブ（ClaudeCode）に戻る
     tabfirst
