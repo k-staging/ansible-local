@@ -65,5 +65,28 @@ cd .ansible
 3. インストールスクリプトはpyenvのセットアップとAnsibleのインストールを自動的に処理
 4. WSLの場合、設定後にポストタスクでWSLインスタンスを再起動
 
+## 重要なルール
+
+### ローカル設定変更時の原則
+**macOS/WSLのローカル設定を変更・追加する場合は、まずこのリポジトリで管理できないか確認すること。**
+
+- シェル設定、エディタ設定、ツール設定 → 該当するロールに追加
+- 新しいツールのインストール → 既存ロールに追加、または新規ロール作成
+- Claude Code関連の設定 → `roles/claudecode` に追加
+
+直接ローカルファイルを編集するのではなく、Ansibleで管理することで：
+- 複数マシン間で設定を同期できる
+- 設定の履歴がGitで追跡できる
+- 再セットアップ時に自動適用される
+
+### claudecodeロールの構造
+`roles/claudecode/` には Claude Code の設定が集約されている：
+- `files/CLAUDE.md` - グローバル CLAUDE.md（~/.claude/CLAUDE.md にコピーされる）
+- `files/claude-agents/` - サブエージェント定義
+- `files/claude-skills/` - スキル定義
+- `templates/settings.json.j2` - Claude Code の settings.json
+
+Claude Code の挙動を変更したい場合は、これらのファイルを修正する。
+
 ## 最近の更新
 リポジトリに最近Claude Code CLI (`@anthropic-ai/claude-code@1.0.24`) がnodenvロール経由でインストールされるnpmパッケージに追加されました。
