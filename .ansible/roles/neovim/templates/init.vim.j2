@@ -26,43 +26,158 @@ colorscheme gruvbox
 let g:denops_disable_version_check = 1
 
 " ============================================
-" Airline - ステータスライン・タブライン
+" lualine + bufferline - ステータスライン・タブライン
 " ============================================
-" タブラインの表示設定
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 0
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#show_tabs = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#show_tab_type = 0
-let g:airline#extensions#tabline#close_symbol = '×'
-let g:airline#extensions#tabline#show_close_button = 0
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline#extensions#virtualenv#enabled = 1
-
-" ステータスライン - Gitブランチ表示を有効化
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#branch#format = 2  " ブランチ名を短縮表示
-
-" ステータスライン - カレントディレクトリ表示
-let g:airline_section_c = '%<%{getcwd()}'
-
-let g:airline_theme = 'base16_gruvbox_dark_hard'
-let g:airline#extensions#default#layout = [
-    \ [ 'z', 'y', 'x' ],
-    \ [ 'c', 'b', 'a', 'error', 'warning']
-    \ ]
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
 " 使い方:
 "   <Tab>           : 前のタブに移動
 "   <Shift-Tab>     : 次のタブに移動
 "   <Ctrl-c>        : 新しいタブを開く
-nmap <Tab> <Plug>AirlineSelectPrevTab
-nmap <S-Tab> <Plug>AirlineSelectNextTab
-nmap <C-c> :tablast <bar> tabnew<CR>
+nnoremap <Tab> :tabprevious<CR>
+nnoremap <S-Tab> :tabnext<CR>
+nnoremap <C-c> :tablast <bar> tabnew<CR>
+
+lua <<EOF
+-- lualine 設定
+local lualine_ok, lualine = pcall(require, "lualine")
+if lualine_ok then
+  -- カスタム関数: カレントディレクトリを短縮表示
+  local function shortened_cwd()
+    local cwd = vim.fn.getcwd()
+    local home = vim.fn.expand("~")
+    cwd = cwd:gsub("^" .. home, "~")
+    return cwd
+  end
+
+  lualine.setup({
+    options = {
+      theme = 'gruvbox',
+      component_separators = { left = '', right = ''},
+      section_separators = { left = '', right = ''},
+      disabled_filetypes = {
+        statusline = {},
+        winbar = {},
+      },
+      globalstatus = true,  -- グローバルステータスライン
+    },
+    sections = {
+      lualine_a = {'mode'},
+      lualine_b = {'branch', 'diff', 'diagnostics'},
+      lualine_c = {shortened_cwd},
+      lualine_x = {'encoding', 'fileformat', 'filetype'},
+      lualine_y = {'progress'},
+      lualine_z = {'location'}
+    },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {'filename'},
+      lualine_x = {'location'},
+      lualine_y = {},
+      lualine_z = {}
+    },
+    extensions = {}
+  })
+end
+
+-- bufferline 設定 (タブライン)
+local bufferline_ok, bufferline = pcall(require, "bufferline")
+if bufferline_ok then
+  -- カスタム関数: タブ名をカスタマイズ
+  local function custom_tab_name(tab)
+    local wins = vim.api.nvim_tabpage_list_wins(tab.tabnr)
+    if #wins > 0 then
+      local bufnr = vim.api.nvim_win_get_buf(wins[1])
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+      local buftype = vim.api.nvim_get_option_value('buftype', {buf = bufnr})
+
+      -- ターミナルバッファの場合
+      if buftype == 'terminal' then
+        if bufname:match('claude') then
+          return 'Claude Code'
+        else
+          return 'Terminal'
+        end
+      end
+
+      -- 空のバッファ
+      if bufname == '' then
+        return '[No Name]'
+      end
+
+      -- ファイル名のみ
+      return vim.fn.fnamemodify(bufname, ':t')
+    end
+    return tab.name
+  end
+
+  bufferline.setup({
+    options = {
+      mode = "tabs",  -- タブモード（バッファではなくタブを表示）
+      themable = true,
+      numbers = "none",
+      close_command = "bdelete! %d",
+      indicator = {
+        style = 'underline',
+      },
+      modified_icon = '●',
+      close_icon = '×',
+      left_trunc_marker = '',
+      right_trunc_marker = '',
+      max_name_length = 30,
+      max_prefix_length = 15,
+      tab_size = 18,
+      diagnostics = false,
+      show_buffer_icons = true,
+      show_buffer_close_icons = false,
+      show_close_icon = false,
+      show_tab_indicators = true,
+      separator_style = "thin",
+      always_show_bufferline = true,
+      name_formatter = custom_tab_name,
+    },
+    highlights = {
+      fill = {
+        bg = '#282828',  -- gruvbox bg
+      },
+      background = {
+        fg = '#a89984',  -- gruvbox fg4
+        bg = '#3c3836',  -- gruvbox bg1
+      },
+      tab = {
+        fg = '#a89984',
+        bg = '#3c3836',
+      },
+      tab_selected = {
+        fg = '#ebdbb2',  -- gruvbox fg
+        bg = '#504945',  -- gruvbox bg2
+        bold = true,
+      },
+      tab_separator = {
+        fg = '#282828',
+        bg = '#3c3836',
+      },
+      tab_separator_selected = {
+        fg = '#282828',
+        bg = '#504945',
+      },
+      buffer_selected = {
+        fg = '#ebdbb2',
+        bg = '#504945',
+        bold = true,
+        italic = false,
+      },
+      separator = {
+        fg = '#282828',
+        bg = '#3c3836',
+      },
+      separator_selected = {
+        fg = '#282828',
+        bg = '#504945',
+      },
+    },
+  })
+end
+EOF
 
 " ============================================
 " eslint - 自動修正
@@ -184,6 +299,10 @@ nnoremap <silent> <leader>df :<C-u>DiffviewOpen<CR>
 tnoremap jk <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
+
+" Claude Codeターミナルでは行番号・サインカラムを非表示にする
+autocmd TermOpen *claude* setlocal nonumber norelativenumber signcolumn=no
+autocmd BufEnter *claude* setlocal nonumber norelativenumber signcolumn=no
 
 " ============================================
 " fzf-preview.vim - ファジーファインダー
@@ -513,6 +632,7 @@ lua <<EOF
         start_in_normal_mode = true,
         hide_numbers = true,
         hide_signcolumn = true,
+        hide_cursorline = true,
       },
       refresh = {
         enable = true,
@@ -522,6 +642,7 @@ lua <<EOF
       },
       git = {
         use_git_root = true,
+        multi_instance = false,
       },
       command = "claude",
       command_variants = {
