@@ -4,6 +4,12 @@
 let mapleader = " "  " スペースキーをleaderに設定
 
 " ============================================
+" 環境変数設定（プラグイン初期化前に設定）
+" ============================================
+" mise の shims を PATH に追加
+let $PATH = $HOME . '/.local/share/mise/shims:' . $HOME . '/.local/bin:' . $PATH
+
+" ============================================
 " Python
 " ============================================
 let g:python3_host_prog = trim(system('uv python find'))
@@ -367,9 +373,6 @@ nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " ============================================
 " nvim-cmp, nvim-lspconfig - 補完とLSP設定
 " ============================================
-" 環境変数設定
-" mise の shims を PATH に追加
-let $PATH = $HOME . '/.local/share/mise/shims:' . $HOME . '/.local/bin:' . $PATH
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
