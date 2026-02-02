@@ -20,7 +20,7 @@ cd wsl && bash install.sh
 ### 特定のロールの実行
 ```bash
 # タグを使って特定のロールを実行
-ansible-playbook .ansible/site.yml -i .ansible/inventory --tags "nodenv,tmux"
+ansible-playbook .ansible/site.yml -i .ansible/inventory --tags "mise,tmux"
 
 # すべてのロールを実行
 ansible-playbook .ansible/site.yml -i .ansible/inventory
@@ -38,7 +38,7 @@ cd .ansible
 ### ディレクトリ構造
 - `/.ansible/` - Ansibleのコア設定
   - `site.yml` - すべてのロールを統括するメインプレイブック
-  - `inventory` - バージョン定義: Python 3.11.10、Ruby 3.2.2、Node 18.20.4、Go 1.17.13
+  - `inventory` - バージョン定義: Python 3.11.10、Ruby 3.2.2、Node 18.20.4、Go 1.23.10
   - `roles/` - 個別の設定ロール
   - `install.sh` - ベースインストールスクリプト
 - `/mac/` - macOS専用セットアップラッパー
@@ -46,14 +46,13 @@ cd .ansible
 
 ### Ansibleロール
 1. **common** - 基本システムパッケージと設定
-2. **nodenv** - Node.js環境（Claude Code CLIなどのnpmパッケージを含む）
-3. **rbenv** - Ruby環境管理
-4. **goenv** - Go環境管理
+2. **mise** - 多言語バージョン管理（Node.js, Ruby, Go）
+3. **tmux** - ターミナルマルチプレクサセットアップ
+4. **claudecode** - Claude Code設定
 5. **neovim** - Neovimエディタ設定
-6. **tmux** - ターミナルマルチプレクサセットアップ
 
 ### 主要なパターン
-- システムパッケージの代わりに*envツールを使用した言語バージョン管理
+- mise による多言語バージョン管理（Node.js, Ruby, Go を統合管理）
 - MacとUbuntu/Debian固有のタスクに`ansible_distribution`によるプラットフォーム検出を使用
 - ローカル接続モード - Ansibleが実行されているマシン自体を設定
 - バージョンは`.ansible/inventory`で一元管理
@@ -89,4 +88,5 @@ cd .ansible
 Claude Code の挙動を変更したい場合は、これらのファイルを修正する。
 
 ## 最近の更新
-リポジトリに最近Claude Code CLI (`@anthropic-ai/claude-code@1.0.24`) がnodenvロール経由でインストールされるnpmパッケージに追加されました。
+- mise による多言語バージョン管理への移行（nodenv, rbenv, goenv を統合）
+- Claude Code CLI など npm パッケージは mise 経由でインストール

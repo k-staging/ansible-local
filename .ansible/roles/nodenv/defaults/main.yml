@@ -1,4 +1,0 @@
----
-# bash-language-server はしばらく 2.1.0 で固定
-# 環境によっては MODULE_NOT_FOUND が発生してしまう為
-npm_packages: "bash-language-server@5.4.2 vscode-langservers-extracted@4.5.0 typescript-language-server@4.3.3 typescript@5.7.3 @modelcontextprotocol/server-sequential-thinking@2025.7.1 @upstash/context7-mcp@1.0.26 @openai/codex@0.55.0"

@@ -32,27 +32,14 @@ alias ll='ls -laF'
 alias vim='nvim'
 
 #####################
-# goenv
+# mise
 #####################
-export GOENV_ROOT="$HOME/.goenv"
-[ -e ~/.goenv/bin/goenv ] && eval "$(goenv init -)"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$PATH:$GOPATH/bin"
-
-#####################
-# nodenv
-#####################
-[ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
+[ -e ~/.local/bin/mise ] && eval "$(~/.local/bin/mise activate bash)"
 
 #####################
 # uv (Python package manager)
 #####################
 export PATH="$HOME/.cargo/bin:$PATH"
-
-#################
-# rbenv
-#################
-[ -e ~/.rbenv/bin/rbenv ] && eval "$(rbenv init - bash)"
 
 #################
 # llvm
