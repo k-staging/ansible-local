@@ -605,6 +605,14 @@ lua <<EOF
     suggestion = { enabled = false },
     panel = { enabled = false },
   })
+EOF
+
+" ============================================
+" Copilot Node.js パス設定
+" ============================================
+let g:copilot_node_command = "~/.local/share/mise/installs/node/{{ node_version }}/bin/node"
+
+lua <<EOF
 
   -- ============================================
   -- Claude Code 設定
