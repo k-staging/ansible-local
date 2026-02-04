@@ -604,15 +604,8 @@ lua <<EOF
   require("copilot").setup({
     suggestion = { enabled = false },
     panel = { enabled = false },
+    copilot_node_command = vim.fn.expand("~/.local/share/mise/installs/node/{{ node_version }}/bin/node"),
   })
-EOF
-
-" ============================================
-" Copilot Node.js パス設定
-" ============================================
-let g:copilot_node_command = "~/.local/share/mise/installs/node/{{ node_version }}/bin/node"
-
-lua <<EOF
 
   -- ============================================
   -- Claude Code 設定
