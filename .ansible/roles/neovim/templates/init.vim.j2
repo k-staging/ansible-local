@@ -588,15 +588,8 @@ lua <<EOF
   }
 
   -- sqls (SQL) 設定
-  nvim_lsp.sqls.setup{
-    on_attach = function(client, bufnr)
-      capabilities = capabilities
-      local status_ok, sqls = pcall(require, 'sqls')
-      if status_ok then
-        sqls.on_attach(client, bufnr)
-      end
-    end
-  }
+  -- sqls.nvim の新方式: lsp/sqls.lua が自動設定
+  vim.lsp.enable('sqls')
 
   -- ============================================
   -- Copilot 設定

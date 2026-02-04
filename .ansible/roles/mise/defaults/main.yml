@@ -11,7 +11,7 @@ npm_packages:
   - "@openai/codex@0.55.0"
 
 go_packages:
-  - "github.com/sqls-server/sqls@v0.2.45"
+  - "github.com/lighttiger2505/sqls@v0.2.20"
   - "golang.org/x/tools/gopls@v0.11.0"
   - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
   - "github.com/mdempsky/gocode@v.20150303"

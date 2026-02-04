@@ -65,6 +65,7 @@ brew_pkg:
   - terminal-notifier
   - terraform
   - tesseract
+  - vegeta
   - wget
   - watch
   - xxhash

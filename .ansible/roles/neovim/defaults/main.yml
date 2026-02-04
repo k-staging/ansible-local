@@ -23,10 +23,9 @@ neovim_plugins:
   - name: "lambdalisue/fern-git-status.vim"
     version: "151336335d3b6975153dad77e60049ca7111da8e"
   # SQL 関連
-  - name: "sqls-server/sqls"
-    version: "eb695acda8a928f6633555fedb91b22e6290f0f0"
+  # sqls サーバーは mise の go_packages で管理 (v0.2.20 固定)
   - name: "nanotee/sqls.nvim"
-    version: "a514379f5f89bf72955ed3bf5c1c31a40b8a1472"
+    version: "bfb7b4090268f6163c408577070da4cc9d7450fd"
   - name: "mattn/vim-sqlfmt"
     version: "db6365103e38d274efe7689a002646a4419ae821"
   # ディレクトリ移動
