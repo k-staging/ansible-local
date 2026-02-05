@@ -66,8 +66,25 @@
   loop_control:
     label: "{{ item.item }}"
 
-- name: check installed go packages
-  ansible.builtin.shell: "{{ mise_bin }} which {{ item.split('/')[-1].split('@')[0] }}"
+- name: check installed go packages and versions
+  ansible.builtin.shell: |
+    pkg_name="{{ item.split('/')[-1].split('@')[0] }}"
+    expected_version="{{ item.split('@')[1] }}"
+    bin_path=$({{ mise_bin }} which "$pkg_name" 2>/dev/null)
+    if [ -z "$bin_path" ] || [ ! -f "$bin_path" ]; then
+      echo "not_installed"
+      exit 0
+    fi
+    installed_version=$(go version -m "$bin_path" 2>/dev/null | grep -E "^\s+mod\s+" | awk '{print $3}')
+    if [ -z "$installed_version" ]; then
+      echo "version_unknown"
+      exit 0
+    fi
+    if [ "$installed_version" = "$expected_version" ]; then
+      echo "ok"
+    else
+      echo "version_mismatch:$installed_version"
+    fi
   loop: "{{ go_packages }}"
   register: check_go_packages
   failed_when: false
@@ -75,7 +92,7 @@
 
 - name: install go packages
   ansible.builtin.shell: "{{ mise_bin }} exec -- go install {{ item.item }}"
-  when: item.rc != 0
+  when: item.stdout != "ok"
   loop: "{{ check_go_packages.results }}"
   loop_control:
     label: "{{ item.item }}"
