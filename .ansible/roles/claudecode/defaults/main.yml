@@ -37,3 +37,7 @@ claude_code_custom_lsp_plugins:
       ".rb": ruby
       ".rake": ruby
       ".gemspec": ruby
+
+# Claude Code experimental features
+claude_code_experimental_features:
+  agent_teams: true

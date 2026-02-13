@@ -159,6 +159,36 @@
 4. **マイグレーション** (db/migrate/変更時): `rails-db-migration-reviewer` サブエージェントで安全性を確認
 5. **テスト** (spec/変更時): `rails-test-guardian` サブエージェントでテストを実行
 
+### カスタムスラッシュコマンド
+
+#### /team - Agent Teams 協調作業モード（EXPERIMENTAL）
+複雑なタスクを2人のエージェントチームで協調作業するモード。
+
+**構成**:
+- **Lead**: 計画立案 + 実装 + コミット担当
+- **Reviewer**: 計画レビュー + 実装レビュー担当
+
+**使い方**:
+```
+/team ユーザー認証機能にパスワードリセットを追加して
+```
+
+**ワークフロー**:
+1. Lead が計画を立てる → Reviewer がレビュー
+2. Lead が実装 → Reviewer がコードレビュー
+3. Lead がコミット
+
+**注意**:
+- トークン消費が通常の2倍程度になる
+- EXPERIMENTAL 機能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` で有効化）
+- 最小限のエージェントで試すことを推奨
+
+#### /sequential-thinking
+Sequential thinking tool でタスクを深く分析する。
+
+#### /plan
+Plan Mode で複雑なタスクの実装計画を立てる。
+
 ### 効率化ルール
 - コミットメッセージは変更内容から自動生成する
 - 複数ファイルの読み込みや検索は並列で実行する

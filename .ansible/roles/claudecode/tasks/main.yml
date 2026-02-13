@@ -54,17 +54,15 @@
     dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.local.md"
     mode: 0644
 
-- name: copy sequential-thinking custom command
+- name: copy custom command files
   ansible.builtin.copy:
-    src: "sequential-thinking.md"
-    dest: "{{ ansible_env.HOME }}/.claude/commands/sequential-thinking.md"
+    src: "{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.claude/commands/{{ item }}"
     mode: 0644
-
-- name: copy plan custom command
-  ansible.builtin.copy:
-    src: "plan.md"
-    dest: "{{ ansible_env.HOME }}/.claude/commands/plan.md"
-    mode: 0644
+  loop:
+    - sequential-thinking.md
+    - plan.md
+    - team.md
 
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
