@@ -140,15 +140,6 @@
     - jq_check.rc == 0
 
 # ============================================
-# Serena 設定
-# ============================================
-- name: copy serena_config.yml
-  ansible.builtin.copy:
-    src: "serena_config.yml"
-    dest: "{{ ansible_env.HOME }}/.serena/serena_config.yml"
-    mode: 0644
-
-# ============================================
 # Codex 設定
 # ============================================
 - name: copy AGENTS.md
