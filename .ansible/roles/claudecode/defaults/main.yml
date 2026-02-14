@@ -14,7 +14,6 @@ claudecode_dir:
   - "~/.claude/skills/backend-dev"
   - "~/.claude/skills/infra-quick-check"
   - "~/.claude/skills/sql-helper"
-  - "~/.serena"
   - "~/.codex"
 
 # Claude Code LSP plugins
