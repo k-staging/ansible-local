@@ -38,7 +38,7 @@ description: Plan Mode で複雑なタスクの実装計画を立てる
 - `Glob` で関連ファイルを検索
 - `Grep` でコードパターンを調査
 - `Read` で既存実装を理解
-- `mcp__serena__*` ツールでシンボル検索
+- `LSP` ツールでシンボル検索（goToDefinition, findReferences等）
 
 ### 3. 実装計画の作成
 
