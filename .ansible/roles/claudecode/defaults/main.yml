@@ -1,8 +1,7 @@
 ---
 # Claude Code 設定
 
-# claude_code_version はinventoryで一元管理（デフォルト値はフォールバック用）
-claude_code_version: "2.1.39"
+claude_code_version: "2.1.42"
 
 # devcontainer.vim version for YOLO mode
 devcontainer_vim_version: "3.6.0"
