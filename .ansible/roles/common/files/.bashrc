@@ -26,34 +26,20 @@ alias ls='ls -G'
 [ -e /etc/lsb-release ] && alias ls='ls --color=auto'
 alias ll='ls -laF'
 
-#####################
-# goenv
-#####################
-export GOENV_ROOT="$HOME/.goenv"
-[ -e ~/.goenv/bin/goenv ] && eval "$(goenv init -)"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$PATH:$GOPATH/bin"
+###############
+# vim/nvim
+###############
+alias vim='nvim'
 
 #####################
-# nodenv
+# mise
 #####################
-[ -e ~/.nodenv/bin/nodenv ] && eval "$(nodenv init -)"
+[ -e ~/.local/bin/mise ] && eval "$(~/.local/bin/mise activate bash)"
 
 #####################
-# pyenv
+# uv (Python package manager)
 #####################
-export PYENV_ROOT="$HOME/.pyenv"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-if [ -e ~/.pyenv ]; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-
-#################
-# rbenv
-#################
-[ -e ~/.rbenv/bin/rbenv ] && eval "$(rbenv init - bash)"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 #################
 # llvm

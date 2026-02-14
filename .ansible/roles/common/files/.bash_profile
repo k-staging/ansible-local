@@ -23,14 +23,13 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 ##############
 ADD_ENVIRONMENT_PATH=$(cat << EOS
 /usr/local/opt/libpq/bin
-~/.dotnet/tools
-~/.goenv/bin
-~/.nodenv/bin
-~/.nodenv/shims
-~/.pyenv/bin
-~/.rbenv/bin
-~/bin
-~/go/bin
+$HOME/.dotnet/tools
+$HOME/.local/share/mise/shims
+$HOME/.cargo/bin
+$HOME/.local/bin
+$HOME/bin
+$HOME/development/flutter/bin
+$HOME/go/bin
 EOS
 )
 for ADD_PATH in ${ADD_ENVIRONMENT_PATH};do

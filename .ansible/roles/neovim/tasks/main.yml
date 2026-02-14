@@ -13,7 +13,7 @@
       ansible.builtin.unarchive:
         src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos-arm64.tar.gz"
         dest: "/usr/local/src/nvim/"
-        remote_src: yes
+        remote_src: true
         extra_opts: ["--strip-components=1"]
   when: ansible_distribution == 'MacOSX' 
 
@@ -21,7 +21,7 @@
   ansible.builtin.unarchive:
     src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-linux64.tar.gz"
     dest: "/usr/local/src/nvim/"
-    remote_src: yes
+    remote_src: true
     extra_opts: ["--strip-components=1"]
   when: ansible_distribution == 'Ubuntu' 
 
@@ -30,8 +30,8 @@
     src: "/usr/local/src/nvim/bin/nvim"
     dest: "/usr/local/bin/nvim"
     state: link
-    force: yes
-  become: yes
+    force: true
+  become: true
 
 - name: copy init.vim
   ansible.builtin.template:
@@ -43,28 +43,138 @@
     src: "config.yml.j2"
     dest: "~/.config/sqls/config.yml"
 
+- name: create common.sql file for sqls
+  ansible.builtin.copy:
+    content: |
+      -- Common SQL file for sqls language server
+      -- This file is used to enable sqls to start properly
+      
+    dest: "~/.local/share/nvim/common.sql"
+    mode: 0644
+
 - name: download nerd-fonts
   ansible.builtin.unarchive:
     src: "https://github.com/ryanoasis/nerd-fonts/archive/refs/tags/v{{ nerdfonts_version }}.tar.gz"
     dest: "/usr/local/src/"
-    remote_src: yes
+    remote_src: true
+    creates: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
 
 - name: install nerd-fonts
   ansible.builtin.command: "./install.sh"
   args:
     chdir: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
+    creates: "~/.local/share/fonts/NerdFonts"
 
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item.name }}.git"
     dest: "{{ neovim_plugin_path }}/{{ item.name.split('/')[-1] }}"
     version: "{{ item.version }}"
-    update: no
+    update: false
   with_items:
     - "{{ neovim_plugins }}"
 
-- name: install fzf
-  ansible.builtin.shell: ./install --all
+- name: download fzf binary
+  ansible.builtin.command: ./install --bin
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
+    creates: "{{ neovim_plugin_path }}/fzf/bin/fzf"
+
+- name: install fzf shell integration
+  ansible.builtin.command: ./install --key-bindings --completion --no-update-rc
+  args:
+    chdir: "{{ neovim_plugin_path }}/fzf"
+    creates: "{{ ansible_env.HOME }}/.fzf.bash"
+
+- name: install oxker (mac)
+  block:
+    - name: download oxker binary (mac)
+      ansible.builtin.get_url:
+        url: "https://github.com/mrjackwills/oxker/releases/download/v{{ oxker_version }}/oxker_apple_darwin_aarch64.tar.gz"
+        dest: "/tmp/oxker_apple_darwin_aarch64.tar.gz"
+        mode: 0644
+
+    - name: extract oxker (mac)
+      ansible.builtin.unarchive:
+        src: "/tmp/oxker_apple_darwin_aarch64.tar.gz"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install oxker binary (mac)
+      ansible.builtin.copy:
+        src: "/tmp/oxker"
+        dest: "/usr/local/bin/oxker"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_distribution == 'MacOSX'
+
+- name: install oxker (linux)
+  block:
+    - name: download oxker binary (linux)
+      ansible.builtin.get_url:
+        url: "https://github.com/mrjackwills/oxker/releases/download/v{{ oxker_version }}/oxker_linux_x86_64.tar.gz"
+        dest: "/tmp/oxker_linux_x86_64.tar.gz"
+        mode: 0644
+
+    - name: extract oxker (linux)
+      ansible.builtin.unarchive:
+        src: "/tmp/oxker_linux_x86_64.tar.gz"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install oxker binary (linux)
+      ansible.builtin.copy:
+        src: "/tmp/oxker"
+        dest: "/usr/local/bin/oxker"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_distribution == 'Ubuntu'
+
+- name: install lazygit (mac)
+  block:
+    - name: download lazygit binary (mac)
+      ansible.builtin.get_url:
+        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_Darwin_arm64.tar.gz"
+        dest: "/tmp/lazygit_Darwin_arm64.tar.gz"
+        mode: 0644
+
+    - name: extract lazygit (mac)
+      ansible.builtin.unarchive:
+        src: "/tmp/lazygit_Darwin_arm64.tar.gz"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install lazygit binary (mac)
+      ansible.builtin.copy:
+        src: "/tmp/lazygit"
+        dest: "/usr/local/bin/lazygit"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_distribution == 'MacOSX'
+
+- name: install lazygit (linux)
+  block:
+    - name: download lazygit binary (linux)
+      ansible.builtin.get_url:
+        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_Linux_x86_64.tar.gz"
+        dest: "/tmp/lazygit_Linux_x86_64.tar.gz"
+        mode: 0644
+
+    - name: extract lazygit (linux)
+      ansible.builtin.unarchive:
+        src: "/tmp/lazygit_Linux_x86_64.tar.gz"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install lazygit binary (linux)
+      ansible.builtin.copy:
+        src: "/tmp/lazygit"
+        dest: "/usr/local/bin/lazygit"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_distribution == 'Ubuntu'
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "custom-lsp",
+  "description": "Custom LSP plugins",
+  "owner": {
+    "name": "local",
+    "email": "local@localhost"
+  },
+  "plugins": [
+{% for plugin in claude_code_custom_lsp_plugins %}
+    {
+      "name": "{{ plugin.name }}",
+      "description": "{{ plugin.description }}",
+      "version": "1.0.0",
+      "author": {
+        "name": "local",
+        "email": "local@localhost"
+      },
+      "source": "./plugins/{{ plugin.name }}",
+      "category": "development",
+      "lspServers": {
+        "{{ plugin.name | replace('-lsp', '') }}": {
+          "command": "{{ plugin.command }}"{% if plugin.args is defined %},
+          "args": {{ plugin.args | to_json }}{% endif %},
+          "extensionToLanguage": {{ plugin.extensions | to_json }}
+        }
+      }
+    }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+}

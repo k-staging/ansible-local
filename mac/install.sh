@@ -1,5 +1,5 @@
 #!/bin/bash
-CURRENT_DIR="$(cd $(dirname 0) && pwd)"
+CURRENT_DIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
 USER_NAME="$(whoami)"
 USER_HOME="/Users/${USER_NAME}"
 ANSIBLE_DIR="${CURRENT_DIR}/../.ansible"

@@ -4,16 +4,14 @@
   roles:
     - role: common
       tags: common
-    - role: nodenv
-      tags: nodenv
+    - role: mise
+      tags: mise
     - role: tmux
       tags: tmux
+    - role: claudecode
+      tags: claudecode
     - role: neovim
       tags: neovim
-    - role: goenv
-      tags: goenv
-    - role: rbenv
-      tags: rbenv
   post_tasks:
     - name: reboot wsl
       shell: "[ -e /mnt/c/Windows/system32/wsl.exe ] && /mnt/c/Windows/system32/wsl.exe -t Ubuntu-20.04"

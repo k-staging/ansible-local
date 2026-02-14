@@ -91,6 +91,12 @@
         state: present
       ignore_errors: yes
 
+    - name: install ghostty
+      community.general.homebrew_cask:
+        name: "ghostty"
+        state: present
+      ignore_errors: yes
+
     - name: install slack
       community.general.homebrew_cask:
         name: "slack"
