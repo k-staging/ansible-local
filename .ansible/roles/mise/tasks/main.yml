@@ -1,0 +1,98 @@
+---
+- name: check if mise is already installed
+  ansible.builtin.stat:
+    path: "{{ mise_bin }}"
+  register: mise_installed
+
+- name: install mise
+  ansible.builtin.shell: "curl -fsSL https://mise.run | sh"
+  when: not mise_installed.stat.exists
+
+- name: check installed node version
+  ansible.builtin.shell: "{{ mise_bin }} list node | grep {{ node_version }}"
+  register: check_installed_node
+  failed_when: false
+  changed_when: false
+
+- name: install node
+  ansible.builtin.shell: "{{ mise_bin }} use --global node@{{ node_version }}"
+  when: check_installed_node.rc != 0
+
+- name: check installed ruby version
+  ansible.builtin.shell: "{{ mise_bin }} list ruby | grep {{ ruby_version }}"
+  register: check_installed_ruby
+  failed_when: false
+  changed_when: false
+
+- name: install ruby
+  ansible.builtin.shell: "{{ mise_bin }} use --global ruby@{{ ruby_version }}"
+  when: check_installed_ruby.rc != 0
+
+- name: check installed go version
+  ansible.builtin.shell: "{{ mise_bin }} list go | grep {{ go_version }}"
+  register: check_installed_go
+  failed_when: false
+  changed_when: false
+
+- name: install go
+  ansible.builtin.shell: "{{ mise_bin }} use --global go@{{ go_version }}"
+  when: check_installed_go.rc != 0
+
+- name: check installed npm packages
+  ansible.builtin.shell: "{{ mise_bin }} exec -- npm list -g --depth=0 {{ item.split('@')[0] }}"
+  loop: "{{ npm_packages }}"
+  register: check_npm_packages
+  failed_when: false
+  changed_when: false
+
+- name: install npm packages
+  ansible.builtin.shell: "{{ mise_bin }} exec -- npm install -g {{ item.item }}"
+  when: item.rc != 0
+  loop: "{{ check_npm_packages.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: check installed ruby gems
+  ansible.builtin.shell: "{{ mise_bin }} exec -- gem list -i '^{{ item }}$'"
+  loop: "{{ ruby_gems }}"
+  register: check_ruby_gems
+  failed_when: false
+  changed_when: false
+
+- name: install ruby gems
+  ansible.builtin.shell: "{{ mise_bin }} exec -- gem install {{ item.item }}"
+  when: item.rc != 0
+  loop: "{{ check_ruby_gems.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: check installed go packages and versions
+  ansible.builtin.shell: |
+    pkg_name="{{ item.split('/')[-1].split('@')[0] }}"
+    expected_version="{{ item.split('@')[1] }}"
+    bin_path=$({{ mise_bin }} which "$pkg_name" 2>/dev/null)
+    if [ -z "$bin_path" ] || [ ! -f "$bin_path" ]; then
+      echo "not_installed"
+      exit 0
+    fi
+    installed_version=$(go version -m "$bin_path" 2>/dev/null | grep -E "^\s+mod\s+" | awk '{print $3}')
+    if [ -z "$installed_version" ]; then
+      echo "version_unknown"
+      exit 0
+    fi
+    if [ "$installed_version" = "$expected_version" ]; then
+      echo "ok"
+    else
+      echo "version_mismatch:$installed_version"
+    fi
+  loop: "{{ go_packages }}"
+  register: check_go_packages
+  failed_when: false
+  changed_when: false
+
+- name: install go packages
+  ansible.builtin.shell: "{{ mise_bin }} exec -- go install {{ item.item }}"
+  when: item.stdout != "ok"
+  loop: "{{ check_go_packages.results }}"
+  loop_control:
+    label: "{{ item.item }}"

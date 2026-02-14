@@ -1,12 +1,12 @@
 # Set to true to use lowercase keywords instead of uppercase.
 lowercaseKeywords: false
 connections:
-  - alias: mysql
-    driver: mysql
+  - alias: postgresql
+    driver: postgresql
     proto: tcp
     user: {{ db_user }}
     passwd: {{ db_password }}
     host: 127.0.0.1
-    port: 3306
+    port: 5432
     dbName: {{ db_dbname }}
 

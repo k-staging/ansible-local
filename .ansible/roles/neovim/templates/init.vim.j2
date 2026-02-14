@@ -1,57 +1,338 @@
-" Colorsheme
+" ============================================
+" リーダーキー設定
+" ============================================
+let mapleader = " "  " スペースキーをleaderに設定
+
+" ============================================
+" 環境変数設定（プラグイン初期化前に設定）
+" ============================================
+" mise の shims を PATH に追加
+let $PATH = $HOME . '/.local/share/mise/shims:' . $HOME . '/.local/bin:' . $PATH
+
+" ============================================
+" Python
+" ============================================
+let g:python3_host_prog = trim(system('uv python find'))
+
+" ============================================
+" カラースキーム
+" ============================================
 syntax on
 set background=dark
 set t_Co=256
+set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 colorscheme gruvbox
 
-" GraphQL
+" ============================================
+" GraphQL / Denops設定
+" ============================================
 " neovim を 0.10.0 以上にあげたらいらなくなる記述
 let g:denops_disable_version_check = 1
 
-" Airline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 0
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#show_tabs = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#show_tab_type = 0
-let g:airline#extensions#tabline#close_symbol = '×'
-let g:airline#extensions#tabline#show_close_button = 0
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline#extensions#virtualenv#enabled = 1
-let g:airline_theme = 'base16_gruvbox_dark_hard'
-let g:airline#extensions#default#layout = [
-    \ [ 'z', 'y', 'x' ],
-    \ [ 'c', 'b', 'a', 'error', 'warning']
-    \ ]
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-nmap <Tab> <Plug>AirlineSelectPrevTab
-nmap <S-Tab> <Plug>AirlineSelectNextTab
-nmap <C-c> :tablast <bar> tabnew<CR>
+" ============================================
+" lualine + bufferline - ステータスライン・タブライン
+" ============================================
+" 使い方:
+"   <Tab>           : 前のタブに移動
+"   <Shift-Tab>     : 次のタブに移動
+"   <Ctrl-c>        : 新しいタブを開く
+nnoremap <Tab> :tabprevious<CR>
+nnoremap <S-Tab> :tabnext<CR>
+nnoremap <C-c> :tablast <bar> tabnew<CR>
 
-" eslint
+lua <<EOF
+-- lualine 設定
+local lualine_ok, lualine = pcall(require, "lualine")
+if lualine_ok then
+  -- カスタム関数: カレントディレクトリを短縮表示
+  local function shortened_cwd()
+    local cwd = vim.fn.getcwd()
+    local home = vim.fn.expand("~")
+    cwd = cwd:gsub("^" .. home, "~")
+    return cwd
+  end
+
+  lualine.setup({
+    options = {
+      theme = 'gruvbox',
+      component_separators = { left = '', right = ''},
+      section_separators = { left = '', right = ''},
+      disabled_filetypes = {
+        statusline = {},
+        winbar = {},
+      },
+      globalstatus = true,  -- グローバルステータスライン
+    },
+    sections = {
+      lualine_a = {'mode'},
+      lualine_b = {'branch', 'diff', 'diagnostics'},
+      lualine_c = {shortened_cwd},
+      lualine_x = {'encoding', 'fileformat', 'filetype'},
+      lualine_y = {'progress'},
+      lualine_z = {'location'}
+    },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {'filename'},
+      lualine_x = {'location'},
+      lualine_y = {},
+      lualine_z = {}
+    },
+    extensions = {}
+  })
+end
+
+-- bufferline 設定 (タブライン)
+local bufferline_ok, bufferline = pcall(require, "bufferline")
+if bufferline_ok then
+  -- カスタム関数: タブ名をカスタマイズ
+  local function custom_tab_name(tab)
+    local wins = vim.api.nvim_tabpage_list_wins(tab.tabnr)
+    if #wins > 0 then
+      local bufnr = vim.api.nvim_win_get_buf(wins[1])
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+      local buftype = vim.api.nvim_get_option_value('buftype', {buf = bufnr})
+
+      -- ターミナルバッファの場合
+      if buftype == 'terminal' then
+        if bufname:match('claude') then
+          return 'Claude Code'
+        else
+          return 'Terminal'
+        end
+      end
+
+      -- 空のバッファ
+      if bufname == '' then
+        return '[No Name]'
+      end
+
+      -- ファイル名のみ
+      return vim.fn.fnamemodify(bufname, ':t')
+    end
+    return tab.name
+  end
+
+  bufferline.setup({
+    options = {
+      mode = "tabs",  -- タブモード（バッファではなくタブを表示）
+      themable = true,
+      numbers = "none",
+      close_command = "bdelete! %d",
+      indicator = {
+        style = 'underline',
+      },
+      modified_icon = '●',
+      close_icon = '×',
+      left_trunc_marker = '',
+      right_trunc_marker = '',
+      max_name_length = 30,
+      max_prefix_length = 15,
+      tab_size = 18,
+      diagnostics = false,
+      show_buffer_icons = true,
+      show_buffer_close_icons = false,
+      show_close_icon = false,
+      show_tab_indicators = true,
+      separator_style = "thin",
+      always_show_bufferline = true,
+      name_formatter = custom_tab_name,
+    },
+    highlights = {
+      fill = {
+        bg = '#282828',  -- gruvbox bg
+      },
+      background = {
+        fg = '#a89984',  -- gruvbox fg4
+        bg = '#3c3836',  -- gruvbox bg1
+      },
+      tab = {
+        fg = '#a89984',
+        bg = '#3c3836',
+      },
+      tab_selected = {
+        fg = '#ebdbb2',  -- gruvbox fg
+        bg = '#504945',  -- gruvbox bg2
+        bold = true,
+      },
+      tab_separator = {
+        fg = '#282828',
+        bg = '#3c3836',
+      },
+      tab_separator_selected = {
+        fg = '#282828',
+        bg = '#504945',
+      },
+      buffer_selected = {
+        fg = '#ebdbb2',
+        bg = '#504945',
+        bold = true,
+        italic = false,
+      },
+      separator = {
+        fg = '#282828',
+        bg = '#3c3836',
+      },
+      separator_selected = {
+        fg = '#282828',
+        bg = '#504945',
+      },
+    },
+  })
+end
+EOF
+
+" ============================================
+" eslint - 自動修正
+" ============================================
+" TypeScript/JavaScript保存時に自動でeslint --fixを実行
 autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 
-" vim-gitgutter
-set  signcolumn=yes
+" ============================================
+" vim-gitgutter - Git差分表示
+" ============================================
+set signcolumn=yes
 
-" fugitive.vim
-nnoremap <silent> gb  :<C-u>Git blame<CR>
+" ============================================
+" toggleterm.nvim - ターミナルウィンドウ管理
+" ============================================
+" 使い方:
+"   <Ctrl-t>        : ターミナルをトグル（表示/非表示）
+"   ターミナル内で:
+"     jk            : ノーマルモードに切り替え（jとkを素早く連続で押す）
+"     i or a        : インサートモードに戻る
+"     <Ctrl-t>      : ターミナルを閉じる
+"
+" Oxker (Docker TUI) の使い方:
+"   ターミナルを開いて、以下のコマンドを実行:
+"     oxker         : Dockerコンテナ管理TUIを起動
+"   Oxker内で:
+"     ↑↓            : コンテナ選択
+"     e             : コンテナのシェルに入る (docker exec)
+"     l             : ログを表示
+"     s             : コンテナの開始/停止
+"     r             : コンテナの再起動
+"     d             : コンテナの削除
+"     ?             : ヘルプを表示
+"     q             : 終了
+lua <<EOF
+local status_ok, toggleterm = pcall(require, "toggleterm")
+if status_ok then
+  toggleterm.setup({
+    size = 100,
+    open_mapping = [[<c-t>]],
+    direction = 'float',  -- フローティングウィンドウとして表示
+    start_in_insert = true,
+    float_opts = {
+      border = 'curved',
+      winblend = 0,
+    },
+    on_open = function(term)
+      vim.opt_local.number = true
+      vim.opt_local.relativenumber = false
+    end,
+  })
 
-" terminal
-tnoremap <Esc> <C-\><C-n>
+  -- lazygit 専用のターミナルを作成
+  local Terminal = require('toggleterm.terminal').Terminal
+  local lazygit = Terminal:new({
+    cmd = "lazygit",
+    hidden = true,
+    direction = "float",
+    float_opts = {
+      border = "curved",
+    },
+    on_open = function(term)
+      vim.cmd("startinsert!")
+    end,
+  })
+
+  function _lazygit_toggle()
+    lazygit:toggle()
+  end
+end
+EOF
+
+" ============================================
+" lazygit - Git TUI (toggleterm経由)
+" ============================================
+" 使い方:
+"   <leader>g       : Lazygitを起動
+"   Lazygit内で:
+"     ?             : ヘルプを表示
+"     q             : 終了
+"     <Space>       : ファイルをステージング/アンステージング
+"     c             : コミット
+"     P             : プッシュ
+"     p             : プル
+"     [             : 前のタブ
+"     ]             : 次のタブ
+nnoremap <silent> <leader>g :<C-u>lua _lazygit_toggle()<CR>
+
+" ============================================
+" diffview.nvim - Diff表示とマージエディタ
+" ============================================
+" 使い方:
+"   <leader>df      : DiffViewを開く
+"   :DiffviewClose  : DiffViewを閉じる
+"   DiffView内で:
+"     ]c / [c       : 次/前の変更箇所へジャンプ
+"     <leader>co    : OURS側を採用（コンフリクト解決時）
+"     <leader>ct    : THEIRS側を採用（コンフリクト解決時）
+"     <leader>cb    : BASE側を採用（コンフリクト解決時）
+"     <leader>ca    : 全ての変更を採用（コンフリクト解決時）
+lua <<EOF
+local status_ok, diffview = pcall(require, "diffview")
+if status_ok then
+  diffview.setup({
+    enhanced_diff_hl = true,
+  })
+end
+EOF
+nnoremap <silent> <leader>df :<C-u>DiffviewOpen<CR>
+
+" ============================================
+" terminal - 組み込みターミナル設定
+" ============================================
+" 使い方:
+"   :T <command>    : 下部に分割してターミナルを開く
+"   ターミナル内で:
+"     jk            : ノーマルモードに切り替え（jとkを素早く連続で押す）
+"                     ※ネストされたNeovim内で:wqなどを使えるようにするため
+tnoremap jk <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
 
-" fzf-preview.vim
+" Claude Codeターミナルでは行番号・サインカラムを非表示にする
+autocmd TermOpen *claude* setlocal nonumber norelativenumber signcolumn=no
+autocmd BufEnter *claude* setlocal nonumber norelativenumber signcolumn=no
+
+" ============================================
+" fzf-preview.vim - ファジーファインダー
+" ============================================
+" 使い方:
+"   <Ctrl-p>        : プロジェクト内のファイルを検索
+"   gs              : Git statusのファイルを検索
+"   gl              : Gitログを表示
+"   ga              : Git actionsメニュー
+"   gr <keyword>    : プロジェクト内をgrep検索
+"   ビジュアルモードで gr : 選択したテキストをgrep検索
+"   検索結果内で:
+"     <Ctrl-o>      : ファイルを開く
+"     <Ctrl-t>      : 新しいタブで開く
+"     <Ctrl-v>      : 縦分割で開く
+"     <Ctrl-x>      : 横分割で開く
+"     <Ctrl-a>      : すべて選択/解除をトグル
 nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
 nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
 nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
 nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
 nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
 xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+
 let g:fzf_preview_custom_processes = {
             \ 'open-file': {
             \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
@@ -70,53 +351,67 @@ let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 " 折り畳みを無効にする
 set nofoldenable
 
-" vim-startify
-let g:startify_change_to_dir = 0
-let g:startify_session_autoload = 1
-let g:startify_session_persistence = 1
-let g:startify_session_dir = '~/.nvim/session'
-let g:startify_session_number = 5
-let g:startify_custom_header = [
-  \ '    ============================================',
-  \ '     Neovim ( v{{ neovim_version }} ) ',
-  \ '    ============================================',
-  \]
-let g:startify_lists = [
-          \ { 'type': 'sessions',  'header': ['    Sessions'] },
-          \ { 'type': 'dir',       'header': ['    MRU '. getcwd()] },
-          \ ]
-
-" fern.vim
+" ============================================
+" fern.vim - ファイルエクスプローラー
+" ============================================
+" 使い方:
+"   <Ctrl-n>        : ファイルツリーをトグル（サイドバー表示/非表示）
+"   ファイルツリー内で:
+"     <Enter>       : ファイルを開く/ディレクトリを展開
+"     l             : ディレクトリを展開
+"     h             : ディレクトリを閉じる
+"     R             : ツリーを更新
+"     N             : 新しいファイルを作成
+"     K             : 新しいディレクトリを作成
+"     D             : ファイル/ディレクトリを削除
+"     r             : ファイル/ディレクトリをリネーム
+"     .             : 隠しファイルの表示/非表示
 let g:fern#default_hidden=1
-nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 let g:fern#renderer = 'nerdfont'
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
-" nvim-cmp, nvim-lspconfig
-let $PATH = $HOME . '/.rbenv/shims:' . $PATH
-let $RBENV_VERSION = '{{ ruby_version }}'
-let $BUNDLE_GEMFILE = $HOME . '/.rbenv/versions/{{ ruby_version }}/Gemfile'
-let $NODENV_VERSION = '{{ node_version }}'
-let $GOENV_VERSION = '{{ go_version }}'
+" ============================================
+" nvim-cmp, nvim-lspconfig - 補完とLSP設定
+" ============================================
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
-  -- Global mappings.
-  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  -- ============================================
+  -- LSP グローバルキーマップ
+  -- ============================================
+  -- 使い方:
+  --   <Space>e      : 診断メッセージをフロートで表示
+  --   [d            : 前の診断へ移動
+  --   ]d            : 次の診断へ移動
+  --   <Space>q      : 診断リストを表示
   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
   vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 
-  -- Use LspAttach autocommand to only map the following keys
-  -- after the language server attaches to the current buffer
+  -- ============================================
+  -- LSP バッファ固有のキーマップ
+  -- ============================================
+  -- LSPがアタッチされたバッファでのみ有効になるキーマップ
+  -- 使い方:
+  --   gD            : 宣言へジャンプ
+  --   gd            : 定義へジャンプ
+  --   K             : ホバー情報を表示（ドキュメント）
+  --   gi            : 実装へジャンプ
+  --   <Ctrl-m>      : 関数シグネチャのヘルプを表示
+  --   <Space>wa     : ワークスペースフォルダを追加
+  --   <Space>wr     : ワークスペースフォルダを削除
+  --   <Space>wl     : ワークスペースフォルダ一覧を表示
+  --   <Space>D      : 型定義へジャンプ
+  --   <Space>rn     : シンボルをリネーム
+  --   <Space>ca     : コードアクション（クイックフィックス）
+  --   gr            : 参照を検索
+  --   <Space>f      : コードフォーマット
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
-      -- Enable completion triggered by <c-x><c-o>
       vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-      -- Buffer local mappings.
-      -- See `:help vim.lsp.*` for documentation on any of the below functions
       local opts = { buffer = ev.buf }
       vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
@@ -138,17 +433,21 @@ lua <<EOF
     end,
   })
 
-  -- Set up nvim-cmp.
+  -- ============================================
+  -- nvim-cmp 補完設定
+  -- ============================================
+  -- 使い方:
+  --   <Ctrl-b>      : 補完ドキュメントを上にスクロール
+  --   <Ctrl-f>      : 補完ドキュメントを下にスクロール
+  --   <Ctrl-Space>  : 補完を手動でトリガー
+  --   <Ctrl-e>      : 補完をキャンセル
+  --   <Enter>       : 選択した補完を確定
   local cmp = require'cmp'
 
   cmp.setup({
     snippet = {
-      -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        vim.fn["UltiSnips#Anon"](args.body)
       end,
     },
     window = {
@@ -160,129 +459,218 @@ lua <<EOF
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
+      { name = "copilot" },
       { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
+      { name = 'vsnip' },
     }, {
       { name = 'buffer' },
       { name = 'path' },
     })
   })
 
-  -- Set up LSP servers
+  -- ============================================
+  -- LSPサーバー設定
+  -- ============================================
   local nvim_lsp = require('lspconfig')
   local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-  local servers = { 'bashls', 'eslint', 'gopls', 'pylsp', 'solargraph' }
+  local servers = { 'bashls', 'eslint' }
+
   for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
       on_attach = function(client, bufnr)
         capabilities = cmp_capabilities
         on_attach = on_attach
+        -- documentHighlightをサポートしている場合のみハイライトを有効化
+        if client.server_capabilities.documentHighlightProvider then
+          vim.cmd [[
+            set updatetime=500
+            highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+            highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+            highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+            augroup lsp_document_highlight
+              autocmd! * <buffer>
+              autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+              autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+            augroup END
+          ]]
+        end
+      end
+    }
+  end
+
+  -- gopls (Go) 設定
+  nvim_lsp.gopls.setup {
+    cmd = { vim.fn.expand('~/.local/share/mise/shims/gopls') },
+    on_attach = function(client, bufnr)
+      capabilities = cmp_capabilities
+      on_attach = on_attach
+      if client.server_capabilities.documentHighlightProvider then
         vim.cmd [[
           set updatetime=500
           highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
           highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
           highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
           augroup lsp_document_highlight
-            autocmd!
-            autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
-            autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
+            autocmd! * <buffer>
+            autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
           augroup END
         ]]
-        -- gopls のみで、かつ documentFormattingProvider が有効な場合にフォーマット設定を行う
-        if lsp == "gopls" and client.server_capabilities.documentFormattingProvider then
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
-          vim.cmd([[
-            augroup GoAutoFormat
-              autocmd!
-              autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
-            augroup END
-          ]])
-        end
       end
-    }
-  end
-
-  nvim_lsp.sqls.setup{
-    on_attach = function(client, bufnr)
-      capabilities = capabilities
-      require('sqls').on_attach(client, bufnr)
+      -- 保存時に自動フォーマット
+      if client.server_capabilities.documentFormattingProvider then
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+        vim.cmd([[
+          augroup GoAutoFormat
+            autocmd!
+            autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
+          augroup END
+        ]])
+      end
     end
   }
 
-  require("claude-code").setup({
-    -- Terminal window settings
-    window = {
-      split_ratio = 0.7,      -- Percentage of screen for the terminal window (height for horizontal, width for vertical splits)
-      position = "botright",  -- Position of the window: "botright", "topleft", "vertical", "rightbelow vsplit", etc.
-      enter_insert = true,    -- Whether to enter insert mode when opening Claude Code
-      hide_numbers = true,    -- Hide line numbers in the terminal window
-      hide_signcolumn = true, -- Hide the sign column in the terminal window
-    },
-    -- File refresh settings
-    refresh = {
-      enable = true,           -- Enable file change detection
-      updatetime = 100,        -- updatetime when Claude Code is active (milliseconds)
-      timer_interval = 1000,   -- How often to check for file changes (milliseconds)
-      show_notifications = true, -- Show notification when files are reloaded
-    },
-    -- Git project settings
-    git = {
-      use_git_root = true,     -- Set CWD to git root when opening Claude Code (if in git project)
-    },
-    -- Command settings
-    command = "claude",        -- Command used to launch Claude Code
-    -- Command variants
-    command_variants = {
-      -- Conversation management
-      continue = "--continue", -- Resume the most recent conversation
-      resume = "--resume",     -- Display an interactive conversation picker
-
-      -- Output options
-      verbose = "--verbose",   -- Enable verbose logging with full turn-by-turn output
-    },
-    -- Keymaps
-    keymaps = {
-      toggle = {
-        normal = "<C-,>",       -- Normal mode keymap for toggling Claude Code, false to disable
-        terminal = "<C-,>",     -- Terminal mode keymap for toggling Claude Code, false to disable
-        variants = {
-          continue = "<leader>cC", -- Normal mode keymap for Claude Code with continue flag
-          verbose = "<leader>cV",  -- Normal mode keymap for Claude Code with verbose flag
+  -- pylsp (Python) 設定 - uvでインストールしたPythonを使用
+  nvim_lsp.pylsp.setup {
+    cmd = { vim.fn.expand('~/.local/bin/pylsp') },
+    settings = {
+      pylsp = {
+        plugins = {
+          jedi = {
+            environment = vim.fn.expand('~/.local/bin/python3'),
+          },
         },
       },
-      window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)
-      scrolling = true,         -- Enable scrolling keymaps (<C-f/b>) for page up/down
-    }
+    },
+    on_attach = function(client, bufnr)
+      capabilities = cmp_capabilities
+      on_attach = on_attach
+      if client.server_capabilities.documentHighlightProvider then
+        vim.cmd [[
+          set updatetime=500
+          highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          augroup lsp_document_highlight
+            autocmd! * <buffer>
+            autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+        ]]
+      end
+    end
+  }
+
+  -- Solargraph (Ruby) 設定
+  nvim_lsp.solargraph.setup {
+    cmd = { vim.fn.expand('~/.local/share/mise/shims/solargraph'), 'stdio' },
+    on_attach = function(client, bufnr)
+      capabilities = cmp_capabilities
+      on_attach = on_attach
+      -- documentHighlightをサポートしている場合のみハイライトを有効化
+      if client.server_capabilities.documentHighlightProvider then
+        vim.cmd [[
+          set updatetime=500
+          highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+          augroup lsp_document_highlight
+            autocmd! * <buffer>
+            autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+        ]]
+      end
+    end
+  }
+
+  -- sqls (SQL) 設定
+  -- sqls.nvim の新方式: lsp/sqls.lua が自動設定
+  vim.lsp.enable('sqls')
+
+  -- ============================================
+  -- Copilot 設定
+  -- ============================================
+  require("copilot").setup({
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+    copilot_node_command = vim.fn.expand("~/.local/share/mise/installs/node/{{ node_version }}/bin/node"),
   })
 
-  -- Set up gopls
+  -- ============================================
+  -- Claude Code 設定
+  -- ============================================
+  -- 使い方:
+  --   <Ctrl-,>        : Claude Codeをトグル（ノーマルモード/ターミナルモード）
+  --   <leader>cC      : Claude Code --continue で再開
+  --   <leader>cV      : Claude Code --verbose で起動
+  --   <Ctrl-h/j/k/l>  : ウィンドウ間の移動
+  --   <Ctrl-f/b>      : ページアップ/ダウン
+  local status_ok, claude_code = pcall(require, "claude-code")
+  if status_ok then
+    claude_code.setup({
+      window = {
+        split_ratio = 1.0,
+        position = "botright",
+        enter_insert = false,
+        start_in_normal_mode = true,
+        hide_numbers = true,
+        hide_signcolumn = true,
+        hide_cursorline = true,
+      },
+      refresh = {
+        enable = true,
+        updatetime = 100,
+        timer_interval = 1000,
+        show_notifications = true,
+      },
+      git = {
+        use_git_root = true,
+        multi_instance = false,
+      },
+      command = "claude",
+      command_variants = {
+        continue = "--continue",
+        resume = "--resume",
+        verbose = "--verbose",
+      },
+      keymaps = {
+        toggle = {
+          normal = "<C-,>",
+          terminal = "<C-,>",
+          variants = {
+            continue = "<leader>cC",
+            verbose = "<leader>cV",
+          },
+        },
+        window_navigation = true,
+        scrolling = true,
+      }
+    })
+  end
+
+  -- ============================================
+  -- Go言語専用設定
+  -- ============================================
+  -- goimports: import文を自動整理する関数
   function goimports(timeout_ms)
     local context = { only = { "source.organizeImports" } }
-    vim.validate { context = { context, "t", true } }
 
     local params = vim.lsp.util.make_range_params()
     params.context = context
 
-    -- See the implementation of the textDocument/codeAction callback
-    -- (lua/vim/lsp/handler.lua) for how to do this properly.
     local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
     if not result or next(result) == nil then return end
     local actions = result[1].result
     if not actions then return end
     local action = actions[1]
 
-    -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
-    -- is a CodeAction, it can have either an edit, a command or both. Edits
-    -- should be executed first.
     if action.edit or type(action.command) == "table" then
       if action.edit then
-        vim.lsp.util.apply_workspace_edit(action.edit)
+        vim.lsp.util.apply_workspace_edit(action.edit, "utf-16")
       end
       if type(action.command) == "table" then
         vim.lsp.buf.execute_command(action.command)
@@ -292,11 +680,25 @@ lua <<EOF
     end
   end
 EOF
+
+" ============================================
+" Go言語固有のキーマップと自動コマンド
+" ============================================
+" 使い方:
+"   <Ctrl-o>        : 定義へジャンプ（Goファイル用）
+"   保存時に自動実行:
+"     - gofmt でフォーマット
+"     - goimports でimport整理
 nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
-autocmd BufWritePre *.go call execute('lua vim.lsp.buf.formatting_sync()')
+autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
 autocmd BufWritePre *.go lua goimports(1000)
 
-" キーバインド変更
+" ============================================
+" 基本的なキーバインド
+" ============================================
+" 使い方:
+"   j / k           : 表示行単位で上下移動（折り返し対応）
+"   <Ctrl-h/j/k/l>  : ウィンドウ間を移動
 nnoremap j gj
 nnoremap k gk
 nnoremap <C-h> <C-w>h
@@ -304,39 +706,44 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" ============================================
 " インデント関連の設定
-set tabstop=8
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set smarttab
-set autoindent
-set backspace=indent,eol,start
+" ============================================
+set tabstop=8          " タブ文字の表示幅
+set softtabstop=4      " タブキー押下時の挿入幅
+set shiftwidth=4       " 自動インデントの幅
+set expandtab          " タブをスペースに展開
+set smarttab           " 行頭でのタブ挿入を賢く
+set autoindent         " 自動インデント
+set backspace=indent,eol,start  " バックスペースの挙動
 
-" その他
-set number
-set splitright
-set hls
-set whichwrap=b,s,h,l,<,>,[,]
-set cursorline
-set cursorcolumn
-set clipboard+=unnamedplus
+" ============================================
+" 見た目・表示設定
+" ============================================
+set number             " 行番号を表示
+set splitright         " 新しいウィンドウを右に開く
+set hls                " 検索結果をハイライト
+set whichwrap=b,s,h,l,<,>,[,]  " カーソルの左右移動で行をまたぐ
+set cursorline         " カーソル行をハイライト
+set cursorcolumn       " カーソル列をハイライト
+set clipboard+=unnamedplus  " システムクリップボードと連携
 set clipboard+=unnamed
-set switchbuf+=usetab,newtab
-set wildignore=assets
-set termguicolors
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-set list
-set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set switchbuf+=usetab,newtab  " バッファ切り替え時にタブを使う
+set wildignore=assets  " assetsディレクトリを補完候補から除外
+set list               " 不可視文字を表示
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%  " 不可視文字の表示方法
 
-" 前回開いた行数から再開する
+" ============================================
+" 前回開いた位置から再開
+" ============================================
 augroup vimrcEx
   au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
   \ exe "normal g`\"" | endif
 augroup END
 
-" wsl用設定
+" ============================================
+" WSL用設定 - クリップボード連携
+" ============================================
 if system('uname -a | grep microsoft') != ''
   augroup Yank
     au!
@@ -344,3 +751,61 @@ if system('uname -a | grep microsoft') != ''
   augroup END
   noremap <silent> p :call setreg('"',system('win32yank.exe -o'))<CR>""p
 endif
+
+" ============================================
+" 起動時の自動設定
+" ============================================
+" 引数なしで起動した場合に自動でタブを開く
+augroup StartupTabs
+  au!
+  autocmd VimEnter * nested call timer_start(500, {-> s:startup_tabs()})
+augroup END
+
+function! s:startup_tabs()
+  " 引数なしで起動したかどうかを判定
+  " - ファイル引数がある場合は開かない (argc() > 0)
+  " - コマンド引数(-c)がある場合は開かない
+  " - git commit等で呼ばれた場合は開かない
+  let l:should_open_tabs = argc() == 0 && !s:has_command_arg()
+
+  " 引数なしの場合のみタブを開く
+  if l:should_open_tabs
+    " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
+    if exists(':ClaudeCode')
+      " 起動時の[No Name]バッファを先に削除
+      if bufname('%') == '' && !&modified
+        enew
+      endif
+      ClaudeCode
+    else
+      " プラグインがまだロードされていない場合は、さらに待つ
+      call timer_start(500, {-> s:retry_claude_toggle()})
+    endif
+
+    " 別タブでcommon.sqlを開く
+    tabnew ~/.local/share/nvim/common.sql
+
+    " さらに右に空のタブを開く
+    tabnew
+
+    " 最初のタブ（ClaudeCode）に戻る
+    tabfirst
+  endif
+endfunction
+
+" コマンド引数(-cなど)が指定されているかチェック
+function! s:has_command_arg()
+  for arg in v:argv
+    if arg =~# '^-c' || arg =~# '^+' || arg =~# '^--cmd'
+      return 1
+    endif
+  endfor
+  return 0
+endfunction
+
+function! s:retry_claude_toggle()
+  if exists(':ClaudeCode')
+    tabfirst
+    ClaudeCode
+  endif
+endfunction

@@ -63,3 +63,4 @@ if-shell "uname -a | grep -q microsoft" "bind-key -T copy-mode-vi Enter send -X 
 
 # デフォルトで開くセッションの設定
 new-session -d -s default -c {{ tmux_main_dir }}
+send-keys -t default "nvim" C-m

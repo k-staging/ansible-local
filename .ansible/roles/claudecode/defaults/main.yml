@@ -1,0 +1,42 @@
+---
+# Claude Code 設定
+
+claude_code_version: "2.1.42"
+
+# devcontainer.vim version for YOLO mode
+devcontainer_vim_version: "3.6.0"
+
+# Claude Code directories
+claudecode_dir:
+  - "~/.claude"
+  - "~/.claude/commands"
+  - "~/.claude/agents"
+  - "~/.claude/skills/backend-dev"
+  - "~/.claude/skills/infra-quick-check"
+  - "~/.claude/skills/sql-helper"
+  - "~/.serena"
+  - "~/.codex"
+
+# Claude Code LSP plugins
+# https://github.com/anthropics/claude-plugins-official
+claude_code_lsp_plugins:
+  - typescript-lsp
+  - gopls-lsp
+
+# Custom LSP plugins (via custom-lsp marketplace)
+# pylsp-lsp は Python環境の問題があるため無効化
+# LSPが必要な場合は Claude Code 標準のLSP機能 (ENABLE_LSP_TOOL=1) を使用
+claude_code_custom_lsp_plugins:
+  - name: solargraph-lsp
+    description: "Ruby Language Server (Solargraph)"
+    command: solargraph
+    args:
+      - stdio
+    extensions:
+      ".rb": ruby
+      ".rake": ruby
+      ".gemspec": ruby
+
+# Claude Code experimental features
+claude_code_experimental_features:
+  agent_teams: true

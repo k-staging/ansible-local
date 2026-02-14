@@ -1,0 +1,309 @@
+---
+# ============================================
+# Claude Code Native インストール
+# ============================================
+- name: check if claude is already installed
+  ansible.builtin.command: which claude
+  register: claude_installed_check
+  ignore_errors: true
+  changed_when: false
+
+- name: get current claude version
+  ansible.builtin.shell: claude --version | head -1 | awk '{print $1}'
+  register: claude_current_version
+  changed_when: false
+  when: claude_installed_check.rc == 0
+
+- name: set version check result
+  ansible.builtin.set_fact:
+    claude_needs_update: "{{ claude_installed_check.rc != 0 or (claude_current_version.stdout | default('') != claude_code_version) }}"
+
+- name: download Claude Code installer
+  ansible.builtin.get_url:
+    url: https://claude.ai/install.sh
+    dest: /tmp/claude-install.sh
+    mode: 0755
+  when: claude_needs_update
+
+- name: run Claude Code installer with version
+  ansible.builtin.shell: CLAUDE_CODE_VERSION={{ claude_code_version }} /tmp/claude-install.sh
+  when: claude_needs_update
+
+# ============================================
+# Claude Code ディレクトリ作成
+# ============================================
+- name: create Claude Code directories
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ item | regex_replace('^~/', '') }}"
+    state: directory
+    mode: 0755
+  loop: "{{ claudecode_dir }}"
+
+# ============================================
+# Claude Code 設定ファイル
+# ============================================
+- name: copy CLAUDE.md
+  ansible.builtin.copy:
+    src: "CLAUDE.md"
+    dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.md"
+    mode: 0644
+
+- name: copy CLAUDE.local.md (highest priority rules)
+  ansible.builtin.copy:
+    src: "CLAUDE.local.md"
+    dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.local.md"
+    mode: 0644
+
+- name: copy custom command files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.claude/commands/{{ item }}"
+    mode: 0644
+  loop:
+    - sequential-thinking.md
+    - plan.md
+    - team.md
+
+- name: deploy settings.json to ~/.claude
+  ansible.builtin.template:
+    src: "settings.json.j2"
+    dest: "{{ ansible_env.HOME }}/.claude/settings.json"
+    mode: 0644
+
+# ============================================
+# Claude Code Agents
+# ============================================
+- name: copy Claude subagent files
+  ansible.builtin.copy:
+    src: "claude-agents/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.claude/agents/{{ item }}"
+    mode: 0644
+  loop:
+    - ansible-validator.md
+    - infra-reviewer.md
+    - docs-updater.md
+    - rails-test-guardian.md
+    - rails-security-auditor.md
+    - rails-performance-optimizer.md
+    - rails-db-migration-reviewer.md
+    - rails-code-reviewer.md
+
+# ============================================
+# Claude Code Skills
+# ============================================
+- name: copy Claude skill files
+  ansible.builtin.copy:
+    src: "claude-skills/{{ item }}/SKILL.md"
+    dest: "{{ ansible_env.HOME }}/.claude/skills/{{ item }}/SKILL.md"
+    mode: 0644
+  loop:
+    - backend-dev
+    - infra-quick-check
+    - sql-helper
+
+# ============================================
+# MCP Servers 設定
+# ============================================
+- name: check if ~/.claude.json exists
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.claude.json"
+  register: claude_json_stat
+
+- name: check if jq is installed
+  ansible.builtin.command: which jq
+  register: jq_check
+  ignore_errors: true
+  changed_when: false
+
+- name: update ~/.claude.json with mcpServers
+  block:
+    - name: copy mcpServers.json
+      ansible.builtin.copy:
+        src: "mcpServers.json"
+        dest: "/tmp/mcpServers.json"
+        mode: 0644
+
+    - name: update ~/.claude.json with mcpServers
+      ansible.builtin.shell: |
+        jq '.mcpServers = $newMcpServers' \
+          --argjson newMcpServers "$(cat /tmp/mcpServers.json)" \
+          {{ ansible_env.HOME }}/.claude.json > /tmp/claude.json.tmp && \
+        mv /tmp/claude.json.tmp {{ ansible_env.HOME }}/.claude.json
+      changed_when: true
+
+    - name: remove temporary mcpServers.json
+      ansible.builtin.file:
+        path: "/tmp/mcpServers.json"
+        state: absent
+  when:
+    - claude_json_stat.stat.exists
+    - jq_check.rc == 0
+
+# ============================================
+# Serena 設定
+# ============================================
+- name: copy serena_config.yml
+  ansible.builtin.copy:
+    src: "serena_config.yml"
+    dest: "{{ ansible_env.HOME }}/.serena/serena_config.yml"
+    mode: 0644
+
+# ============================================
+# Codex 設定
+# ============================================
+- name: copy AGENTS.md
+  ansible.builtin.copy:
+    src: "AGENTS.md"
+    dest: "{{ ansible_env.HOME }}/.codex/AGENTS.md"
+    mode: 0644
+
+# ============================================
+# Claude Code YOLO モード環境のセットアップ
+# ============================================
+- name: check if Docker is installed
+  ansible.builtin.command: which docker
+  register: docker_check
+  ignore_errors: true
+  changed_when: false
+
+- name: setup Claude Code YOLO environment
+  when: docker_check.rc == 0
+  block:
+    - name: install devcontainer.vim (mac)
+      block:
+        - name: download devcontainer.vim binary (mac)
+          ansible.builtin.get_url:
+            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-darwin-arm64"
+            dest: "/tmp/devcontainer.vim"
+            mode: 0755
+
+        - name: install devcontainer.vim binary (mac)
+          ansible.builtin.copy:
+            src: "/tmp/devcontainer.vim"
+            dest: "/usr/local/bin/devcontainer.vim"
+            mode: 0755
+            remote_src: true
+          become: true
+      when: ansible_distribution == 'MacOSX'
+
+    - name: install devcontainer.vim (linux)
+      block:
+        - name: download devcontainer.vim binary (linux)
+          ansible.builtin.get_url:
+            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-linux-amd64"
+            dest: "/tmp/devcontainer.vim"
+            mode: 0755
+
+        - name: install devcontainer.vim binary (linux)
+          ansible.builtin.copy:
+            src: "/tmp/devcontainer.vim"
+            dest: "/usr/local/bin/devcontainer.vim"
+            mode: 0755
+            remote_src: true
+          become: true
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: create Claude YOLO template directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer"
+        state: directory
+        mode: 0755
+
+    - name: copy Claude YOLO devcontainer template files
+      ansible.builtin.copy:
+        src: "claude-yolo/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer/{{ item }}"
+        mode: "{{ '0755' if item == 'init-firewall.sh' else '0644' }}"
+      loop:
+        - Dockerfile
+        - devcontainer.vim.json
+        - init-firewall.sh
+
+    - name: template Claude YOLO devcontainer.json
+      ansible.builtin.template:
+        src: "devcontainer.json.j2"
+        dest: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer/devcontainer.json"
+        mode: "0644"
+
+    - name: display Claude YOLO setup message
+      ansible.builtin.debug:
+        msg: |
+          Claude Code YOLO モード環境をセットアップしました
+
+          使い方:
+            1. プロジェクトにテンプレートをコピー:
+               cp -r ~/.config/claude-yolo-template/.devcontainer ./
+
+            2. コンテナ起動 + Neovim実行:
+               devcontainer.vim start . --nvim
+
+            3. コンテナ内でClaude Code YOLO起動:
+               <Ctrl-t> でターミナルを開く
+               claude --dangerously-skip-permissions
+
+            4. コンテナ停止:
+               devcontainer.vim stop .
+
+          注意: 初回起動時はイメージビルドに数分かかります
+
+# ============================================
+# Claude Code LSP プラグイン設定
+# ============================================
+- name: check claude command exists for plugins
+  ansible.builtin.command: which claude
+  register: claude_plugin_check
+  ignore_errors: true
+  changed_when: false
+
+- name: install Claude Code LSP plugins from official marketplace
+  ansible.builtin.command: "claude plugin install {{ item }}"
+  loop: "{{ claude_code_lsp_plugins }}"
+  register: plugin_install_result
+  changed_when: "'Successfully installed' in plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+# Custom LSP plugins via local marketplace
+- name: create custom-lsp marketplace directory structure
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - ".claude-plugin"
+    - "plugins"
+
+- name: create custom LSP plugin source directories
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}"
+    state: directory
+    mode: 0755
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: create README for custom LSP plugins
+  ansible.builtin.copy:
+    content: "# {{ item.name }}\n{{ item.description }}\n"
+    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/README.md"
+    mode: 0644
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy custom-lsp marketplace.json
+  ansible.builtin.template:
+    src: "custom_lsp_marketplace.json.j2"
+    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/.claude-plugin/marketplace.json"
+    mode: 0644
+
+- name: add custom-lsp marketplace
+  ansible.builtin.command: "claude plugin marketplace add {{ ansible_env.HOME }}/.claude/plugins/custom-marketplace"
+  register: marketplace_add_result
+  changed_when: "'Successfully added' in marketplace_add_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: install custom LSP plugins
+  ansible.builtin.command: "claude plugin install {{ item.name }}@custom-lsp"
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+  register: custom_plugin_install_result
+  changed_when: "'Successfully installed' in custom_plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0

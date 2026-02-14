@@ -1,12 +1,13 @@
 ---
-neovim_version: "0.10.3"
+neovim_version: "0.11.6"
 nerdfonts_version: "3.0.2"
+oxker_version: "0.12.0"
+lazygit_version: "0.44.1"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/sqls"
-  - "~/.nvim/session"
   - "/usr/local/src/nvim"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"
@@ -22,28 +23,29 @@ neovim_plugins:
   - name: "lambdalisue/fern-git-status.vim"
     version: "151336335d3b6975153dad77e60049ca7111da8e"
   # SQL 関連
-  - name: "sqls-server/sqls"
-    version: "eb695acda8a928f6633555fedb91b22e6290f0f0"
+  # sqls サーバーは mise の go_packages で管理 (v0.2.20 固定)
   - name: "nanotee/sqls.nvim"
-    version: "a514379f5f89bf72955ed3bf5c1c31a40b8a1472"
+    version: "bfb7b4090268f6163c408577070da4cc9d7450fd"
   - name: "mattn/vim-sqlfmt"
     version: "db6365103e38d274efe7689a002646a4419ae821"
   # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
-  # GraphQL
-  - name: "vim-denops/denops.vim"
-    version: "ce5d290493b29968fd3afa4c1190ea27a876861d"
-  - name: "skanehira/denops-graphql.vim"
-    version: "9f23b81e5afdc14e24d55ea4d2b970a5c5bc32de"
-  # 起動画面
-  - name: "mhinz/vim-startify"
-    version: "81e36c352a8deea54df5ec1e2f4348685569bed2"
+  # copilot
+  - name: "github/copilot.vim"
+    version: "7097b09e52621a97d11f254e04de5e5a0f26e5f5"
+  - name: "zbirenbaum/copilot.lua"
+    version: "f8d8d872bb319f640d5177dad5fbf01f7a16d7d0"
+  - name: "zbirenbaum/copilot-cmp"
+    version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
   # claude code
   - name: "greggh/claude-code.nvim"
-    version: "ffdf35d8566528cb144d9812eccfecee34502edf"
+    version: "c9a31e51069977edaad9560473b5d031fcc5d38b"
   - name: "nvim-lua/plenary.nvim"
     version: "857c5ac632080dba10aae49dba902ce3abf91b35"
+  # codex
+  - name: "johnseth97/codex.nvim"
+    version: "0bb28eb7017e02600a985a627140595900610fc8"
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
@@ -54,18 +56,19 @@ neovim_plugins:
     version: "1e90a78ab5510fbcedc85abeb9a251d978726935"
   # その他
   - name: "neovim/nvim-lspconfig"
-    version: "v1.2.0"
-  - name: "tpope/vim-fugitive"
-    version: "5b0b138483de17a8fd8dfcec0b491782c8fbf102"
-  - name: "vim-airline/vim-airline"
-    version: "9e2d021fc6088a2027315d7e7ae8bafa94f16a7d"
-  - name: "vim-airline/vim-airline-themes"
-    version: "dd81554c2231e438f6d0e8056ea38fd0e80ac02a"
+    version: "v2.5.0"
+  # ステータスライン・タブライン (lualine + bufferline)
+  - name: "nvim-lualine/lualine.nvim"
+    version: "47f91c416daef12db467145e16bed5bbfe00add8"
+  - name: "akinsho/bufferline.nvim"
+    version: "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
+  - name: "nvim-tree/nvim-web-devicons"
+    version: "803353450c374192393f5387b6a0176d0972b848"
   - name: "thinca/vim-qfreplace"
     version: "db1c4b0161931c9a63942f4f562a0d0f4271ac14"
   # 以降は nvim-cmp (補完関連) のプラグイン
   - name: "hrsh7th/cmp-nvim-lsp"
-    version: "59224771f91b86d1de12570b4070fe4ad7cd1eeb"
+    version: "cbc7b02bb99fae35cb42f514762b89b5126651ef"
   - name: "hrsh7th/cmp-buffer"
     version: "3022dbc9166796b644a841a02de8dd1cc1d311fa"
   - name: "hrsh7th/cmp-path"
@@ -73,7 +76,7 @@ neovim_plugins:
   - name: "hrsh7th/cmp-cmdline"
     version: "23c51b2a3c00f6abc4e922dbd7c3b9aca6992063"
   - name: "hrsh7th/nvim-cmp"
-    version: "d09b0c396aaa078cdfe78316ec06940971136e85"
+    version: "da88697d7f45d16852c6b2769dc52387d1ddc45f"
   - name: "hrsh7th/cmp-vsnip"
     version: "989a8a73c44e926199bfd05fa7a516d51f2d2752"
   - name: "hrsh7th/vim-vsnip"
@@ -90,7 +93,12 @@ neovim_plugins:
     version: "47def62945611212a242657cc414dac91ca0453a"
   - name: "dcampos/cmp-snippy"
     version: "9af1635fe40385ffa3dabf322039cb5ae1fd7d35"
-db_user: "root"
+  # ターミナル・Git管理・Docker管理関連
+  - name: "akinsho/toggleterm.nvim"
+    version: "9a88eae817ef395952e08650b3283726786fb5fb"
+  - name: "sindrets/diffview.nvim"
+    version: "4516612fe98ff56ae0415a259ff6361a89419b0a"
+db_user: "postgres"
 db_password: ""
-db_dbname: "mysql"
+db_dbname: "postgres"
 

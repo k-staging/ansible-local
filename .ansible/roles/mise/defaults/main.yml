@@ -1,0 +1,22 @@
+---
+mise_bin: "{{ ansible_env.HOME }}/.local/bin/mise"
+
+npm_packages:
+  - "bash-language-server@5.4.2"
+  - "vscode-langservers-extracted@4.5.0"
+  - "typescript-language-server@4.3.3"
+  - "typescript@5.7.3"
+  - "@modelcontextprotocol/server-sequential-thinking@2025.7.1"
+  - "@upstash/context7-mcp@1.0.26"
+  - "@openai/codex@0.55.0"
+
+go_packages:
+  - "github.com/lighttiger2505/sqls@v0.2.20"
+  - "golang.org/x/tools/gopls@v0.11.0"
+  - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
+  - "github.com/mdempsky/gocode@v.20150303"
+  - "github.com/go-delve/delve/cmd/dlv@v1.20.1"
+
+ruby_gems:
+  - "solargraph"
+  - "rubocop"
