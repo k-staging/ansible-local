@@ -1,9 +1,0 @@
-{
-  "vimBinary": "nvim",
-  "copyLocalSettings": true,
-  "localSettingsPath": "~/.config/nvim",
-  "additionalMounts": [
-    "type=bind,source=${HOME}/.config/nvim,target=/home/node/.config/nvim,readonly"
-  ],
-  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh"
-}

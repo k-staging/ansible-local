@@ -3,9 +3,6 @@
 
 claude_code_version: "2.1.47"
 
-# devcontainer.vim version for YOLO mode
-devcontainer_vim_version: "3.6.0"
-
 # Claude Code directories
 claudecode_dir:
   - "~/.claude"
