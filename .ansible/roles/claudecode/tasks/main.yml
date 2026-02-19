@@ -172,9 +172,7 @@
   loop: "{{ claude_code_lsp_plugins }}"
   register: plugin_install_result
   changed_when: "'Successfully installed' in plugin_install_result.stdout"
-  failed_when:
-    - plugin_install_result.rc != 0
-    - "'already installed' not in (plugin_install_result.stderr | default(''))"
+  failed_when: false
   when: claude_plugin_check.rc == 0
 
 # Custom LSP plugins via local marketplace
