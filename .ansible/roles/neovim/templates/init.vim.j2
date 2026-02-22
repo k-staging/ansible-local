@@ -352,23 +352,68 @@ let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
 set nofoldenable
 
 " ============================================
-" fern.vim - ファイルエクスプローラー
+" mini.icons - NerdFonts不要のASCIIアイコン表示
+" ============================================
+lua <<EOF
+local mini_icons_ok, mini_icons = pcall(require, "mini.icons")
+if mini_icons_ok then
+  mini_icons.setup({ style = 'ascii' })
+  mini_icons.mock_nvim_web_devicons()
+end
+EOF
+
+" ============================================
+" neo-tree.nvim - サイドバーツリー表示
 " ============================================
 " 使い方:
 "   <Ctrl-n>        : ファイルツリーをトグル（サイドバー表示/非表示）
-"   ファイルツリー内で:
+"   ツリー内で:
 "     <Enter>       : ファイルを開く/ディレクトリを展開
-"     l             : ディレクトリを展開
-"     h             : ディレクトリを閉じる
-"     R             : ツリーを更新
-"     N             : 新しいファイルを作成
-"     K             : 新しいディレクトリを作成
-"     D             : ファイル/ディレクトリを削除
-"     r             : ファイル/ディレクトリをリネーム
-"     .             : 隠しファイルの表示/非表示
-let g:fern#default_hidden=1
-let g:fern#renderer = 'nerdfont'
-nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+"     <BS>          : 親ディレクトリに戻る
+"     a             : 新しいファイル/ディレクトリを作成
+"     d             : ファイル/ディレクトリを削除
+"     r             : リネーム
+"     R             : リフレッシュ
+"     H             : 隠しファイルの表示/非表示
+"     /             : フィルター
+lua <<EOF
+local neotree_ok, neotree = pcall(require, "neo-tree")
+if neotree_ok then
+  neotree.setup({
+    close_if_last_window = true,
+    filesystem = {
+      filtered_items = {
+        visible = true,
+        hide_dotfiles = false,
+        hide_gitignored = false,
+      },
+      follow_current_file = {
+        enabled = true,
+      },
+    },
+    window = {
+      position = "left",
+      width = 40,
+    },
+    default_component_configs = {
+      git_status = {
+        symbols = {
+          added     = "+",
+          modified  = "~",
+          deleted   = "x",
+          renamed   = "r",
+          untracked = "?",
+          ignored   = "!",
+          unstaged  = "M",
+          staged    = "S",
+          conflict  = "C",
+        },
+      },
+    },
+  })
+end
+EOF
+nnoremap <C-n> :Neotree toggle<CR>
 
 " ============================================
 " nvim-cmp, nvim-lspconfig - 補完とLSP設定

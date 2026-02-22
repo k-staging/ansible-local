@@ -1,6 +1,5 @@
 ---
 neovim_version: "0.11.6"
-nerdfonts_version: "3.0.2"
 oxker_version: "0.12.0"
 lazygit_version: "0.44.1"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
@@ -8,6 +7,7 @@ neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/sqls"
+  - "~/.config/lazygit"
   - "/usr/local/src/nvim"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"
@@ -18,10 +18,12 @@ neovim_plugins:
   # 最新コミットにしたら何故か動かなくなった為
   - name: "yuki-yano/fzf-preview.vim"
     version: "fb268bb248a83165abcc75509832f93be9741b3b"
-  - name: "lambdalisue/fern.vim"
-    version: "41710c31fffa76d08b8cfcd53d5defa7c07a3fc6"
-  - name: "lambdalisue/fern-git-status.vim"
-    version: "151336335d3b6975153dad77e60049ca7111da8e"
+  - name: "nvim-neo-tree/neo-tree.nvim"
+    version: "9a1f0461c4cc62e64616bafe9425572ff6a5f245"
+  - name: "MunifTanjim/nui.nvim"
+    version: "de740991c12411b663994b2860f1a4fd0937c130"
+  - name: "echasnovski/mini.icons"
+    version: "5b9076dae1bfbe47ba4a14bc8b967cde0ab5d77e"
   # SQL 関連
   # sqls サーバーは mise の go_packages で管理 (v0.2.20 固定)
   - name: "nanotee/sqls.nvim"
@@ -49,11 +51,6 @@ neovim_plugins:
   # カラースキーマ
   - name: "morhetz/gruvbox"
     version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
-  # NerdFont 関連
-  - name: "lambdalisue/nerdfont.vim"
-    version: "85dcc800c94f7ab04e13900d6668faf86a0cdc78"
-  - name: "lambdalisue/fern-renderer-nerdfont.vim"
-    version: "1e90a78ab5510fbcedc85abeb9a251d978726935"
   # その他
   - name: "neovim/nvim-lspconfig"
     version: "v2.5.0"
@@ -62,8 +59,6 @@ neovim_plugins:
     version: "47f91c416daef12db467145e16bed5bbfe00add8"
   - name: "akinsho/bufferline.nvim"
     version: "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
-  - name: "nvim-tree/nvim-web-devicons"
-    version: "803353450c374192393f5387b6a0176d0972b848"
   - name: "thinca/vim-qfreplace"
     version: "db1c4b0161931c9a63942f4f562a0d0f4271ac14"
   # 以降は nvim-cmp (補完関連) のプラグイン
