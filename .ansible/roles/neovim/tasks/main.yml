@@ -52,6 +52,15 @@
     dest: "~/.local/share/nvim/common.sql"
     mode: 0644
 
+# TODO: 全マシンへの適用完了後に削除する（fern → oil.nvim + neo-tree.nvim 移行）
+- name: remove old fern plugins
+  ansible.builtin.file:
+    path: "{{ neovim_plugin_path }}/{{ item }}"
+    state: absent
+  loop:
+    - "fern.vim"
+    - "fern-git-status.vim"
+
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item.name }}.git"

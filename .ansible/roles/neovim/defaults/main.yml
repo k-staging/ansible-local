@@ -18,10 +18,12 @@ neovim_plugins:
   # 最新コミットにしたら何故か動かなくなった為
   - name: "yuki-yano/fzf-preview.vim"
     version: "fb268bb248a83165abcc75509832f93be9741b3b"
-  - name: "lambdalisue/fern.vim"
-    version: "41710c31fffa76d08b8cfcd53d5defa7c07a3fc6"
-  - name: "lambdalisue/fern-git-status.vim"
-    version: "151336335d3b6975153dad77e60049ca7111da8e"
+  - name: "nvim-neo-tree/neo-tree.nvim"
+    version: "9a1f0461c4cc62e64616bafe9425572ff6a5f245"
+  - name: "MunifTanjim/nui.nvim"
+    version: "de740991c12411b663994b2860f1a4fd0937c130"
+  - name: "echasnovski/mini.icons"
+    version: "5b9076dae1bfbe47ba4a14bc8b967cde0ab5d77e"
   # SQL 関連
   # sqls サーバーは mise の go_packages で管理 (v0.2.20 固定)
   - name: "nanotee/sqls.nvim"
