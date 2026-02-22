@@ -48,22 +48,9 @@
     content: |
       -- Common SQL file for sqls language server
       -- This file is used to enable sqls to start properly
-      
+
     dest: "~/.local/share/nvim/common.sql"
     mode: 0644
-
-- name: download nerd-fonts
-  ansible.builtin.unarchive:
-    src: "https://github.com/ryanoasis/nerd-fonts/archive/refs/tags/v{{ nerdfonts_version }}.tar.gz"
-    dest: "/usr/local/src/"
-    remote_src: true
-    creates: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
-
-- name: install nerd-fonts
-  ansible.builtin.command: "./install.sh"
-  args:
-    chdir: "/usr/local/src/nerd-fonts-{{ nerdfonts_version }}"
-    creates: "~/.local/share/fonts/NerdFonts"
 
 - name: install neovim plugin
   ansible.builtin.git:
@@ -177,4 +164,10 @@
         remote_src: true
       become: true
   when: ansible_distribution == 'Ubuntu'
+
+- name: copy lazygit config
+  ansible.builtin.copy:
+    src: "lazygit_config.yml"
+    dest: "{{ ansible_env.HOME }}/.config/lazygit/config.yml"
+    mode: 0644
 
