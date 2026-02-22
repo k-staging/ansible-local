@@ -178,3 +178,9 @@
       become: true
   when: ansible_distribution == 'Ubuntu'
 
+- name: copy lazygit config
+  ansible.builtin.copy:
+    src: "lazygit_config.yml"
+    dest: "{{ ansible_env.HOME }}/.config/lazygit/config.yml"
+    mode: 0644
+

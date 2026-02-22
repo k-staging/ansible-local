@@ -8,6 +8,7 @@ neovim_dir:
   - "{{ neovim_plugin_path }}"
   - "~/.config/nvim"
   - "~/.config/sqls"
+  - "~/.config/lazygit"
   - "/usr/local/src/nvim"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"

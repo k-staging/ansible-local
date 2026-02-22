@@ -1,0 +1,6 @@
+---
+# lazygit configuration
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+# Disable startup popups (welcome messages, donation prompts)
+disableStartupPopups: true
