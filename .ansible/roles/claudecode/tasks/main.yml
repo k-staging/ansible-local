@@ -9,7 +9,11 @@
   changed_when: false
 
 - name: get current claude version
-  ansible.builtin.shell: claude --version | head -1 | awk '{print $1}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    claude --version | head -1 | awk '{print $1}'
+  args:
+    executable: /bin/bash
   register: claude_current_version
   changed_when: false
   when: claude_installed_check.rc == 0
@@ -27,6 +31,12 @@
 
 - name: run Claude Code installer with version
   ansible.builtin.shell: CLAUDE_CODE_VERSION={{ claude_code_version }} /tmp/claude-install.sh
+  when: claude_needs_update
+
+- name: remove Claude Code installer
+  ansible.builtin.file:
+    path: /tmp/claude-install.sh
+    state: absent
   when: claude_needs_update
 
 # ============================================
@@ -147,95 +157,6 @@
     src: "AGENTS.md"
     dest: "{{ ansible_env.HOME }}/.codex/AGENTS.md"
     mode: 0644
-
-# ============================================
-# Claude Code YOLO モード環境のセットアップ
-# ============================================
-- name: check if Docker is installed
-  ansible.builtin.command: which docker
-  register: docker_check
-  ignore_errors: true
-  changed_when: false
-
-- name: setup Claude Code YOLO environment
-  when: docker_check.rc == 0
-  block:
-    - name: install devcontainer.vim (mac)
-      block:
-        - name: download devcontainer.vim binary (mac)
-          ansible.builtin.get_url:
-            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-darwin-arm64"
-            dest: "/tmp/devcontainer.vim"
-            mode: 0755
-
-        - name: install devcontainer.vim binary (mac)
-          ansible.builtin.copy:
-            src: "/tmp/devcontainer.vim"
-            dest: "/usr/local/bin/devcontainer.vim"
-            mode: 0755
-            remote_src: true
-          become: true
-      when: ansible_distribution == 'MacOSX'
-
-    - name: install devcontainer.vim (linux)
-      block:
-        - name: download devcontainer.vim binary (linux)
-          ansible.builtin.get_url:
-            url: "https://github.com/mikoto2000/devcontainer.vim/releases/download/v{{ devcontainer_vim_version }}/devcontainer.vim-linux-amd64"
-            dest: "/tmp/devcontainer.vim"
-            mode: 0755
-
-        - name: install devcontainer.vim binary (linux)
-          ansible.builtin.copy:
-            src: "/tmp/devcontainer.vim"
-            dest: "/usr/local/bin/devcontainer.vim"
-            mode: 0755
-            remote_src: true
-          become: true
-      when: ansible_distribution == 'Ubuntu'
-
-    - name: create Claude YOLO template directory
-      ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer"
-        state: directory
-        mode: 0755
-
-    - name: copy Claude YOLO devcontainer template files
-      ansible.builtin.copy:
-        src: "claude-yolo/{{ item }}"
-        dest: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer/{{ item }}"
-        mode: "{{ '0755' if item == 'init-firewall.sh' else '0644' }}"
-      loop:
-        - Dockerfile
-        - devcontainer.vim.json
-        - init-firewall.sh
-
-    - name: template Claude YOLO devcontainer.json
-      ansible.builtin.template:
-        src: "devcontainer.json.j2"
-        dest: "{{ ansible_env.HOME }}/.config/claude-yolo-template/.devcontainer/devcontainer.json"
-        mode: "0644"
-
-    - name: display Claude YOLO setup message
-      ansible.builtin.debug:
-        msg: |
-          Claude Code YOLO モード環境をセットアップしました
-
-          使い方:
-            1. プロジェクトにテンプレートをコピー:
-               cp -r ~/.config/claude-yolo-template/.devcontainer ./
-
-            2. コンテナ起動 + Neovim実行:
-               devcontainer.vim start . --nvim
-
-            3. コンテナ内でClaude Code YOLO起動:
-               <Ctrl-t> でターミナルを開く
-               claude --dangerously-skip-permissions
-
-            4. コンテナ停止:
-               devcontainer.vim stop .
-
-          注意: 初回起動時はイメージビルドに数分かかります
 
 # ============================================
 # Claude Code LSP プラグイン設定
