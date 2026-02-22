@@ -4,3 +4,11 @@
 
 # Disable startup popups (welcome messages, donation prompts)
 disableStartupPopups: true
+
+# Use Neovim as the default editor
+os:
+  editPreset: "nvim"
+
+# Parse emoji codes like :rocket: as 🚀
+git:
+  parseEmoji: true
