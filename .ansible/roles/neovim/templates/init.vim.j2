@@ -23,8 +23,8 @@ set t_Co=256
 set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-colorscheme gruvbox
-highlight WinSeparator guifg=#928374 guibg=NONE
+colorscheme tokyonight-night
+highlight WinSeparator guifg=#3b4261 guibg=NONE
 
 " ============================================
 " GraphQL / Denops設定
@@ -57,7 +57,7 @@ if lualine_ok then
 
   lualine.setup({
     options = {
-      theme = 'gruvbox',
+      theme = 'tokyonight',
       component_separators = { left = '', right = ''},
       section_separators = { left = '', right = ''},
       disabled_filetypes = {
@@ -144,42 +144,42 @@ if bufferline_ok then
     },
     highlights = {
       fill = {
-        bg = '#282828',  -- gruvbox bg
+        bg = '#1a1b26',  -- tokyonight bg
       },
       background = {
-        fg = '#a89984',  -- gruvbox fg4
-        bg = '#3c3836',  -- gruvbox bg1
+        fg = '#a9b1d6',  -- tokyonight fg_dark
+        bg = '#16161e',  -- tokyonight bg_dark
       },
       tab = {
-        fg = '#a89984',
-        bg = '#3c3836',
+        fg = '#a9b1d6',
+        bg = '#16161e',
       },
       tab_selected = {
-        fg = '#ebdbb2',  -- gruvbox fg
-        bg = '#504945',  -- gruvbox bg2
+        fg = '#c0caf5',  -- tokyonight fg
+        bg = '#292e42',  -- tokyonight bg_highlight
         bold = true,
       },
       tab_separator = {
-        fg = '#282828',
-        bg = '#3c3836',
+        fg = '#1a1b26',
+        bg = '#16161e',
       },
       tab_separator_selected = {
-        fg = '#282828',
-        bg = '#504945',
+        fg = '#1a1b26',
+        bg = '#292e42',
       },
       buffer_selected = {
-        fg = '#ebdbb2',
-        bg = '#504945',
+        fg = '#c0caf5',
+        bg = '#292e42',
         bold = true,
         italic = false,
       },
       separator = {
-        fg = '#282828',
-        bg = '#3c3836',
+        fg = '#1a1b26',
+        bg = '#16161e',
       },
       separator_selected = {
-        fg = '#282828',
-        bg = '#504945',
+        fg = '#1a1b26',
+        bg = '#292e42',
       },
     },
   })

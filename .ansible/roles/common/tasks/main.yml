@@ -85,12 +85,6 @@
         state: present
       ignore_errors: yes
 
-    - name: install iterm2
-      community.general.homebrew_cask:
-        name: "iterm2"
-        state: present
-      ignore_errors: yes
-
     - name: install ghostty
       community.general.homebrew_cask:
         name: "ghostty"
@@ -138,17 +132,18 @@
       ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_user_id }}"
       become: yes
 
-    - name: download iTerm2-Color-Schemes
-      ansible.builtin.git:
-        repo: "https://github.com/mbadolato/iTerm2-Color-Schemes.git"
-        dest: "/usr/local/src/iTerm2-Color-Schemes"
-        update: no
+    - name: create ghostty config directory
+      ansible.builtin.file:
+        path: "~/.config/ghostty"
+        state: directory
+        mode: 0755
 
-    - name: set gruvbox dark
-      ansible.builtin.shell: sh ./tools/import-scheme.sh "Gruvbox Dark"
-      args:
-        chdir: "/usr/local/src/iTerm2-Color-Schemes"
-  when: ansible_distribution == 'MacOSX' 
+    - name: copy ghostty config
+      ansible.builtin.copy:
+        src: ghostty_config
+        dest: "~/.config/ghostty/config"
+        mode: 0644
+  when: ansible_distribution == 'MacOSX'
 
 - name: copy config files
   ansible.builtin.copy:

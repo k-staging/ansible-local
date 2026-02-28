@@ -49,8 +49,8 @@ neovim_plugins:
   - name: "johnseth97/codex.nvim"
     version: "0bb28eb7017e02600a985a627140595900610fc8"
   # カラースキーマ
-  - name: "morhetz/gruvbox"
-    version: "bf2885a95efdad7bd5e4794dd0213917770d79b7"
+  - name: "folke/tokyonight.nvim"
+    version: "5da1b76e64daf4c5d410f06bcb6b9cb640da7dfd"
   # その他
   - name: "neovim/nvim-lspconfig"
     version: "v2.5.0"
