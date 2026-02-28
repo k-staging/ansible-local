@@ -42,7 +42,7 @@ neovim_plugins:
     version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
   # claude code
   - name: "greggh/claude-code.nvim"
-    version: "c9a31e51069977edaad9560473b5d031fcc5d38b"
+    version: "55c0cb59828fbc3bec744288286a46f5d5750b83"
   - name: "nvim-lua/plenary.nvim"
     version: "857c5ac632080dba10aae49dba902ce3abf91b35"
   # codex
