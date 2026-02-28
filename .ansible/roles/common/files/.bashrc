@@ -32,11 +32,6 @@ alias ll='ls -laF'
 alias vim='nvim'
 
 #####################
-# mise
-#####################
-[ -e ~/.local/bin/mise ] && eval "$(~/.local/bin/mise activate bash)"
-
-#####################
 # uv (Python package manager)
 #####################
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -83,3 +78,11 @@ if [ -e /usr/bin/sw_vers ]; then
         export BASH_ENV='~/.bash_aliases'
     fi
 fi
+
+#####################
+# mise activate
+# 全PATH設定後に実行することで、mise のバージョン管理が正しく機能する
+# .bash_profile (.bashrc 読込前) ではなくここに置くことで
+# macOS (ログインシェル) と WSL (非ログインシェル) の両環境で動作する
+#####################
+[ -e ~/.local/bin/mise ] && eval "$(~/.local/bin/mise activate bash)"

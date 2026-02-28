@@ -24,7 +24,6 @@ export GIT_PAGER="LESSCHARSET=utf-8 less"
 ADD_ENVIRONMENT_PATH=$(cat << EOS
 /usr/local/opt/libpq/bin
 $HOME/.dotnet/tools
-$HOME/.local/share/mise/shims
 $HOME/.cargo/bin
 $HOME/.local/bin
 $HOME/bin
