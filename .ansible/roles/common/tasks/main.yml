@@ -148,7 +148,19 @@
       ansible.builtin.shell: sh ./tools/import-scheme.sh "Gruvbox Dark"
       args:
         chdir: "/usr/local/src/iTerm2-Color-Schemes"
-  when: ansible_distribution == 'MacOSX' 
+
+    - name: create ghostty config directory
+      ansible.builtin.file:
+        path: "~/.config/ghostty"
+        state: directory
+        mode: 0755
+
+    - name: copy ghostty config
+      ansible.builtin.copy:
+        src: ghostty_config
+        dest: "~/.config/ghostty/config"
+        mode: 0644
+  when: ansible_distribution == 'MacOSX'
 
 - name: copy config files
   ansible.builtin.copy:
