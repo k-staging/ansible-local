@@ -31,12 +31,12 @@
 
 **⚠️ develop/main ブランチに直接コミットしないこと。コミット前に必ず作業ブランチを作成する。**
 
-### Step 0: 作業ブランチ作成
+### Step 0: Worktree 作成
 1. 現在のブランチを確認する
 2. `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'` でデフォルトブランチを取得し、PRのベースブランチとして記憶する（セッション開始時の情報より実際のGitHub設定を優先）
 3. 同じテーマの既存作業ブランチがあれば再利用を検討する（迷う場合はユーザーに確認）
-4. develop または main にいる場合は、作業ブランチを作成して切り替える（例: `feature/`, `fix/`, `chore/` 等）
-5. **作業ブランチにいることを確認してから** Step 1 に進む
+4. **必ず EnterWorktree ツールで worktree を作成する**（ブランチ名を `name` パラメータに指定。例: `feature/xxx`, `fix/xxx`, `chore/xxx`）
+5. **worktree 内にいることを確認してから** Step 1 に進む
 
 ### Step 1: 計画立案
 1. **PRテンプレートを検索して読み込む**（Globで `.github/pull_request_template*`, `.github/PULL_REQUEST_TEMPLATE*`, `pull_request_template*` を検索し、見つかったらReadで内容を読む）
