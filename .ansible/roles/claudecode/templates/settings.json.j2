@@ -80,7 +80,8 @@
   },
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "ENABLE_LSP_TOOL": "1"{% if claude_code_experimental_features.agent_teams %},
+    "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "false"{% if claude_code_experimental_features.agent_teams %},
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"{% endif %}
 
   }

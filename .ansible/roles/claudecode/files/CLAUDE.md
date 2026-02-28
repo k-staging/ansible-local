@@ -31,10 +31,12 @@
 
 **⚠️ develop/main ブランチに直接コミットしないこと。コミット前に必ず作業ブランチを作成する。**
 
-### Step 0: 作業ブランチ作成
+### Step 0: Worktree 作成
 1. 現在のブランチを確認する
-2. develop または main にいる場合は、作業ブランチを作成して切り替える（例: `feature/`, `fix/`, `chore/` 等）
-3. **作業ブランチにいることを確認してから** Step 1 に進む
+2. `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'` でデフォルトブランチを取得し、PRのベースブランチとして記憶する（セッション開始時の情報より実際のGitHub設定を優先）
+3. 同じテーマの既存作業ブランチがあれば再利用を検討する（迷う場合はユーザーに確認）
+4. **必ず EnterWorktree ツールで worktree を作成する**（ブランチ名を `name` パラメータに指定。例: `feature/xxx`, `fix/xxx`, `chore/xxx`）
+5. **worktree 内にいることを確認してから** Step 1 に進む
 
 ### Step 1: 計画立案
 1. **PRテンプレートを検索して読み込む**（Globで `.github/pull_request_template*`, `.github/PULL_REQUEST_TEMPLATE*`, `pull_request_template*` を検索し、見つかったらReadで内容を読む）
@@ -63,14 +65,16 @@
 1. 適切なサブエージェント（`rails-code-reviewer`, `rails-security-auditor`, `ansible-validator`等）でレビュー
 2. 指摘事項があれば修正
 
-### Step 5: PR準備
+### Step 5: Push & PR作成
 1. **Step 1で読み込んだPRテンプレートの構成に従ってPRディスクリプションを作成する**（テンプレートがない場合は下記デフォルト構成を使用）
 2. PRのQA手順を追記する
 3. **PRディスクリプションを `/tmp/pr_description.md` に書き出す**
-4. ユーザーにPRコマンドを提示：
+4. ユーザーに push コマンドを提示し、実行を待つ：
    ```
-   gh pr create --title "タイトル" --body-file /tmp/pr_description.md
+   git push -u origin <branch>
    ```
+5. push 完了後、`gh pr create` を**自分で実行**してPRを作成する
+6. 作成したPRのURLをユーザーに報告する
 
 ### PRディスクリプションの構成（テンプレートがない場合）
 ```markdown
