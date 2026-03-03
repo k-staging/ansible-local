@@ -71,7 +71,10 @@
 1. **Step 1で読み込んだPRテンプレートの構成に従ってPRディスクリプションを作成する**（テンプレートがない場合は下記デフォルト構成を使用）
 2. PRのQA手順を追記する
 3. **PRディスクリプションを `/tmp/pr_description.md` に書き出す**
-4. `git push -u origin <branch>` を**自分で実行**する（main/develop への push は git フックで自動ブロックされる）
+4. push を**自分で実行**する（main/develop への push は git フックで自動ブロックされる）
+   - 初回: `git -C <repo_path> push -u origin <branch>`
+   - 2回目以降: `git -C <repo_path> push`
+   - **注意: `cd && git push` ではなく `git -C` 形式を使うこと**
 5. `gh pr create` を**自分で実行**してPRを作成する
 6. 作成したPRのURLをユーザーに報告する
 
