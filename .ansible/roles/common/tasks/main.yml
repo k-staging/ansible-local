@@ -175,3 +175,23 @@
   ansible.builtin.command: "dotnet tool install --global csharp-ls"
   ignore_errors: yes
 
+- name: Create global git hooks directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/git/hooks"
+    state: directory
+    mode: "0755"
+
+- name: Copy git hooks
+  ansible.builtin.copy:
+    src: "git-hooks/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.config/git/hooks/{{ item }}"
+    mode: "0755"
+  loop:
+    - pre-commit
+    - pre-push
+
+- name: Set global git hooks path
+  community.general.git_config:
+    name: core.hooksPath
+    scope: global
+    value: "{{ ansible_env.HOME }}/.config/git/hooks"

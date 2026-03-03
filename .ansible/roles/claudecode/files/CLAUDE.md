@@ -29,14 +29,16 @@
 ## 3. コード修正フロー
 コード修正を伴う依頼を受けた場合、以下の手順で進める：
 
-**⚠️ develop/main ブランチに直接コミットしないこと。コミット前に必ず作業ブランチを作成する。**
+> **🚫 STOP: 最初に必ずブランチを切ること。main/develop への直接コミット・push は git フックで強制ブロックされる。**
 
-### Step 0: Worktree 作成
-1. 現在のブランチを確認する
+### Step 0: ブランチ作成（実装着手前の必須手順）
+**この手順を完了するまで、いかなるファイル編集も行わないこと。**
+
+1. 現在のブランチを確認する（main/develop ならブランチが未作成）
 2. `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'` でデフォルトブランチを取得し、PRのベースブランチとして記憶する（セッション開始時の情報より実際のGitHub設定を優先）
 3. 同じテーマの既存作業ブランチがあれば再利用を検討する（迷う場合はユーザーに確認）
-4. **必ず EnterWorktree ツールで worktree を作成する**（ブランチ名を `name` パラメータに指定。例: `feature/xxx`, `fix/xxx`, `chore/xxx`）
-5. **worktree 内にいることを確認してから** Step 1 に進む
+4. **EnterWorktree ツールで worktree を作成する**（ブランチ名を `name` パラメータに指定。例: `feature/xxx`, `fix/xxx`, `chore/xxx`）
+5. **worktree 内にいることを確認 → ブランチ名が main/develop でないことを確認してから** Step 1 に進む
 
 ### Step 1: 計画立案
 1. **PRテンプレートを検索して読み込む**（Globで `.github/pull_request_template*`, `.github/PULL_REQUEST_TEMPLATE*`, `pull_request_template*` を検索し、見つかったらReadで内容を読む）
@@ -69,11 +71,8 @@
 1. **Step 1で読み込んだPRテンプレートの構成に従ってPRディスクリプションを作成する**（テンプレートがない場合は下記デフォルト構成を使用）
 2. PRのQA手順を追記する
 3. **PRディスクリプションを `/tmp/pr_description.md` に書き出す**
-4. ユーザーに push コマンドを提示し、実行を待つ：
-   ```
-   git push -u origin <branch>
-   ```
-5. push 完了後、`gh pr create` を**自分で実行**してPRを作成する
+4. `git push -u origin <branch>` を**自分で実行**する（main/develop への push は git フックで自動ブロックされる）
+5. `gh pr create` を**自分で実行**してPRを作成する
 6. 作成したPRのURLをユーザーに報告する
 
 ### PRディスクリプションの構成（テンプレートがない場合）

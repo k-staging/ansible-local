@@ -1,0 +1,18 @@
+#!/bin/bash
+# メインブランチへの直接コミットをブロックする
+#
+# 対象ブランチ: main / master / develop
+# 回避策: なし（feature/fix/chore ブランチで作業すること）
+
+protected_branches="^(main|master|develop)$"
+current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+if [[ "$current_branch" =~ $protected_branches ]]; then
+  echo ""
+  echo "ERROR: $current_branch ブランチへの直接コミットは禁止されています。"
+  echo ""
+  echo "  作業ブランチを作成してからコミットしてください:"
+  echo "  git checkout -b feature/your-feature-name"
+  echo ""
+  exit 1
+fi
