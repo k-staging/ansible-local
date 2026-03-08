@@ -8,6 +8,7 @@ claudecode_dir:
   - "~/.claude"
   - "~/.claude/commands"
   - "~/.claude/agents"
+  - "~/.claude/rules"
   - "~/.claude/skills/backend-dev"
   - "~/.claude/skills/infra-quick-check"
   - "~/.claude/skills/sql-helper"

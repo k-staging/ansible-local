@@ -81,6 +81,19 @@
     mode: 0644
 
 # ============================================
+# Claude Code Rules
+# ============================================
+- name: copy Claude rules files
+  ansible.builtin.copy:
+    src: "claude-rules/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.claude/rules/{{ item }}"
+    mode: 0644
+  loop:
+    - ansible.md
+    - ruby-python.md
+    - infra-config.md
+
+# ============================================
 # Claude Code Agents
 # ============================================
 - name: copy Claude subagent files
