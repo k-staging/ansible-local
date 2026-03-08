@@ -141,8 +141,8 @@
 - name: update ~/.claude.json with mcpServers
   block:
     - name: copy mcpServers.json
-      ansible.builtin.copy:
-        src: "mcpServers.json"
+      ansible.builtin.template:
+        src: "mcpServers.json.j2"
         dest: "/tmp/mcpServers.json"
         mode: 0644
 
