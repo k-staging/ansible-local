@@ -1,0 +1,14 @@
+{
+  "sequential-thinking": {
+    "command": "{{ ansible_env.HOME }}/.local/share/mise/installs/node/{{ node_version }}/bin/npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-sequential-thinking"
+    ]
+  },
+  "context7": {
+    "command": "{{ ansible_env.HOME }}/.local/share/mise/installs/node/{{ node_version }}/bin/npx",
+    "type": "stdio",
+    "args": ["-y", "@upstash/context7-mcp@latest"]
+  }
+}
