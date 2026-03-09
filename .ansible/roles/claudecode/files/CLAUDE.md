@@ -109,6 +109,7 @@
 - Ansible変更 → `ansible-validator`, `infra-reviewer`
 - Rails変更 → `rails-code-reviewer`, `rails-security-auditor`
 - Go変更 → `go-code-reviewer`
+- Shell/Bash変更 → `shell-script-reviewer`
 
 ---
 
@@ -185,6 +186,9 @@
 
 #### Goファイルのレビュー（.goファイルを変更した場合）
 1. `go-code-reviewer` サブエージェントでエラーハンドリング・並行処理・コード品質をチェック
+
+#### シェルスクリプトのレビュー（.sh、Bashスクリプトを変更した場合）
+1. `shell-script-reviewer` サブエージェントで安全性・移植性・ShellCheck対応をチェック
 
 #### Railsファイルのレビュー（Railsプロジェクトを変更した場合）
 1. **コード品質**: `rails-code-reviewer` サブエージェントでRails規約・アンチパターンをチェック
