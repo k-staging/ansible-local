@@ -108,6 +108,7 @@
 **実装完了後、必ずサブエージェントでレビューを実施する：**
 - Ansible変更 → `ansible-validator`, `infra-reviewer`
 - Rails変更 → `rails-code-reviewer`, `rails-security-auditor`
+- Go変更 → `go-code-reviewer`
 
 ---
 
@@ -160,11 +161,30 @@
 - **対象コード**: ActiveRecordクエリ、生SQLクエリ
 - **役割**: N+1問題防止、インデックス提案、クエリ最適化
 
+#### pr-review（ユーザー起動: `/pr-review`）
+- **用途**: PRレビュー。`/pr-review <PR番号>` で起動
+- **役割**: diffの取得→レビュー→GitHubにコメント投稿
+
+#### investigate（ユーザー起動: `/investigate`）
+- **用途**: コードベース調査。未使用コード検出、利用箇所調査、依存関係マッピング
+- **役割**: Taskエージェントで並列調査し結果を集約
+
+#### data-analysis（ユーザー起動: `/data-analysis`）
+- **用途**: データ分析クエリ作成
+- **役割**: スキーマ確認→サンプル検証→本番クエリの段階的フローで手戻り最小化
+
+#### gcp-verify（ユーザー起動: `/gcp-verify`）
+- **用途**: GCPインフラ検証
+- **役割**: Cloud Run、IAM、Cloud Scheduler、ログシンク等の自動チェック
+
 ### Agent詳細
 
 #### Ansibleファイルのレビュー（.ansible/roles/配下を変更した場合）
 1. `ansible-validator` サブエージェントで構文・ベストプラクティスをチェック
 2. `infra-reviewer` サブエージェントでセキュリティ・保守性をレビュー
+
+#### Goファイルのレビュー（.goファイルを変更した場合）
+1. `go-code-reviewer` サブエージェントでエラーハンドリング・並行処理・コード品質をチェック
 
 #### Railsファイルのレビュー（Railsプロジェクトを変更した場合）
 1. **コード品質**: `rails-code-reviewer` サブエージェントでRails規約・アンチパターンをチェック
@@ -196,6 +216,30 @@
 - トークン消費が通常の2倍程度になる
 - EXPERIMENTAL 機能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` で有効化）
 - 最小限のエージェントで試すことを推奨
+
+#### /pr-review - PRレビュー
+PR番号を指定してレビューを実行し、GitHubにコメントを投稿する。
+```
+/pr-review 1234
+```
+
+#### /investigate - コードベース調査
+未使用コード、利用箇所、依存関係などを調査する。変更はしない。
+```
+/investigate SAML SSO機能の利用箇所を調べて
+```
+
+#### /data-analysis - データ分析
+スキーマ確認→サンプル検証→本番クエリの段階的フローでデータ分析クエリを作成。
+```
+/data-analysis トーク機能のDAU推移を月別で出して
+```
+
+#### /gcp-verify - GCPインフラ検証
+Cloud Run、IAM、Cloud Scheduler等の設定を自動チェックリストで検証。
+```
+/gcp-verify staging環境のCloud Run設定を確認
+```
 
 #### /sequential-thinking
 Sequential thinking tool でタスクを深く分析する。

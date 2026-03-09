@@ -110,6 +110,7 @@
     - rails-performance-optimizer.md
     - rails-db-migration-reviewer.md
     - rails-code-reviewer.md
+    - go-code-reviewer.md
 
 # ============================================
 # Claude Code Skills
@@ -123,6 +124,10 @@
     - backend-dev
     - infra-quick-check
     - sql-helper
+    - pr-review
+    - investigate
+    - data-analysis
+    - gcp-verify
 
 # ============================================
 # MCP Servers 設定

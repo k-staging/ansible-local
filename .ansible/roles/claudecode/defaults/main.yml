@@ -12,6 +12,10 @@ claudecode_dir:
   - "~/.claude/skills/backend-dev"
   - "~/.claude/skills/infra-quick-check"
   - "~/.claude/skills/sql-helper"
+  - "~/.claude/skills/pr-review"
+  - "~/.claude/skills/investigate"
+  - "~/.claude/skills/data-analysis"
+  - "~/.claude/skills/gcp-verify"
   - "~/.codex"
 
 # Claude Code LSP plugins
