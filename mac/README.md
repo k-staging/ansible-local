@@ -1,7 +1,7 @@
 # Mac ローカル環境構築
 
 ### 対象バージョン
-macOS Ventura ( バージョン 13.0.1 )  で動作確認済みです。
+macOS Sequoia ( バージョン 15.x ) で動作確認済みです。
 
 ### セットアップ
 まずはhomebrewをインストールして下さい。  
@@ -18,7 +18,7 @@ git clone https://github.com/k-staging/ansible-local.git ~/src/ansible-local
 cd ~/src/ansible-local/mac
 
 ##################
-# init.sh 実行
+# install.sh 実行
 ##################
 bash install.sh
 ```

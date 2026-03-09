@@ -83,10 +83,14 @@ cd .ansible
 - `files/CLAUDE.md` - グローバル CLAUDE.md（~/.claude/CLAUDE.md にコピーされる）
 - `files/claude-agents/` - サブエージェント定義
 - `files/claude-skills/` - スキル定義
+- `files/claude-rules/` - `~/.claude/rules/` に配置されるルールファイル
 - `templates/settings.json.j2` - Claude Code の settings.json
+- `templates/mcpServers.json.j2` - MCP サーバー設定
 
 Claude Code の挙動を変更したい場合は、これらのファイルを修正する。
 
 ## 最近の更新
 - mise による多言語バージョン管理への移行（nodenv, rbenv, goenv を統合）
 - Claude Code CLI など npm パッケージは mise 経由でインストール
+- `~/.claude/rules/` ディレクトリによるルール管理を追加
+- MCP サーバー設定を Ansible テンプレートで管理
