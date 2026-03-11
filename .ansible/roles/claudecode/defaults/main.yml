@@ -1,7 +1,7 @@
 ---
 # Claude Code 設定
 
-claude_code_version: "2.1.71"
+claude_code_version: "2.1.72"
 
 # Claude Code directories
 claudecode_dir:
@@ -17,6 +17,11 @@ claudecode_dir:
   - "~/.claude/skills/data-analysis"
   - "~/.claude/skills/gcp-verify"
   - "~/.codex"
+
+# Claude Code plugins (non-LSP)
+# https://github.com/anthropics/claude-plugins-official
+claude_code_plugins:
+  - claude-md-management
 
 # Claude Code LSP plugins
 # https://github.com/anthropics/claude-plugins-official

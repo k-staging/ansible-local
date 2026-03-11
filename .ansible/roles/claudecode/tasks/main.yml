@@ -178,13 +178,21 @@
     mode: 0644
 
 # ============================================
-# Claude Code LSP プラグイン設定
+# Claude Code プラグイン設定
 # ============================================
 - name: check claude command exists for plugins
   ansible.builtin.command: which claude
   register: claude_plugin_check
   ignore_errors: true
   changed_when: false
+
+- name: install Claude Code plugins from official marketplace
+  ansible.builtin.command: "claude plugin install {{ item }}"
+  loop: "{{ claude_code_plugins }}"
+  register: plugin_install_result
+  changed_when: "'Successfully installed' in plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
 
 - name: install Claude Code LSP plugins from official marketplace
   ansible.builtin.command: "claude plugin install {{ item }}"
