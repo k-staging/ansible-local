@@ -18,6 +18,11 @@ claudecode_dir:
   - "~/.claude/skills/gcp-verify"
   - "~/.codex"
 
+# Claude Code plugins (non-LSP)
+# https://github.com/anthropics/claude-plugins-official
+claude_code_plugins:
+  - claude-md-management
+
 # Claude Code LSP plugins
 # https://github.com/anthropics/claude-plugins-official
 claude_code_lsp_plugins:
