@@ -65,7 +65,10 @@
 
 ### Step 4: レビュー
 1. 適切なサブエージェント（`rails-code-reviewer`, `rails-security-auditor`, `ansible-validator`等）でレビュー
-2. 指摘事項があれば修正
+2. `regression-checker` サブエージェントでデグレッションチェック
+3. 指摘事項があれば自動で修正
+4. 修正後、再度レビューを実行
+5. 全ての指摘が解消されるまで 1-4 を繰り返す（最大3回）
 
 ### Step 5: Push & PR作成
 1. **Step 1で読み込んだPRテンプレートの構成に従ってPRディスクリプションを作成する**（テンプレートがない場合は下記デフォルト構成を使用）
@@ -110,6 +113,7 @@
 - Rails変更 → `rails-code-reviewer`, `rails-security-auditor`
 - Go変更 → `go-code-reviewer`
 - Shell/Bash変更 → `shell-script-reviewer`
+- **全ての変更** → `regression-checker`（デグレッションチェック）
 
 ---
 
