@@ -246,3 +246,20 @@
   changed_when: "'Successfully installed' in custom_plugin_install_result.stdout"
   failed_when: false
   when: claude_plugin_check.rc == 0
+
+# External marketplace plugins (e.g. superpowers)
+- name: add external marketplaces
+  ansible.builtin.command: "claude plugin marketplace add {{ item.marketplace }}"
+  loop: "{{ claude_code_external_marketplace_plugins }}"
+  register: marketplace_ext_add_result
+  changed_when: "'Successfully added' in marketplace_ext_add_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: install external marketplace plugins
+  ansible.builtin.command: "claude plugin install {{ item.1 }}@{{ item.0.alias | default(item.0.marketplace | split('/') | last | regex_replace('\\.git$', '')) }}"
+  loop: "{{ claude_code_external_marketplace_plugins | subelements('plugins') }}"
+  register: ext_plugin_install_result
+  changed_when: "'Successfully installed' in ext_plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
