@@ -112,6 +112,8 @@
     - rails-code-reviewer.md
     - go-code-reviewer.md
     - shell-script-reviewer.md
+    - regression-checker.md
+    - workflow-guardian.md
 
 # ============================================
 # Claude Code Skills
