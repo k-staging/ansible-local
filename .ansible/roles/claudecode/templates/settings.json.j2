@@ -71,6 +71,11 @@
 {% else %}
             "command": "notify-send 'Claude Code' ' 入力待ちです'"
 {% endif %}
+          },
+          {
+            "type": "agent",
+            "prompt": "編集されたファイルを確認してください: $ARGUMENTS\n\nファイルパターンに応じて以下をチェック:\n- Dockerfile, docker-compose*.yml, .ansible/**, *.tf, k8s manifest → 構文チェック、セキュリティ、ベストプラクティス\n- .rb, .py, .sql → N+1防止、バグ検出、コーディング規約\n- ActiveRecord/生SQL → インデックス提案、クエリ最適化\n\n該当しないファイルなら何もせず終了。問題があれば指摘し、なければ何も出力しない。",
+            "timeout": 60
           }
         ]
       }
