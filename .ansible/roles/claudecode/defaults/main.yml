@@ -43,6 +43,14 @@ claude_code_custom_lsp_plugins:
       ".rake": ruby
       ".gemspec": ruby
 
+# Claude Code external marketplace plugins
+# format: { marketplace: "github-owner/repo", alias: "marketplace-name", plugins: ["plugin-name"] }
+claude_code_external_marketplace_plugins:
+  - marketplace: obra/superpowers-marketplace
+    alias: superpowers-marketplace
+    plugins:
+      - superpowers
+
 # Claude Code experimental features
 claude_code_experimental_features:
   agent_teams: true
