@@ -159,6 +159,18 @@
     dest: "~/.ssh/config"
     mode: 0644
 
+- name: create docker config directory
+  ansible.builtin.file:
+    path: "~/.docker"
+    state: directory
+    mode: "0700"
+
+- name: copy docker config.json
+  ansible.builtin.copy:
+    src: docker_config.json
+    dest: "~/.docker/config.json"
+    mode: "0600"
+
 - name: download git-completion.bash
   get_url:
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash

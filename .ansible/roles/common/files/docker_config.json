@@ -1,0 +1,9 @@
+{
+	"auths": {},
+	"credsStore": "desktop",
+	"credHelpers": {
+		"asia-docker.pkg.dev": "gcloud",
+		"asia-northeast1-docker.pkg.dev": "gcloud"
+	},
+	"currentContext": "desktop-linux"
+}
