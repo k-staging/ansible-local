@@ -65,6 +65,8 @@
 3. 全テストがパスすることを確認
 
 ### Step 4: レビュー
+> **⚠️ レビュー用サブエージェントは並列実行しないこと（rate limit 回避のため順次実行する）**
+
 1. 適切なサブエージェント（`rails-code-reviewer`, `rails-security-auditor`, `ansible-validator`等）でレビュー
 2. `regression-checker` サブエージェントでデグレッションチェック
 3. 指摘事項があれば自動で修正
