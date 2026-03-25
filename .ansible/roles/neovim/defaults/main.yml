@@ -14,10 +14,8 @@ neovim_plugins:
     version: "00df1089b6267f47c7c0f13536789feb9db1e65b"
   - name: "junegunn/fzf"
     version: "46877e0a92d5e18bfc143ac98bb55b22eaef81ac"
-  # fzf-preview.vim のバージョンは暫くこのコミットで固定
-  # 最新コミットにしたら何故か動かなくなった為
-  - name: "yuki-yano/fzf-preview.vim"
-    version: "fb268bb248a83165abcc75509832f93be9741b3b"
+  - name: "ibhagwan/fzf-lua"
+    version: "14e2ebc7ed4cef90ffb4fd192ca28c33741818eb"
   - name: "nvim-neo-tree/neo-tree.nvim"
     version: "9a1f0461c4cc62e64616bafe9425572ff6a5f245"
   - name: "MunifTanjim/nui.nvim"

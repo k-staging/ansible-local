@@ -312,42 +312,50 @@ autocmd TermOpen *claude* setlocal nonumber norelativenumber signcolumn=no
 autocmd BufEnter *claude* setlocal nonumber norelativenumber signcolumn=no
 
 " ============================================
-" fzf-preview.vim - ファジーファインダー
+" fzf-lua - ファジーファインダー
 " ============================================
 " 使い方:
 "   <Ctrl-p>        : プロジェクト内のファイルを検索
 "   gs              : Git statusのファイルを検索
 "   gl              : Gitログを表示
-"   ga              : Git actionsメニュー
-"   gr <keyword>    : プロジェクト内をgrep検索
+"   gr <keyword>    : プロジェクト内をgrep検索（live grep）
 "   ビジュアルモードで gr : 選択したテキストをgrep検索
 "   検索結果内で:
-"     <Ctrl-o>      : ファイルを開く
+"     <Enter>       : ファイルを開く
 "     <Ctrl-t>      : 新しいタブで開く
 "     <Ctrl-v>      : 縦分割で開く
 "     <Ctrl-x>      : 横分割で開く
 "     <Ctrl-a>      : すべて選択/解除をトグル
-nnoremap <silent> <C-p>  :<C-u>FzfPreviewProjectFilesRpc<CR>
-nnoremap <silent> gs  :<C-u>FzfPreviewGitStatusRpc<CR>
-nnoremap <silent> gl  :<C-u>FzfPreviewGitLogsRpc<CR>
-nnoremap <silent> ga  :<C-u>FzfPreviewGitActionsRpc<CR>
-nnoremap <silent> gr  :<C-u>FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
-xnoremap gr  "sy:FzfPreviewProjectGrepRpc --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+lua <<EOF
+local fzf_lua_ok, fzf_lua = pcall(require, "fzf-lua")
+if fzf_lua_ok then
+  fzf_lua.setup({
+    winopts = {
+      height = 0.85,
+      width = 0.80,
+      preview = {
+        layout = "vertical",
+        vertical = "up:45%",
+      },
+    },
+    keymap = {
+      fzf = {
+        ["ctrl-a"] = "toggle-all",
+      },
+    },
+    grep = {
+      rg_opts = "--column --line-number --no-heading --color=always --smart-case",
+      no_sort = true,
+    },
+  })
 
-let g:fzf_preview_custom_processes = {
-            \ 'open-file': {
-            \     'ctrl-o': 'FzfPreviewOpenFileCtrlO',
-            \     'ctrl-f': 'FzfPreviewOpenFileCtrlQ',
-            \     'ctrl-t': 'FzfPreviewOpenFileCtrlT',
-            \     'ctrl-v': 'FzfPreviewOpenFileCtrlV',
-            \     'ctrl-x': 'FzfPreviewOpenFileCtrlX',
-            \     'enter': 'FzfPreviewOpenFileEnter'
-            \ },
-            \ 'register': {
-            \     'enter': 'FzfPreviewRegisterEnter'
-            \ }
-\ }
-let $FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "ctrl-a:toggle-all"'
+  vim.keymap.set('n', '<C-p>', fzf_lua.files, { silent = true, desc = "Find files" })
+  vim.keymap.set('n', 'gs', fzf_lua.git_status, { silent = true, desc = "Git status" })
+  vim.keymap.set('n', 'gl', fzf_lua.git_log, { silent = true, desc = "Git log" })
+  vim.keymap.set('n', 'gr', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
+  vim.keymap.set('x', 'gr', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
+end
+EOF
 
 " 折り畳みを無効にする
 set nofoldenable
@@ -451,7 +459,7 @@ lua <<EOF
   --   <Space>D      : 型定義へジャンプ
   --   <Space>rn     : シンボルをリネーム
   --   <Space>ca     : コードアクション（クイックフィックス）
-  --   gr            : 参照を検索
+  --   gR            : 参照を検索
   --   <Space>f      : コードフォーマット
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -472,7 +480,7 @@ lua <<EOF
       vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
       vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
       vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+      vim.keymap.set('n', 'gR', vim.lsp.buf.references, opts)
       vim.keymap.set('n', '<space>f', function()
         vim.lsp.buf.format { async = true }
       end, opts)
