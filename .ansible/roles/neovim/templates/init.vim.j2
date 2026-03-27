@@ -351,7 +351,7 @@ if fzf_lua_ok then
 
   vim.keymap.set('n', '<C-p>', fzf_lua.files, { silent = true, desc = "Find files" })
   vim.keymap.set('n', 'gs', fzf_lua.git_status, { silent = true, desc = "Git status" })
-  vim.keymap.set('n', 'gl', fzf_lua.git_log, { silent = true, desc = "Git log" })
+  vim.keymap.set('n', 'gl', fzf_lua.git_commits, { silent = true, desc = "Git log" })
   vim.keymap.set('n', 'gr', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
   vim.keymap.set('x', 'gr', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
 end
