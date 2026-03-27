@@ -248,6 +248,7 @@ if status_ok then
     },
     on_open = function(term)
       vim.cmd("startinsert!")
+      vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
     end,
   })
 
