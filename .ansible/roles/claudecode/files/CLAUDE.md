@@ -84,6 +84,7 @@
    - **注意: `cd && git push` ではなく `git -C` 形式を使うこと**
 6. `gh pr create` を**自分で実行**してPRを作成する
 7. 作成したPRのURLをユーザーに報告する
+8. **ワーキングディレクトリをクリーンアップする**: `git -C <repo_path> checkout . && git -C <repo_path> clean -fd`
 
 ### PRディスクリプションの構成（テンプレートがない場合）
 ```markdown
