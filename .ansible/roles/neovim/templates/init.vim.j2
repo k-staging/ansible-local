@@ -248,7 +248,7 @@ if status_ok then
     },
     on_open = function(term)
       vim.cmd("startinsert!")
-      vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
+      vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<C-g>", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
     end,
   })
 
@@ -262,7 +262,7 @@ EOF
 " lazygit - Git TUI (toggleterm経由)
 " ============================================
 " 使い方:
-"   <leader>g       : Lazygitを起動
+"   <C-g>           : Lazygitを起動
 "   Lazygit内で:
 "     ?             : ヘルプを表示
 "     q             : 終了
@@ -272,7 +272,7 @@ EOF
 "     p             : プル
 "     [             : 前のタブ
 "     ]             : 次のタブ
-nnoremap <silent> <leader>g :<C-u>lua _lazygit_toggle()<CR>
+nnoremap <silent> <C-g> :<C-u>lua _lazygit_toggle()<CR>
 
 " ============================================
 " diffview.nvim - Diff表示とマージエディタ
