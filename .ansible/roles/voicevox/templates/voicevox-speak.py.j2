@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""VOICEVOX Engine を使ったテキスト読み上げスクリプト."""
+import argparse
+import subprocess
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+import json
+import tempfile
+import os
+
+DEFAULT_HOST = "http://localhost:{{ voicevox_port }}"
+DEFAULT_SPEAKER = {{ voicevox_speaker_id }}
+DEFAULT_SPEED = {{ voicevox_speed_scale }}
+MAX_TEXT_LENGTH = 200
+
+
+def synthesize(text, host, speaker, speed_scale):
+    """VOICEVOX API でテキストを音声合成し再生する."""
+    if not text.strip():
+        return
+
+    # 長すぎるテキストは末尾を省略
+    if len(text) > MAX_TEXT_LENGTH:
+        text = text[:MAX_TEXT_LENGTH] + "..."
+
+    # audio_query
+    query_url = f"{host}/audio_query?{urllib.parse.urlencode({'text': text, 'speaker': speaker})}"
+    req = urllib.request.Request(query_url, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            query_data = json.loads(resp.read())
+    except (urllib.error.URLError, TimeoutError):
+        print("VOICEVOX Engine に接続できません。起動してください: voicevox-start", file=sys.stderr)
+        sys.exit(1)
+
+    # speed_scale を調整
+    query_data["speedScale"] = speed_scale
+
+    # synthesis
+    synth_url = f"{host}/synthesis?{urllib.parse.urlencode({'speaker': speaker})}"
+    synth_data = json.dumps(query_data).encode("utf-8")
+    req = urllib.request.Request(synth_url, data=synth_data, method="POST",
+                                headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            audio = resp.read()
+    except (urllib.error.URLError, TimeoutError):
+        print("音声合成に失敗しました", file=sys.stderr)
+        sys.exit(1)
+
+    # 一時ファイルに保存して再生
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+        f.write(audio)
+        tmp_path = f.name
+
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(["afplay", tmp_path], check=True)
+        else:
+            subprocess.run(["aplay", "-q", tmp_path], check=True)
+    finally:
+        os.unlink(tmp_path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="VOICEVOX TTS")
+    parser.add_argument("text", nargs="?", help="読み上げるテキスト（省略時は stdin から読む）")
+    parser.add_argument("--host", default=DEFAULT_HOST)
+    parser.add_argument("--speaker", type=int, default=DEFAULT_SPEAKER)
+    parser.add_argument("--speed", type=float, default=DEFAULT_SPEED)
+    args = parser.parse_args()
+
+    text = args.text if args.text else sys.stdin.read()
+    synthesize(text, args.host, args.speaker, args.speed)
+
+
+if __name__ == "__main__":
+    main()

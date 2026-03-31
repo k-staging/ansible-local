@@ -48,6 +48,16 @@
     ]
   },
   "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"$CLAUDE_NOTIFICATION\" | {{ ansible_env.HOME }}/bin/voicevox-speak --speaker {{ voicevox_speaker_id }} --speed {{ voicevox_speed_scale }} || true"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
