@@ -1,0 +1,32 @@
+---
+- name: create bin directory
+  ansible.builtin.file:
+    path: "{{ voicevox_bin_dir }}"
+    state: directory
+    mode: 0755
+
+- name: check if voicevox docker image exists
+  ansible.builtin.command:
+    cmd: "docker image inspect {{ voicevox_docker_image }}"
+  register: docker_image_check
+  ignore_errors: true
+  changed_when: false
+
+- name: pull voicevox docker image
+  ansible.builtin.command:
+    cmd: "docker pull {{ voicevox_docker_image }}"
+  register: docker_pull_result
+  changed_when: "'Downloaded newer image' in docker_pull_result.stdout"
+  when: docker_image_check.rc != 0
+
+- name: copy voicevox-speak script
+  ansible.builtin.template:
+    src: "voicevox-speak.py.j2"
+    dest: "{{ voicevox_bin_dir }}/voicevox-speak"
+    mode: 0755
+
+- name: copy voicevox-start script
+  ansible.builtin.template:
+    src: "voicevox-start.sh.j2"
+    dest: "{{ voicevox_bin_dir }}/voicevox-start"
+    mode: 0755
