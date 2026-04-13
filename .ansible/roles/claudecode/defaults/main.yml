@@ -28,6 +28,7 @@ claude_code_plugins:
 claude_code_lsp_plugins:
   - typescript-lsp
   - gopls-lsp
+  - rust-analyzer-lsp
 
 # Custom LSP plugins (via custom-lsp marketplace)
 # pylsp-lsp は Python環境の問題があるため無効化
