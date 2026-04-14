@@ -63,4 +63,11 @@ if-shell "uname -a | grep -q microsoft" "bind-key -T copy-mode-vi Enter send -X 
 
 # デフォルトで開くセッションの設定
 new-session -d -s default -c {{ tmux_main_dir }}
-send-keys -t default "nvim" C-m
+send-keys -t default "claude" C-m
+
+{% for window in tmux_windows %}
+new-window -c {{ window.dir }}
+{% if window.command is defined and window.command %}
+send-keys "{{ window.command }}" C-m
+{% endif %}
+{% endfor %}
