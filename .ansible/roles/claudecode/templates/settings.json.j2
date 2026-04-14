@@ -54,24 +54,9 @@
           {
             "type": "command",
 {% if ansible_distribution == 'MacOSX' %}
-            "command": "terminal-notifier -title 'Claude Code' -message '処理が完了しました' -sound Ping"
+            "command": "terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
 {% else %}
-            "command": "notify-send 'Claude Code' '処理が完了しました'"
-{% endif %}
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-{% if ansible_distribution == 'MacOSX' %}
-            "command": "terminal-notifier -title 'Claude Code' -message ' 入力待ちです' -sound Ping"
-{% else %}
-            "command": "notify-send 'Claude Code' ' 入力待ちです'"
+            "command": "notify-send 'Claude Code' '入力待ちです'"
 {% endif %}
           }
         ]
