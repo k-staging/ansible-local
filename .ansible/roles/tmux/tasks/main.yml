@@ -60,10 +60,3 @@
     dest: "~/.tmux.conf"
     mode: 0644
 
-- name: edit ~/.tmux.conf
-  ansible.builtin.lineinfile:
-    dest: ~/.tmux.conf
-    line: "new-window -c {{ item }}"
-  with_items:
-    - "{{ tmux_sub_dir }}"
-

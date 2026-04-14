@@ -11,6 +11,12 @@ brew_pkg:
 # tmux バージョン ( master の最新コミットを指定 )
 tmux_version: "11e69f6025f5783fe17d43247de1c3f659a19b69"
 tmux_main_dir: "~/"
-tmux_sub_dir:
-  - "~/src"
+# tmux セッション起動時に開く window を定義する
+# - dir: tmux の -c で指定する作業ディレクトリ（必須）
+# - command: 起動時に send-keys で送信するコマンド文字列（任意）
+# 注意: command にダブルクォートや特殊文字を含めると生成される .tmux.conf を破損させる可能性があるため避けること
+tmux_windows:
+  - dir: "~/"
+    command: "nvim ~/.local/share/nvim/common.sql"
+  - dir: "~/src"
 

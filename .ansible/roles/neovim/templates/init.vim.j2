@@ -104,11 +104,7 @@ if bufferline_ok then
 
       -- ターミナルバッファの場合
       if buftype == 'terminal' then
-        if bufname:match('claude') then
-          return 'Claude Code'
-        else
-          return 'Terminal'
-        end
+        return 'Terminal'
       end
 
       -- 空のバッファ
@@ -312,10 +308,6 @@ nnoremap <silent> <leader>df :<C-u>DiffviewOpen<CR>
 tnoremap jk <C-\><C-n>
 command! -nargs=* T split | wincmd j | resize 20 | terminal <args>
 autocmd TermOpen * startinsert
-
-" Claude Codeターミナルでは行番号・サインカラムを非表示にする
-autocmd TermOpen *claude* setlocal nonumber norelativenumber signcolumn=no
-autocmd BufEnter *claude* setlocal nonumber norelativenumber signcolumn=no
 
 " ============================================
 " fzf-lua - ファジーファインダー
@@ -692,58 +684,6 @@ lua <<EOF
   })
 
   -- ============================================
-  -- Claude Code 設定
-  -- ============================================
-  -- 使い方:
-  --   <Ctrl-,>        : Claude Codeをトグル（ノーマルモード/ターミナルモード）
-  --   <leader>cC      : Claude Code --continue で再開
-  --   <leader>cV      : Claude Code --verbose で起動
-  --   <Ctrl-h/j/k/l>  : ウィンドウ間の移動
-  --   <Ctrl-f/b>      : ページアップ/ダウン
-  local status_ok, claude_code = pcall(require, "claude-code")
-  if status_ok then
-    claude_code.setup({
-      window = {
-        split_ratio = 1.0,
-        position = "botright",
-        enter_insert = false,
-        start_in_normal_mode = true,
-        hide_numbers = true,
-        hide_signcolumn = true,
-        hide_cursorline = true,
-      },
-      refresh = {
-        enable = true,
-        updatetime = 100,
-        timer_interval = 1000,
-        show_notifications = true,
-      },
-      git = {
-        use_git_root = true,
-        multi_instance = false,
-      },
-      command = "claude",
-      command_variants = {
-        continue = "--continue",
-        resume = "--resume",
-        verbose = "--verbose",
-      },
-      keymaps = {
-        toggle = {
-          normal = "<C-,>",
-          terminal = "<C-,>",
-          variants = {
-            continue = "<leader>cC",
-            verbose = "<leader>cV",
-          },
-        },
-        window_navigation = true,
-        scrolling = true,
-      }
-    })
-  end
-
-  -- ============================================
   -- Go言語専用設定
   -- ============================================
   -- goimports: import文を自動整理する関数
@@ -843,57 +783,3 @@ if system('uname -a | grep microsoft') != ''
   noremap <silent> p :call setreg('"',system('win32yank.exe -o'))<CR>""p
 endif
 
-" ============================================
-" 起動時の自動設定
-" ============================================
-" 引数なしで起動した場合に自動でタブを開く
-augroup StartupTabs
-  au!
-  autocmd VimEnter * nested call timer_start(500, {-> s:startup_tabs()})
-augroup END
-
-function! s:startup_tabs()
-  " 引数なしで起動したかどうかを判定
-  " - ファイル引数がある場合は開かない (argc() > 0)
-  " - コマンド引数(-c)がある場合は開かない
-  " - git commit等で呼ばれた場合は開かない
-  let l:should_open_tabs = argc() == 0 && !s:has_command_arg()
-
-  " 引数なしの場合のみタブを開く
-  if l:should_open_tabs
-    " ClaudeCodeを起動（プラグインが完全に読み込まれるまで待つ）
-    if exists(':ClaudeCode')
-      " 起動時の[No Name]バッファを先に削除
-      if bufname('%') == '' && !&modified
-        enew
-      endif
-      ClaudeCode
-    else
-      " プラグインがまだロードされていない場合は、さらに待つ
-      call timer_start(500, {-> s:retry_claude_toggle()})
-    endif
-
-    " 別タブでcommon.sqlを開く
-    tabnew ~/.local/share/nvim/common.sql
-
-    " 最初のタブ（ClaudeCode）に戻る
-    tabfirst
-  endif
-endfunction
-
-" コマンド引数(-cなど)が指定されているかチェック
-function! s:has_command_arg()
-  for arg in v:argv
-    if arg =~# '^-c' || arg =~# '^+' || arg =~# '^--cmd'
-      return 1
-    endif
-  endfor
-  return 0
-endfunction
-
-function! s:retry_claude_toggle()
-  if exists(':ClaudeCode')
-    tabfirst
-    ClaudeCode
-  endif
-endfunction
