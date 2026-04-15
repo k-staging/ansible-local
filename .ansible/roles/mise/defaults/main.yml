@@ -8,7 +8,6 @@ npm_packages:
   - "typescript@5.7.3"
   - "@modelcontextprotocol/server-sequential-thinking@2025.7.1"
   - "@upstash/context7-mcp@1.0.26"
-  - "@openai/codex@0.55.0"
 
 go_packages:
   - "github.com/lighttiger2505/sqls@v0.2.20"
