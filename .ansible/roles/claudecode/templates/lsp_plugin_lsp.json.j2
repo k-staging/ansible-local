@@ -1,0 +1,7 @@
+{
+  "{{ item.name | replace('-lsp', '') }}": {
+    "command": "{{ item.command }}",
+    "args": {{ item.args | to_json }},
+    "extensionToLanguage": {{ item.extensions | to_json }}
+  }
+}
