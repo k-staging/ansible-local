@@ -16,7 +16,7 @@ tmux_main_dir: "~/"
 # - command: 起動時に send-keys で送信するコマンド文字列（任意）
 # 注意: command にダブルクォートや特殊文字を含めると生成される .tmux.conf を破損させる可能性があるため避けること
 tmux_windows:
-  - dir: "~/"
+  - dir: "~/.local/share/nvim"
     command: "nvim ~/.local/share/nvim/common.sql"
   - dir: "~/src"
 
