@@ -202,11 +202,18 @@
   failed_when: false
   when: claude_plugin_check.rc == 0
 
-- name: install Claude Code LSP plugins from official marketplace
-  ansible.builtin.command: "claude plugin install {{ item }}"
-  loop: "{{ claude_code_lsp_plugins }}"
-  register: plugin_install_result
-  changed_when: "'Successfully installed' in plugin_install_result.stdout"
+# ============================================
+# Claude Code LSP Plugin Setup
+# ============================================
+# LSP plugins from claude-plugins-official ship without .lsp.json and do nothing
+- name: uninstall dummy LSP plugins from official marketplace
+  ansible.builtin.command: "claude plugin uninstall {{ item }}@claude-plugins-official"
+  loop:
+    - typescript-lsp
+    - gopls-lsp
+    - rust-analyzer-lsp
+  register: dummy_uninstall_result
+  changed_when: false  # loop+register: per-iteration stdout not accessible; cleanup task, changed tracking not needed
   failed_when: false
   when: claude_plugin_check.rc == 0
 
@@ -220,11 +227,32 @@
     - ".claude-plugin"
     - "plugins"
 
-- name: create custom LSP plugin source directories
+- name: create custom LSP plugin source directories (root)
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}"
     state: directory
     mode: 0755
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: create .claude-plugin subdirectory for custom LSP plugins
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin"
+    state: directory
+    mode: 0755
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy plugin.json for custom LSP plugins
+  ansible.builtin.template:
+    src: "lsp_plugin_manifest.json.j2"
+    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin/plugin.json"
+    mode: 0644
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy .lsp.json for custom LSP plugins
+  ansible.builtin.template:
+    src: "lsp_plugin_lsp.json.j2"
+    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.lsp.json"
+    mode: 0644
   loop: "{{ claude_code_custom_lsp_plugins }}"
 
 - name: create README for custom LSP plugins

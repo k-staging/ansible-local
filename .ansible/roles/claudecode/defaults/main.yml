@@ -23,16 +23,9 @@ claudecode_dir:
 claude_code_plugins:
   - claude-md-management
 
-# Claude Code LSP plugins
-# https://github.com/anthropics/claude-plugins-official
-claude_code_lsp_plugins:
-  - typescript-lsp
-  - gopls-lsp
-  - rust-analyzer-lsp
-
 # Custom LSP plugins (via custom-lsp marketplace)
-# pylsp-lsp は Python環境の問題があるため無効化
-# LSPが必要な場合は Claude Code 標準のLSP機能 (ENABLE_LSP_TOOL=1) を使用
+# claude-plugins-official の LSP プラグインは .lsp.json 未同梱のため使用しない
+# LSP サーバーはすべて custom-lsp マーケットプレイス経由で管理する
 claude_code_custom_lsp_plugins:
   - name: solargraph-lsp
     description: "Ruby Language Server (Solargraph)"
@@ -43,6 +36,32 @@ claude_code_custom_lsp_plugins:
       ".rb": ruby
       ".rake": ruby
       ".gemspec": ruby
+  - name: typescript-lsp
+    description: "TypeScript/JavaScript Language Server"
+    command: typescript-language-server
+    args:
+      - --stdio
+    extensions:
+      ".ts": typescript
+      ".tsx": typescriptreact
+      ".js": javascript
+      ".jsx": javascriptreact
+      ".mts": typescript
+      ".cts": typescript
+      ".mjs": javascript
+      ".cjs": javascript
+  - name: gopls-lsp
+    description: "Go Language Server (gopls)"
+    command: gopls
+    args: []
+    extensions:
+      ".go": go
+  - name: rust-analyzer-lsp
+    description: "Rust Language Server (rust-analyzer)"
+    command: rust-analyzer
+    args: []
+    extensions:
+      ".rs": rust
 
 # Claude Code external marketplace plugins
 # format: { marketplace: "github-owner/repo", alias: "marketplace-name", plugins: ["plugin-name"] }
