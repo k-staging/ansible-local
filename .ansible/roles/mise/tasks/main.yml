@@ -48,6 +48,16 @@
   ansible.builtin.shell: "{{ mise_bin }} use --global rust@{{ rust_version }}"
   when: check_installed_rust.rc != 0
 
+- name: check installed codex version
+  ansible.builtin.shell: "{{ mise_bin }} list codex | grep {{ codex_version }}"
+  register: check_installed_codex
+  failed_when: false
+  changed_when: false
+
+- name: install codex
+  ansible.builtin.shell: "{{ mise_bin }} use --global codex@{{ codex_version }}"
+  when: check_installed_codex.rc != 0
+
 - name: check installed npm packages
   ansible.builtin.shell: "{{ mise_bin }} exec -- npm list -g --depth=0 {{ item.split('@')[0] }}"
   loop: "{{ npm_packages }}"
