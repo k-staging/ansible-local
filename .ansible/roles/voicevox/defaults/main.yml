@@ -1,0 +1,7 @@
+---
+voicevox_version: "0.22.2"
+voicevox_docker_image: "voicevox/voicevox_engine:cpu-ubuntu20.04-{{ voicevox_version }}"
+voicevox_port: 50021
+voicevox_speaker_id: 3  # 3=ずんだもん(ノーマル)
+voicevox_bin_dir: "{{ ansible_env.HOME }}/bin"
+voicevox_speed_scale: 1.2

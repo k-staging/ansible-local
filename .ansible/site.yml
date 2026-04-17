@@ -10,6 +10,8 @@
       tags: tmux
     - role: claudecode
       tags: claudecode
+    - role: voicevox
+      tags: voicevox
     - role: neovim
       tags: neovim
   post_tasks:

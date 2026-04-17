@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# VOICEVOX Engine を Docker で起動するヘルパースクリプト
+set -euo pipefail
+
+CONTAINER_NAME="voicevox-engine"
+IMAGE="{{ voicevox_docker_image }}"
+PORT="{{ voicevox_port }}"
+
+# 既に起動中なら何もしない
+if docker ps --format '{{"{{.Names}}"}}' | grep -q "^${CONTAINER_NAME}$"; then
+  echo "VOICEVOX Engine is already running on port ${PORT}"
+  exit 0
+fi
+
+# 停止中のコンテナがあれば削除
+if docker ps -a --format '{{"{{.Names}}"}}' | grep -q "^${CONTAINER_NAME}$"; then
+  docker rm "${CONTAINER_NAME}" >/dev/null 2>&1 || true
+fi
+
+echo "Starting VOICEVOX Engine on port ${PORT}..."
+docker run -d \
+  --name "${CONTAINER_NAME}" \
+  -p "${PORT}:50021" \
+  "${IMAGE}" >/dev/null
+
+# 起動を待つ
+echo -n "Waiting for engine to be ready"
+for _ in {1..30}; do
+  if curl -s "http://localhost:${PORT}/version" >/dev/null 2>&1; then
+    echo " OK"
+    echo "VOICEVOX Engine is ready (port ${PORT})"
+    exit 0
+  fi
+  echo -n "."
+  sleep 1
+done
+
+echo " TIMEOUT"
+echo "VOICEVOX Engine failed to start within 30 seconds" >&2
+exit 1
