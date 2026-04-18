@@ -38,7 +38,7 @@ cd .ansible
 ### ディレクトリ構造
 - `/.ansible/` - Ansibleのコア設定
   - `site.yml` - すべてのロールを統括するメインプレイブック
-  - `inventory` - バージョン定義: Python 3.11.10、Ruby 3.2.2、Node 18.20.4、Go 1.23.10
+  - `inventory` - バージョン定義: Python 3.11.10、Ruby 3.2.2、Node 22.22.2、Go 1.23.10
   - `roles/` - 個別の設定ロール
   - `install.sh` - ベースインストールスクリプト
 - `/mac/` - macOS専用セットアップラッパー
