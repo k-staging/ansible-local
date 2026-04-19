@@ -16,7 +16,6 @@ claudecode_dir:
   - "~/.claude/skills/investigate"
   - "~/.claude/skills/data-analysis"
   - "~/.claude/skills/gcp-verify"
-  - "~/.codex"
 
 # Claude Code plugins (non-LSP)
 # https://github.com/anthropics/claude-plugins-official

@@ -1,0 +1,29 @@
+---
+# ============================================
+# Codex CLI ディレクトリ作成
+# ============================================
+- name: create Codex directories
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ item | regex_replace('^~/', '') }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ codex_dir }}"
+
+# ============================================
+# Codex CLI 設定ファイル
+# ============================================
+# config.toml の推奨設定は blockinfile で管理する
+# これにより [projects."..."] などユーザー/Codex が追加する設定は保持される
+- name: manage recommended settings in config.toml
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.codex/config.toml"
+    block: "{{ lookup('template', 'config.toml.j2') }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - codex recommended settings"
+    create: true
+    mode: "0644"
+
+- name: copy AGENTS.md
+  ansible.builtin.copy:
+    src: "AGENTS.md"
+    dest: "{{ ansible_env.HOME }}/.codex/AGENTS.md"
+    mode: "0644"
