@@ -1,0 +1,17 @@
+---
+# Codex CLI 設定
+
+# 推奨設定
+codex_approval_policy: "on-request"
+codex_sandbox_mode: "workspace-write"
+codex_file_opener: "vscode"
+codex_preferred_auth_method: "chatgpt"
+codex_model_reasoning_effort: "medium"
+codex_model_reasoning_summary: "auto"
+codex_hide_agent_reasoning: false
+codex_show_raw_agent_reasoning: false
+codex_history_persistence: "save-all"
+
+# Codex ディレクトリ
+codex_dir:
+  - "~/.codex"

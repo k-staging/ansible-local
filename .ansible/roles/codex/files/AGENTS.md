@@ -1,4 +1,6 @@
 # AI Agents 設定
+# This file is managed by Ansible. Do not edit manually.
+# 変更する場合は .ansible/roles/codex/files/AGENTS.md を編集して playbook を再実行すること
 
 ## 基本設定
 - AI エージェントによる回答は、必ず日本語でお願いします。

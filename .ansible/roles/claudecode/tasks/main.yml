@@ -177,15 +177,6 @@
     - jq_check.rc == 0
 
 # ============================================
-# Codex 設定
-# ============================================
-- name: copy AGENTS.md
-  ansible.builtin.copy:
-    src: "AGENTS.md"
-    dest: "{{ ansible_env.HOME }}/.codex/AGENTS.md"
-    mode: 0644
-
-# ============================================
 # Claude Code プラグイン設定
 # ============================================
 - name: check claude command exists for plugins

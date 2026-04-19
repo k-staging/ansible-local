@@ -1,0 +1,29 @@
+# Codex CLI 推奨設定
+# ANSIBLE MANAGED BLOCK の間は playbook で上書きされる
+# 変更する場合は .ansible/roles/codex/defaults/main.yml を編集すること
+# この範囲外 ([projects."..."] 等) はユーザー/Codex が自由に編集可能
+
+# 認証方法 (chatgpt: ChatGPT Plus/Pro/Team/Enterprise, apikey: API key)
+preferred_auth_method = "{{ codex_preferred_auth_method }}"
+
+# 承認ポリシー (on-request: 必要時のみ確認, untrusted: 常に確認, never: 確認なし)
+approval_policy = "{{ codex_approval_policy }}"
+
+# サンドボックスモード (workspace-write: ワークスペース内のみ書き込み可)
+sandbox_mode = "{{ codex_sandbox_mode }}"
+
+# ファイルオープナー (引用クリック時に開くエディタ)
+file_opener = "{{ codex_file_opener }}"
+
+# 推論設定 (minimal / low / medium / high / xhigh)
+model_reasoning_effort = "{{ codex_model_reasoning_effort }}"
+
+# 推論サマリ表示 (auto / concise / detailed / none)
+model_reasoning_summary = "{{ codex_model_reasoning_summary }}"
+
+# エージェント思考の表示制御
+hide_agent_reasoning = {{ codex_hide_agent_reasoning | lower }}
+show_raw_agent_reasoning = {{ codex_show_raw_agent_reasoning | lower }}
+
+[history]
+persistence = "{{ codex_history_persistence }}"

@@ -10,6 +10,8 @@
       tags: tmux
     - role: claudecode
       tags: claudecode
+    - role: codex
+      tags: codex
     - role: neovim
       tags: neovim
   post_tasks:
