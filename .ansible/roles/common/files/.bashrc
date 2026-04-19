@@ -30,6 +30,7 @@ alias ll='ls -laF'
 # vim/nvim
 ###############
 alias vim='nvim'
+alias sql='nvim ~/.local/share/nvim/common.sql'
 
 #####################
 # uv (Python package manager)
