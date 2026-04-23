@@ -9,6 +9,7 @@ claudecode_dir:
   - "~/.claude/commands"
   - "~/.claude/agents"
   - "~/.claude/rules"
+  - "~/.claude/hooks"
   - "~/.claude/skills/backend-dev"
   - "~/.claude/skills/infra-quick-check"
   - "~/.claude/skills/sql-helper"
@@ -16,6 +17,9 @@ claudecode_dir:
   - "~/.claude/skills/investigate"
   - "~/.claude/skills/data-analysis"
   - "~/.claude/skills/gcp-verify"
+
+# git fetch throttle: directories to scan for git repos (space-separated)
+claudecode_git_fetch_dirs: "{{ ansible_env.HOME }}/src"
 
 # Claude Code plugins (non-LSP)
 # https://github.com/anthropics/claude-plugins-official

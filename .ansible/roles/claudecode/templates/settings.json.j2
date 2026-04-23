@@ -57,6 +57,10 @@
 {% else %}
             "command": "notify-send 'Claude Code' '入力待ちです'"
 {% endif %}
+          },
+          {
+            "type": "command",
+            "command": "GIT_FETCH_DIRS='{{ claudecode_git_fetch_dirs }}' {{ ansible_env.HOME }}/.claude/hooks/git-fetch-throttle.sh"
           }
         ]
       }
