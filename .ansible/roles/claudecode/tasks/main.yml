@@ -80,6 +80,15 @@
     dest: "{{ ansible_env.HOME }}/.claude/statusline.sh"
     mode: 0755
 
+# ============================================
+# Claude Code Hooks
+# ============================================
+- name: copy git-fetch-throttle hook script
+  ansible.builtin.copy:
+    src: "hooks/git-fetch-throttle.sh"
+    dest: "{{ ansible_env.HOME }}/.claude/hooks/git-fetch-throttle.sh"
+    mode: 0755
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
