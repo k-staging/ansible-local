@@ -773,6 +773,80 @@ augroup vimrcEx
 augroup END
 
 " ============================================
+" nvim-treesitter - 構文解析・ハイライト
+" ============================================
+" 使い方:
+"   <Ctrl-Space>    : 選択範囲をノード単位で拡張（ノーマルモード。インサートモードでは補完トリガー）
+"   <BS>            : 選択範囲を縮小
+lua <<EOF
+local treesitter_ok, treesitter = pcall(require, "nvim-treesitter.configs")
+if treesitter_ok then
+  treesitter.setup({
+    ensure_installed = { "ruby", "go", "rust", "typescript", "javascript", "python", "lua", "bash" },
+    auto_install     = false,
+    highlight = { enable = true },
+    indent    = { enable = true },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection    = "<C-space>",
+        node_incremental  = "<C-space>",
+        scope_incremental = false,
+        node_decremental  = "<bs>",
+      },
+    },
+  })
+end
+EOF
+
+" ============================================
+" nvim-treesitter-context - スコープのスティッキー表示
+" ============================================
+lua <<EOF
+local ts_context_ok, ts_context = pcall(require, "treesitter-context")
+if ts_context_ok then
+  ts_context.setup({
+    enable    = true,
+    max_lines = 3,
+  })
+end
+EOF
+
+" ============================================
+" aerial.nvim - シンボルアウトライン
+" ============================================
+" 使い方:
+"   <leader>a       : アウトラインをトグル
+lua <<EOF
+local aerial_ok, aerial = pcall(require, "aerial")
+if aerial_ok then
+  aerial.setup({
+    backends    = { "treesitter", "lsp" },
+    layout      = { max_width = { 40, 0.2 }, min_width = 30 },
+    show_guides = true,
+  })
+  vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>', { silent = true, desc = "Toggle aerial outline" })
+end
+EOF
+
+" ============================================
+" persistence.nvim - セッション自動保存・復元
+" ============================================
+" 使い方:
+"   <leader>qs      : 現在の cwd のセッションを復元
+"   <leader>ql      : 最後のセッションを復元
+"   <leader>qd      : セッション保存を無効化（一時的な使い捨て起動）
+lua <<EOF
+local persistence_ok, persistence = pcall(require, "persistence")
+if persistence_ok then
+  persistence.setup()
+  vim.keymap.set('n', '<leader>qs', function() persistence.load() end,              { silent = true, desc = "Restore session" })
+  vim.keymap.set('n', '<leader>ql', function() persistence.load({ last = true }) end, { silent = true, desc = "Restore last session" })
+  vim.keymap.set('n', '<leader>qd', function() persistence.stop() end,              { silent = true, desc = "Don't save session" })
+end
+EOF
+
+" ============================================
 " WSL用設定 - クリップボード連携
 " ============================================
 if system('uname -a | grep microsoft') != ''

@@ -9,6 +9,7 @@ neovim_dir:
   - "~/.config/sqls"
   - "~/.config/lazygit"
   - "/usr/local/src/nvim"
+  - "~/.local/share/nvim/sessions"
 neovim_plugins:
   - name: "airblade/vim-gitgutter"
     version: "00df1089b6267f47c7c0f13536789feb9db1e65b"
@@ -89,6 +90,15 @@ neovim_plugins:
     version: "9a88eae817ef395952e08650b3283726786fb5fb"
   - name: "sindrets/diffview.nvim"
     version: "4516612fe98ff56ae0415a259ff6361a89419b0a"
+  # コードリーディング支援
+  - name: "nvim-treesitter/nvim-treesitter"
+    version: "4916d6592ede8c07973490d9322f187e07dfefac"
+  - name: "nvim-treesitter/nvim-treesitter-context"
+    version: "b0c45cefe2c8f7b55fc46f34e563bc428ef99636"
+  - name: "stevearc/aerial.nvim"
+    version: "645d108a5242ec7b378cbe643eb6d04d4223f034"
+  - name: "folke/persistence.nvim"
+    version: "b20b2a7887bd39c1a356980b45e03250f3dce49c"
 db_user: "postgres"
 db_password: ""
 db_dbname: "postgres"
