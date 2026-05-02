@@ -75,7 +75,11 @@
     "type": "command",
     "command": "{{ ansible_env.HOME }}/.claude/statusline.sh"
   },
-  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold",
+    "autoSubmit": true
+  },
   "language": "Japanese",
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
