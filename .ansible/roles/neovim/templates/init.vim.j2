@@ -312,12 +312,14 @@ autocmd TermOpen * startinsert
 " ============================================
 " fzf-lua - ファジーファインダー
 " ============================================
-" 使い方:
-"   <Ctrl-p>        : プロジェクト内のファイルを検索
+" 使い方（ノーマルモード）:
+"   <Ctrl-p>        : プロジェクト内のファイルを検索（ファイル名）
+"   <Ctrl-f>        : プロジェクト内をgrep検索（live grep / ファイル内容）
+"                     ※ インサートモードの <Ctrl-f> は nvim-cmp 補完ドキュメントのスクロール
+"   <Ctrl-g>        : カーソル下の単語でgrep検索
 "   gs              : Git statusのファイルを検索
 "   gl              : Gitログを表示
-"   gr <keyword>    : プロジェクト内をgrep検索（live grep）
-"   ビジュアルモードで gr : 選択したテキストをgrep検索
+"   ビジュアルモードで <Ctrl-f> : 選択したテキストをgrep検索
 "   検索結果内で:
 "     <Enter>       : ファイルを開く
 "     <Ctrl-t>      : 新しいタブで開く
@@ -348,10 +350,11 @@ if fzf_lua_ok then
   })
 
   vim.keymap.set('n', '<C-p>', fzf_lua.files, { silent = true, desc = "Find files" })
+  vim.keymap.set('n', '<C-f>', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
+  vim.keymap.set('n', '<C-g>', fzf_lua.grep_cword, { silent = true, desc = "Grep word under cursor" })
+  vim.keymap.set('x', '<C-f>', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
   vim.keymap.set('n', 'gs', fzf_lua.git_status, { silent = true, desc = "Git status" })
   vim.keymap.set('n', 'gl', fzf_lua.git_commits, { silent = true, desc = "Git log" })
-  vim.keymap.set('n', 'gr', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
-  vim.keymap.set('x', 'gr', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
 end
 EOF
 
@@ -488,9 +491,10 @@ lua <<EOF
   -- ============================================
   -- nvim-cmp 補完設定
   -- ============================================
-  -- 使い方:
+  -- 使い方（インサートモードの補完メニュー内）:
   --   <Ctrl-b>      : 補完ドキュメントを上にスクロール
   --   <Ctrl-f>      : 補完ドキュメントを下にスクロール
+  --                   ※ ノーマルモードの <Ctrl-f> は fzf-lua の live grep
   --   <Ctrl-Space>  : 補完を手動でトリガー
   --   <Ctrl-e>      : 補完をキャンセル
   --   <Enter>       : 選択した補完を確定
