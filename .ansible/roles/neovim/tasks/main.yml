@@ -81,6 +81,29 @@
     path: "{{ neovim_plugin_path }}/claude-code.nvim"
     state: absent
 
+# fzf は update: false でバージョン変更が反映されないため、SHA ミスマッチ時にディレクトリごと削除して再クローンする
+- name: check current fzf commit
+  ansible.builtin.command: "git -C {{ neovim_plugin_path }}/fzf rev-parse HEAD"
+  register: fzf_current_commit
+  failed_when: false
+  changed_when: false
+
+- name: remove fzf directory if version mismatch
+  ansible.builtin.file:
+    path: "{{ neovim_plugin_path }}/fzf"
+    state: absent
+  when:
+    - fzf_current_commit.rc == 0
+    - fzf_current_commit.stdout | trim != (neovim_plugins | selectattr('name', 'equalto', 'junegunn/fzf') | list | first).version
+
+- name: remove fzf shell integration if version mismatch
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.fzf.bash"
+    state: absent
+  when:
+    - fzf_current_commit.rc == 0
+    - fzf_current_commit.stdout | trim != (neovim_plugins | selectattr('name', 'equalto', 'junegunn/fzf') | list | first).version
+
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item.name }}.git"
