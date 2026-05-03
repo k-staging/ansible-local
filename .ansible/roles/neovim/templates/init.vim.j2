@@ -389,6 +389,9 @@ EOF
 "     R             : リフレッシュ
 "     H             : 隠しファイルの表示/非表示
 "     /             : フィルター
+"     <Ctrl-p>      : ファイル名検索（エディタ側で開く）
+"     <Ctrl-f>      : ファイル内容検索（エディタ側で開く）
+"     <Ctrl-g>      : カーソル下の単語でgrep（エディタ側で開く）
 lua <<EOF
 local neotree_ok, neotree = pcall(require, "neo-tree")
 if neotree_ok then
@@ -427,6 +430,35 @@ if neotree_ok then
 end
 EOF
 nnoremap <C-n> :Neotree toggle<CR>
+
+" neo-tree フォーカス時でも fzf-lua 検索を使えるようにする
+" ツリー側でキーを押すと、エディタウィンドウへ移動してから検索を起動する
+lua <<EOF
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("NeoTreeFzfKeys", { clear = true }),
+  pattern = "neo-tree",
+  callback = function()
+    local fzf_lua_ok, fzf_lua = pcall(require, "fzf-lua")
+    if not fzf_lua_ok then return end
+    local opts = { buffer = true, silent = true }
+    local function jump_then(fn)
+      return function()
+        local cur = vim.api.nvim_get_current_win()
+        vim.cmd("wincmd p")
+        if vim.api.nvim_get_current_win() == cur then
+          vim.cmd("wincmd l")
+        end
+        -- エディタウィンドウへ移動できなかった場合は何もしない
+        if vim.bo[vim.api.nvim_get_current_win()].filetype == "neo-tree" then return end
+        fn()
+      end
+    end
+    vim.keymap.set('n', '<C-p>', jump_then(fzf_lua.files),      opts)
+    vim.keymap.set('n', '<C-f>', jump_then(fzf_lua.live_grep),  opts)
+    vim.keymap.set('n', '<C-g>', jump_then(fzf_lua.grep_cword), opts)
+  end,
+})
+EOF
 
 " ============================================
 " nvim-cmp, nvim-lspconfig - 補完とLSP設定
