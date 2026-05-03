@@ -449,7 +449,7 @@ vim.api.nvim_create_autocmd("FileType", {
           vim.cmd("wincmd l")
         end
         -- エディタウィンドウへ移動できなかった場合は何もしない
-        if vim.bo[vim.api.nvim_get_current_win()].filetype == "neo-tree" then return end
+        if vim.bo.filetype == "neo-tree" then return end
         fn()
       end
     end
