@@ -1,0 +1,9 @@
+---
+aider_model: "ollama_chat/gemma4"
+aider_num_ctx: 32768
+aider_auto_commits: true
+aider_dark_mode: true
+aider_yes_always: true
+aider_gitignore: true
+aider_analytics: false
+aider_check_update: false
