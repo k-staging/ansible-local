@@ -14,6 +14,8 @@
       tags: codex
     - role: neovim
       tags: neovim
+    - role: ollama
+      tags: ollama
   post_tasks:
     - name: reboot wsl
       shell: "[ -e /mnt/c/Windows/system32/wsl.exe ] && /mnt/c/Windows/system32/wsl.exe -t Ubuntu-20.04"

@@ -1,0 +1,62 @@
+---
+- name: setup ollama (macOS)
+  block:
+    - name: install ollama
+      community.general.homebrew:
+        name: ollama
+        state: present
+
+    - name: check ollama service status
+      ansible.builtin.command: brew services list
+      register: brew_services_list
+      changed_when: false
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
+
+    - name: start ollama service
+      ansible.builtin.command: brew services start ollama
+      changed_when: true
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
+      when: brew_services_list.stdout is not search('ollama.*started')
+  when: ansible_distribution == 'MacOSX'
+
+- name: setup ollama (Linux)
+  block:
+    - name: check if ollama is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/ollama
+      register: ollama_bin
+
+    - name: install ollama via official script
+      ansible.builtin.shell: "curl -fsSL https://ollama.com/install.sh | sh"
+      when: not ollama_bin.stat.exists
+      changed_when: true
+
+    - name: start and enable ollama service
+      ansible.builtin.systemd:
+        name: ollama
+        state: started
+        enabled: true
+      become: true
+      ignore_errors: true
+  when: ansible_distribution in ['Ubuntu', 'Debian']
+
+- name: wait for ollama service to be ready
+  ansible.builtin.command: ollama list
+  register: ollama_list
+  changed_when: false
+  retries: 5
+  delay: 2
+  until: ollama_list.rc == 0
+  ignore_errors: true
+
+- name: pull ollama models
+  ansible.builtin.command: "ollama pull {{ item }}"
+  loop: "{{ ollama_models }}"
+  vars:
+    installed_models: "{{ ollama_list.stdout_lines[1:] | map('split') | map('first') | list }}"
+  when:
+    - not ollama_list.failed
+    - item not in installed_models
+  changed_when: item not in installed_models
