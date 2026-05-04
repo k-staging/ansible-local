@@ -14,3 +14,9 @@
     src: aider.conf.yml.j2
     dest: "{{ ansible_env.HOME }}/.aider.conf.yml"
     mode: "0644"
+
+- name: copy aider model settings (~/.aider.model.settings.yml)
+  ansible.builtin.template:
+    src: aider.model.settings.yml.j2
+    dest: "{{ ansible_env.HOME }}/.aider.model.settings.yml"
+    mode: "0644"
