@@ -1,0 +1,5 @@
+# Ansible managed - per-model overrides for aider
+# Increase num_ctx from Ollama default (2048) which is too small for code
+- name: {{ aider_model }}
+  extra_params:
+    num_ctx: {{ aider_num_ctx }}

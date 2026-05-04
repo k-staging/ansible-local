@@ -2,6 +2,13 @@
 # Use ollama_chat/<model> to route through local Ollama (requires ollama role)
 model: {{ aider_model }}
 
+# Set OLLAMA_API_BASE to silence "OLLAMA_API_BASE: Not set" warning
+set-env:
+  - OLLAMA_API_BASE={{ aider_ollama_api_base }}
+
+# Per-model settings (num_ctx etc.) - see ~/.aider.model.settings.yml
+model-settings-file: {{ ansible_env.HOME }}/.aider.model.settings.yml
+
 # yes-always/auto-commits are true for non-stop local LLM workflow
 auto-commits: {{ aider_auto_commits | string | lower }}
 yes-always: {{ aider_yes_always | string | lower }}
@@ -10,7 +17,3 @@ dark-mode: {{ aider_dark_mode | string | lower }}
 gitignore: {{ aider_gitignore | string | lower }}
 analytics: {{ aider_analytics | string | lower }}
 check-update: {{ aider_check_update | string | lower }}
-
-# Increase Ollama context window from default 2048 (too small for code)
-extra-params:
-  num_ctx: {{ aider_num_ctx }}
