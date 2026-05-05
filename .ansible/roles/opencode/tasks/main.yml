@@ -69,6 +69,11 @@
 # ============================================
 - name: setup opencode (macOS)
   block:
+    - name: tap sst/tap
+      community.general.homebrew_tap:
+        name: sst/tap
+        state: present
+
     - name: install opencode
       community.general.homebrew:
         name: sst/tap/opencode
