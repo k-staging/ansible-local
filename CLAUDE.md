@@ -49,7 +49,9 @@ cd .ansible
 2. **mise** - 多言語バージョン管理（Node.js, Ruby, Go）
 3. **tmux** - ターミナルマルチプレクサセットアップ
 4. **claudecode** - Claude Code設定
-5. **neovim** - Neovimエディタ設定
+5. **codex** - OpenAI Codex CLI設定
+6. **neovim** - Neovimエディタ設定
+7. **opencode** - ローカルLLMコーディングエージェント（Ollama + opencode）
 
 ### 主要なパターン
 - mise による多言語バージョン管理（Node.js, Ruby, Go を統合管理）
