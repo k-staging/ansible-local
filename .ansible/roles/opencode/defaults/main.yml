@@ -1,5 +1,7 @@
 ---
+# Ollama で pull するモデル一覧
 ollama_models:
-  - gemma4
+  - llama3.3
 
-opencode_default_model: "gemma4"
+# opencode のデフォルトモデル（ollama_models に含まれている必要がある）
+opencode_default_model: "llama3.3"
