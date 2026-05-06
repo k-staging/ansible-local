@@ -1,5 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "ollama/{{ opencode_default_model }}",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+{% for m in ollama_models %}        "{{ m }}": { "name": "{{ m }}" }{% if not loop.last %},{% endif %}
+{% endfor %}      }
+    }
+  },
   "autoupdate": true
 }
