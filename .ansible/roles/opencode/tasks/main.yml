@@ -107,3 +107,17 @@
     src: opencode.json.j2
     dest: "{{ ansible_env.HOME }}/.config/opencode/opencode.json"
     mode: "0644"
+
+- name: ensure opencode state directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/state/opencode"
+    state: directory
+    mode: "0755"
+
+# このファイルは playbook 実行ごとに上書きされる。
+# TUI 内で /model 切替しても、次回 playbook 実行時に opencode_default_model に戻る。
+- name: deploy opencode model state
+  ansible.builtin.template:
+    src: model.json.j2
+    dest: "{{ ansible_env.HOME }}/.local/state/opencode/model.json"
+    mode: "0644"
