@@ -1,3 +1,5 @@
 ---
 ollama_models:
   - gemma4
+
+opencode_default_model: "gemma4"

@@ -92,3 +92,18 @@
       when: not opencode_bin.stat.exists
       changed_when: not opencode_bin.stat.exists
   when: ansible_distribution in ['Ubuntu', 'Debian']
+
+# ============================================
+# opencode config
+# ============================================
+- name: ensure opencode config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/opencode"
+    state: directory
+    mode: "0755"
+
+- name: deploy opencode global config
+  ansible.builtin.template:
+    src: opencode.json.j2
+    dest: "{{ ansible_env.HOME }}/.config/opencode/opencode.json"
+    mode: "0644"
