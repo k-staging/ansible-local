@@ -346,8 +346,11 @@ if fzf_lua_ok then
         ["ctrl-a"] = "toggle-all",
       },
     },
+    files = {
+      fd_opts = "--hidden",
+    },
     grep = {
-      rg_opts = "--column --line-number --no-heading --color=always --smart-case",
+      rg_opts = "--column --line-number --no-heading --color=always --smart-case --hidden",
       no_sort = true,
     },
   })
