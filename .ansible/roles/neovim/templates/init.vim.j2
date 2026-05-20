@@ -317,12 +317,12 @@ autocmd TermOpen * startinsert
 " ============================================
 " 使い方（ノーマルモード）:
 "   <Ctrl-p>        : プロジェクト内のファイルを検索（ファイル名）
-"   <Ctrl-f>        : プロジェクト内をgrep検索（live grep / ファイル内容）
+"   <leader>/       : プロジェクト内をgrep検索（live grep / ファイル内容）
 "                     ※ インサートモードの <Ctrl-f> は nvim-cmp 補完ドキュメントのスクロール
 "   <Ctrl-g>        : カーソル下の単語でgrep検索
 "   gs              : Git statusのファイルを検索
 "   gl              : Gitログを表示
-"   ビジュアルモードで <Ctrl-f> : 選択したテキストをgrep検索
+"   ビジュアルモードで <leader>/ : 選択したテキストをgrep検索
 "   検索結果内で:
 "     <Enter>       : ファイルを開く
 "     <Ctrl-t>      : 新しいタブで開く
@@ -356,9 +356,9 @@ if fzf_lua_ok then
   })
 
   vim.keymap.set('n', '<C-p>', fzf_lua.files, { silent = true, desc = "Find files" })
-  vim.keymap.set('n', '<C-f>', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
+  vim.keymap.set('n', '<leader>/', fzf_lua.live_grep, { silent = true, desc = "Live grep" })
   vim.keymap.set('n', '<C-g>', fzf_lua.grep_cword, { silent = true, desc = "Grep word under cursor" })
-  vim.keymap.set('x', '<C-f>', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
+  vim.keymap.set('x', '<leader>/', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
   vim.keymap.set('n', 'gs', fzf_lua.git_status, { silent = true, desc = "Git status" })
   vim.keymap.set('n', 'gl', fzf_lua.git_commits, { silent = true, desc = "Git log" })
 end
@@ -393,7 +393,7 @@ EOF
 "     H             : 隠しファイルの表示/非表示
 "     /             : フィルター
 "     <Ctrl-p>      : ファイル名検索（エディタ側で開く）
-"     <Ctrl-f>      : ファイル内容検索（エディタ側で開く）
+"     <leader>/     : ファイル内容検索（エディタ側で開く）
 "     <Ctrl-g>      : カーソル下の単語でgrep（エディタ側で開く）
 lua <<EOF
 local neotree_ok, neotree = pcall(require, "neo-tree")
@@ -457,7 +457,7 @@ vim.api.nvim_create_autocmd("FileType", {
       end
     end
     vim.keymap.set('n', '<C-p>', jump_then(fzf_lua.files),      opts)
-    vim.keymap.set('n', '<C-f>', jump_then(fzf_lua.live_grep),  opts)
+    vim.keymap.set('n', '<leader>/', jump_then(fzf_lua.live_grep),  opts)
     vim.keymap.set('n', '<C-g>', jump_then(fzf_lua.grep_cword), opts)
   end,
 })
@@ -532,7 +532,6 @@ lua <<EOF
   -- 使い方（インサートモードの補完メニュー内）:
   --   <Ctrl-b>      : 補完ドキュメントを上にスクロール
   --   <Ctrl-f>      : 補完ドキュメントを下にスクロール
-  --                   ※ ノーマルモードの <Ctrl-f> は fzf-lua の live grep
   --   <Ctrl-Space>  : 補完を手動でトリガー
   --   <Ctrl-e>      : 補完をキャンセル
   --   <Enter>       : 選択した補完を確定
