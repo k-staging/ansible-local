@@ -19,7 +19,8 @@
     repo: "https://github.com/tmux/tmux.git"
     dest: "/usr/local/src/tmux"
     version: "{{ tmux_version }}"
-    update: no
+    update: yes
+    force: yes
 
 - name: execute autogen
   ansible.builtin.shell: sh ./autogen.sh
