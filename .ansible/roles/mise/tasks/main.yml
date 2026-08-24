@@ -26,6 +26,11 @@
   when: mise_config.changed
   changed_when: true
 
+- name: prune unused mise tool installs
+  ansible.builtin.shell: "{{ mise_bin }} prune -y"
+  when: mise_config.changed
+  changed_when: true
+
 - name: check installed npm packages
   ansible.builtin.shell: "{{ mise_bin }} exec -- npm list -g --depth=0 {{ item.split('@')[0] }}"
   loop: "{{ npm_packages }}"
