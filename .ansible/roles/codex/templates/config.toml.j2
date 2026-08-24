@@ -27,3 +27,7 @@ show_raw_agent_reasoning = {{ codex_show_raw_agent_reasoning | lower }}
 
 [history]
 persistence = "{{ codex_history_persistence }}"
+
+# ネットワークアクセス許可 (workspace-write サンドボックス内での送信通信を許可)
+[sandbox_workspace_write]
+network_access = {{ codex_sandbox_workspace_write_network_access | lower }}

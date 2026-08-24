@@ -4,6 +4,7 @@
 # 推奨設定
 codex_approval_policy: "on-request"
 codex_sandbox_mode: "workspace-write"
+codex_sandbox_workspace_write_network_access: true
 codex_file_opener: "vscode"
 codex_preferred_auth_method: "chatgpt"
 codex_model_reasoning_effort: "medium"
