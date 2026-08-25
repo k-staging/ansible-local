@@ -31,3 +31,8 @@ persistence = "{{ codex_history_persistence }}"
 # ネットワークアクセス許可 (workspace-write サンドボックス内での送信通信を許可)
 [sandbox_workspace_write]
 network_access = {{ codex_sandbox_workspace_write_network_access | lower }}
+
+# TUIフッターのステータスライン表示項目
+# estimated-thread-cost は Enterprise workspace 専用（それ以外では自動的に非表示）
+[tui]
+status_line = {{ codex_tui_status_line | to_json }}
