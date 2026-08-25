@@ -2,7 +2,7 @@
 # Codex CLI 設定
 
 # 推奨設定
-codex_approval_policy: "on-request"
+codex_approval_policy: "never"
 codex_sandbox_mode: "workspace-write"
 codex_sandbox_workspace_write_network_access: true
 codex_file_opener: "vscode"
