@@ -17,6 +17,7 @@ codex_history_persistence: "save-all"
 # estimated-thread-cost は Enterprise workspace 専用（それ以外では自動的に非表示）
 codex_tui_status_line:
   - "model-with-reasoning"
+  - "current-dir"
   - "context-usage"
   - "used-tokens"
   - "estimated-thread-cost"
