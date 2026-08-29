@@ -10,15 +10,71 @@
   loop: "{{ codex_dir }}"
 
 # ============================================
+# Codex CLI 通知スクリプト
+# ============================================
+- name: copy notify script
+  ansible.builtin.copy:
+    src: "codex-notify.sh"
+    dest: "{{ ansible_env.HOME }}/.codex/codex-notify.sh"
+    mode: "0755"
+
+# ============================================
 # Codex CLI 設定ファイル
 # ============================================
+# ChatGPT デスクトップアプリが config.toml のトップレベルに notify を書き込むことがあり、
+# ANSIBLE MANAGED BLOCK 内の notify と重複すると TOML パースエラーになるため事前に削除する
+# (codex-notify.sh 側で同アプリの通知フックを呼び出すため機能的な差分はない)
+# NOTE: 正規表現を notify 全般に広げると ANSIBLE MANAGED BLOCK 内の notify 行も
+# 毎回削除対象になり blockinfile と競合して冪等性が壊れるため、対象は限定する
+- name: check if config.toml exists
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.codex/config.toml"
+  register: codex_config_stat
+
+- name: remove stray notify line written by ChatGPT desktop app
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.codex/config.toml"
+    regexp: '^notify = \[.*SkyComputerUseClient.*\]$'
+    state: absent
+  when: codex_config_stat.stat.exists
+
+# ANSIBLE MANAGED BLOCK が [projects."..."] 等のテーブルヘッダーの後ろに位置すると、
+# ブロック内の設定が TOML 上そのテーブルの子要素として解釈されグローバルに効かなくなる。
+# その場合は一度ブロックを削除し、最初のテーブルヘッダーより前（ルートスコープ）に再挿入する
+- name: check position of ANSIBLE MANAGED BLOCK relative to TOML tables
+  ansible.builtin.shell: |
+    set -o pipefail
+    FILE="{{ ansible_env.HOME }}/.codex/config.toml"
+    BEGIN_LINE=$(grep -n '^# BEGIN ANSIBLE MANAGED BLOCK - codex recommended settings' "$FILE" | head -1 | cut -d: -f1 || true)
+    FIRST_TABLE_LINE=$(grep -n '^\[[^[]' "$FILE" | head -1 | cut -d: -f1 || true)
+    if [ -n "$BEGIN_LINE" ] && [ -n "$FIRST_TABLE_LINE" ] && [ "$FIRST_TABLE_LINE" -lt "$BEGIN_LINE" ]; then
+      echo "misplaced"
+    else
+      echo "ok"
+    fi
+  args:
+    executable: /bin/bash
+  register: codex_block_position
+  changed_when: false
+  check_mode: false
+  when: codex_config_stat.stat.exists
+
+- name: remove misplaced ANSIBLE MANAGED BLOCK so it can be reinserted at root scope
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.codex/config.toml"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - codex recommended settings"
+    state: absent
+  when: codex_block_position.stdout is defined and codex_block_position.stdout == "misplaced"
+
 # config.toml の推奨設定は blockinfile で管理する
 # これにより [projects."..."] などユーザー/Codex が追加する設定は保持される
+# insertbefore: BOF でファイル先頭に挿入し、ルートスコープを維持する
 - name: manage recommended settings in config.toml
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.codex/config.toml"
     block: "{{ lookup('template', 'config.toml.j2') }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK - codex recommended settings"
+    insertbefore: BOF
     create: true
     mode: "0644"
 

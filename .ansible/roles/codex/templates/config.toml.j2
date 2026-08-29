@@ -25,6 +25,9 @@ model_reasoning_summary = "{{ codex_model_reasoning_summary }}"
 hide_agent_reasoning = {{ codex_hide_agent_reasoning | lower }}
 show_raw_agent_reasoning = {{ codex_show_raw_agent_reasoning | lower }}
 
+# ターン完了時の通知スクリプト
+notify = ["{{ ansible_env.HOME }}/.codex/codex-notify.sh"]
+
 [history]
 persistence = "{{ codex_history_persistence }}"
 
