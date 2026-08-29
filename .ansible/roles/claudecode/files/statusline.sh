@@ -3,6 +3,7 @@ command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
+CURRENT_VERSION=$(echo "$input" | jq -r '.version // empty' | sed 's/^v//')
 PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
 FIVE_H=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
@@ -94,4 +95,29 @@ fi
 PR_SUFFIX=""
 [ -n "$PR_INFO" ] && PR_SUFFIX=" | ${MAGENTA}${PR_INFO}${RESET}"
 
-printf '%b\n' "${CYAN}[${MODEL}]${RESET} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}"
+LATEST_VERSION=""
+if [ -n "$CURRENT_VERSION" ] && command -v curl >/dev/null 2>&1; then
+  UPDATE_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-update-cache"
+  mkdir -p "$UPDATE_CACHE_DIR" 2>/dev/null
+  UPDATE_CACHE_FILE="${UPDATE_CACHE_DIR}/latest-version"
+  UPDATE_CACHE_MTIME=0
+  if [ -f "$UPDATE_CACHE_FILE" ]; then
+    LATEST_VERSION=$(cat "$UPDATE_CACHE_FILE")
+    UPDATE_CACHE_MTIME=$(stat -f %m "$UPDATE_CACHE_FILE" 2>/dev/null || stat -c %Y "$UPDATE_CACHE_FILE" 2>/dev/null || echo 0)
+  fi
+  UPDATE_CACHE_AGE=$(( $(date +%s) - UPDATE_CACHE_MTIME ))
+  if [ "$UPDATE_CACHE_AGE" -gt 3600 ] && mkdir "${UPDATE_CACHE_FILE}.lock" 2>/dev/null; then
+    (
+      trap 'rmdir "${UPDATE_CACHE_FILE}.lock" 2>/dev/null' EXIT
+      latest=$(curl -sf --max-time 3 "https://downloads.claude.ai/claude-code-releases/latest" 2>/dev/null | tr -d '[:space:]' | sed 's/^v//')
+      if [ -n "$latest" ]; then
+        tmp_file=$(mktemp "${UPDATE_CACHE_DIR}/.latest-XXXXXX" 2>/dev/null) || exit
+        printf '%s' "$latest" > "$tmp_file" && mv "$tmp_file" "$UPDATE_CACHE_FILE"
+      fi
+    ) >/dev/null 2>&1 &
+  fi
+fi
+UPDATE_SUFFIX=""
+[ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "$CURRENT_VERSION" ] && UPDATE_SUFFIX=" | ${YELLOW}⬆ v${LATEST_VERSION}${RESET}"
+
+printf '%b\n' "${CYAN}[${MODEL}]${RESET} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}${UPDATE_SUFFIX}"
