@@ -57,8 +57,11 @@ if [ -n "$WEEK" ]; then
   [ -n "$WEEK_REM" ] && LIMITS="${LIMITS}(${WEEK_REM})"
 fi
 
-PR_INFO=""
 CWD=$(echo "$input" | jq -r '.workspace.current_dir // empty')
+CWD_SUFFIX=""
+[ -n "$CWD" ] && CWD_SUFFIX=" ${CYAN}$(basename "$CWD")${RESET}"
+
+PR_INFO=""
 if [ -n "$CWD" ] && command -v gh >/dev/null 2>&1 && command -v git >/dev/null 2>&1; then
   REPO_ROOT=$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null)
   BRANCH=$(git -C "$CWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -120,4 +123,4 @@ fi
 UPDATE_SUFFIX=""
 [ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "$CURRENT_VERSION" ] && UPDATE_SUFFIX=" | ${YELLOW}⬆ v${LATEST_VERSION}${RESET}"
 
-printf '%b\n' "${CYAN}[${MODEL}]${RESET} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}${UPDATE_SUFFIX}"
+printf '%b\n' "${CYAN}[${MODEL}]${RESET}${CWD_SUFFIX} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}${UPDATE_SUFFIX}"
