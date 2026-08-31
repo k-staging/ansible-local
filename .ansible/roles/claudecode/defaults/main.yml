@@ -1,7 +1,11 @@
 ---
 # Claude Code 設定
 
-claude_code_version: "2.1.235"
+claude_code_version: "2.1.251"
+
+# Model for Claude Code main and subagent (single source of truth)
+# 1箇所を更新すれば settings.json.j2 のmodelとCLAUDE_CODE_SUBAGENT_MODELの両方に反映される
+claude_code_model: "claude-sonnet-5"
 
 # Claude Code directories
 claudecode_dir:
