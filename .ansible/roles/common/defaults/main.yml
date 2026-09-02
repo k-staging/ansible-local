@@ -40,6 +40,7 @@ brew_pkg:
   - glow
   - gnu-tar
   - gnu-sed
+  - hashicorp/tap/terraform
   - hashicorp/tap/terraform-ls
   - imagemagick@6
   - libevent
@@ -63,7 +64,6 @@ brew_pkg:
   - sqlite
   - telnet
   - terminal-notifier
-  - terraform
   - tesseract
   - vegeta
   - wget
