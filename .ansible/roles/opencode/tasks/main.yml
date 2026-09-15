@@ -69,6 +69,16 @@
 # ============================================
 - name: setup opencode (macOS)
   block:
+    # Homebrew 7.0.1 以降、tap 前に untrusted tap の trust が必要
+    # trust サブコマンドが存在しない旧バージョンでは失敗するが、その場合は trust 不要なので無視して次に進める
+    - name: trust sst/tap
+      ansible.builtin.command: brew trust --tap sst/tap
+      register: brew_trust_sst_tap
+      changed_when: "brew_trust_sst_tap.rc == 0 and 'Already trusted' not in brew_trust_sst_tap.stdout"
+      ignore_errors: true
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
+
     - name: tap sst/tap
       community.general.homebrew_tap:
         name: sst/tap
