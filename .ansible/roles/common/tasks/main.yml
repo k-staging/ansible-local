@@ -185,6 +185,15 @@
     dest: ~/bin/git-prompt.sh
     mode: 0755
 
+- name: download cloud-sql-proxy
+  ansible.builtin.get_url:
+    url: "https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v{{ cloud_sql_proxy_version }}/cloud-sql-proxy.{{ cloud_sql_proxy_os }}.{{ cloud_sql_proxy_arch }}"
+    dest: ~/bin/cloud-sql-proxy
+    mode: 0755
+  vars:
+    cloud_sql_proxy_os: "{{ 'darwin' if ansible_distribution == 'MacOSX' else 'linux' }}"
+    cloud_sql_proxy_arch: "{{ 'arm64' if ansible_architecture in ['arm64', 'aarch64'] else 'amd64' }}"
+
 - name: install dotnet
   ansible.builtin.command: "dotnet tool install --global csharp-ls"
   ignore_errors: yes

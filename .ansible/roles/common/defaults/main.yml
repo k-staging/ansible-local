@@ -84,4 +84,5 @@ working_directory:
   - .dotnet/tools
   - bin
   - src
+cloud_sql_proxy_version: "2.25.4"
 
