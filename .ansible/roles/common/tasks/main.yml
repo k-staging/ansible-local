@@ -30,6 +30,25 @@
         repo: ppa:redislabs/redis
       when: false
 
+    - name: download Google Cloud SDK apt key
+      ansible.builtin.get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /tmp/google-cloud-sdk-key.gpg
+        mode: "0644"
+
+    - name: dearmor Google Cloud SDK apt key
+      ansible.builtin.command: gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg /tmp/google-cloud-sdk-key.gpg
+      args:
+        creates: /usr/share/keyrings/cloud.google.gpg
+      become: yes
+
+    - name: add Google Cloud SDK apt repository
+      ansible.builtin.copy:
+        content: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main\n"
+        dest: /etc/apt/sources.list.d/google-cloud-sdk.list
+        mode: "0644"
+      become: yes
+
     - name: apt install
       ansible.builtin.apt:
         pkg: "{{ item }}"
