@@ -1,41 +1,23 @@
 # WSL ローカル環境構築
 ##### WSL インストール  
-PowerShell で以下を実行  
-```
-PS C:\> Invoke-WebRequest -Uri https://aka.ms/wslubuntu2004 -OutFile ${HOME}\Downloads\Ubuntu20.04.appx -UseBasicParsing
-```
 PowerShell ( 管理者権限 ) で以下を実行  
 ```
-PS C:\> Dism /online /Enable-Feature /FeatureName:Microsoft-Windows-Subsystem-Linux
+PS C:\> wsl --install
 ```
-以下のメッセージが出力されるので、「Y」を応答 ( Y を応答すると PC が再起動されます )  
-```
-Deployment Image Servicing and Management tool
-Version: xx.x.xxxxx.x
-
-Image Version: xx.x.xxxxx.xxx
-
-機能を有効にしています
-[==========================100.0%==========================]
-The operation completed successfully.
-Restart Windows to complete this operation.
-Do you want to restart the computer now? (Y/N)
-```
-PowerSHell ( 管理者権限 ) で以下を実行  
-```
-PS C:\> Add-AppxPackage ${HOME}\Downloads\Ubuntu20.04.appx
-```
-Windows キーを押し、 "ubuntu" と入力後 Enter キーを押す  
-WSL が起動し、以下メッセージが出力された事を確認したら、 Ctrl +c でウィンドウを閉じます  
+以下のメッセージが出力されたら、 Ctrl +c でウィンドウを閉じます  
 ```
 Installing, this may take a few minutes...
 Please create a default UNIX user account. The username does not need to match your Windows username.
 For more information visit: https://aka.ms/wslusers
 Enter new UNIX username:
 ```
+PowerShell で以下を実行し、 root で再ログイン  
+```
+PS C:\> wsl -d Ubuntu -u root --exec /bin/bash
+```
 
 ##### WSL 環境構築
-WSL を起動 ( Windows キーを押し、 "ubuntu" と入力し Enter ) し、以下を実行  
+上記で開いたシェルで、以下を実行  
 ```
 $ add-apt-repository -y ppa:git-core/ppa && apt update && apt install -y git
 $ mkdir ~/src

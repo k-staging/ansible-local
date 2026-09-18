@@ -1,7 +1,0 @@
----
-# Ollama で pull するモデル一覧
-ollama_models:
-  - "qwen2.5-coder:7b"
-
-# opencode のデフォルトモデル（ollama_models に含まれている必要がある）
-opencode_default_model: "qwen2.5-coder:7b"

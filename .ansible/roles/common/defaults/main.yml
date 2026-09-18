@@ -26,7 +26,8 @@ apt_pkg:
   - silversearcher-ag
   - tcl
   - whois
-  - zip 
+  - zip
+  - zstd
 brew_pkg:
   - ag
   - autoconf
