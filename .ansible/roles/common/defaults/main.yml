@@ -15,6 +15,7 @@ apt_pkg:
   - default-jre
   - dotnet-sdk-10.0
   - g++
+  - google-cloud-cli
   - language-pack-ja
   - language-pack-ja-base
   - libaio1t64
