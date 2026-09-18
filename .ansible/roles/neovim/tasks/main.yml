@@ -19,7 +19,7 @@
 
 - name: download neovim (linux)
   ansible.builtin.unarchive:
-    src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-linux64.tar.gz"
+    src: "https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-linux-x86_64.tar.gz"
     dest: "/usr/local/src/nvim/"
     remote_src: true
     extra_opts: ["--strip-components=1"]
@@ -81,37 +81,26 @@
     path: "{{ neovim_plugin_path }}/claude-code.nvim"
     state: absent
 
-# fzf は update: false でバージョン変更が反映されないため、SHA ミスマッチ時にディレクトリごと削除して再クローンする
-- name: check current fzf commit
-  ansible.builtin.command: "git -C {{ neovim_plugin_path }}/fzf rev-parse HEAD"
-  register: fzf_current_commit
-  failed_when: false
-  changed_when: false
-
-- name: remove fzf directory if version mismatch
-  ansible.builtin.file:
-    path: "{{ neovim_plugin_path }}/fzf"
-    state: absent
-  when:
-    - fzf_current_commit.rc == 0
-    - fzf_current_commit.stdout | trim != (neovim_plugins | selectattr('name', 'equalto', 'junegunn/fzf') | list | first).version
-
-- name: remove fzf shell integration if version mismatch
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.fzf.bash"
-    state: absent
-  when:
-    - fzf_current_commit.rc == 0
-    - fzf_current_commit.stdout | trim != (neovim_plugins | selectattr('name', 'equalto', 'junegunn/fzf') | list | first).version
-
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item.name }}.git"
     dest: "{{ neovim_plugin_path }}/{{ item.name.split('/')[-1] }}"
     version: "{{ item.version }}"
-    update: false
+    update: true
   with_items:
     - "{{ neovim_plugins }}"
+  register: neovim_plugin_clone_result
+
+# fzf のバイナリ・シェル統合は creates: で冪等化しているため、pinned commit を更新しても
+# 再生成されない。fzf の checkout に変更があった場合のみ削除して再生成を強制する
+- name: remove fzf binary and shell integration if fzf plugin was updated
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ neovim_plugin_path }}/fzf/bin/fzf"
+    - "{{ ansible_env.HOME }}/.fzf.bash"
+  when: neovim_plugin_clone_result.results | selectattr('item.name', 'equalto', 'junegunn/fzf') | map(attribute='changed') | first | default(false)
 
 - name: download fzf binary
   ansible.builtin.command: ./install --bin
