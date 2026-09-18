@@ -23,10 +23,11 @@
 
 - name: setup Ubuntu
   block:
+    # ppa:redislabs/redis が新しいUbuntuで利用不可のため無効化。redis 本体は common_pkg 経由で標準リポジトリからインストールされる
     - name: add redis apt repository
-      when: false
       ansible.builtin.apt_repository:
         repo: ppa:redislabs/redis
+      when: false
 
     - name: apt install
       ansible.builtin.apt:
