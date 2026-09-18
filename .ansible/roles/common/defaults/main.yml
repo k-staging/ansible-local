@@ -13,15 +13,15 @@ common_pkg:
   - unzip
 apt_pkg:
   - default-jre
-  - dotnet-sdk-6.0
+  - dotnet-sdk-10.0
   - g++
   - language-pack-ja
   - language-pack-ja-base
-  - libaio1
+  - libaio1t64
   - libmysqlclient-dev
   - libnotify-bin
   - mysql-client
-  - ntp
+  - ntpsec
   - postgresql
   - silversearcher-ag
   - tcl

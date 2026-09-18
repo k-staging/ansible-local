@@ -24,6 +24,7 @@
 - name: setup Ubuntu
   block:
     - name: add redis apt repository
+      when: false
       ansible.builtin.apt_repository:
         repo: ppa:redislabs/redis
 

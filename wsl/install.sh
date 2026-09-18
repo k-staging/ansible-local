@@ -10,7 +10,7 @@ source ../.ansible/install.sh
 # wsl で使うためのユーザーを作成する
 create_user() {
     sudo su - root -c "$(cat << EOF
-    useradd -s /bin/bash ${USER_NAME}
+    id -u ${USER_NAME} >/dev/null 2>&1 || useradd -s /bin/bash ${USER_NAME}
     mkdir -p ${USER_HOME}/{src,.ssh}
     chmod 700 ${USER_HOME}/.ssh
     if [ -e /mnt/c/Users/${USER_NAME}/.ssh/id_rsa ]; then
@@ -41,12 +41,9 @@ install_apt_pkg() {
         libsqlite3-dev \
         libssl-dev \
         libffi-dev \
-        libncurses5 \
-        libncurses5-dev \
-        libncursesw5 \
+        libncurses-dev \
         make \
         openssl \
-        python-apt \
         python3-apt \
         python3-dev \
         sqlite3 \
@@ -59,5 +56,6 @@ EOF
 create_user
 install_apt_pkg
 sudo_settings
+ANSIBLE_DIR="${USER_HOME}/src/ansible-local/.ansible"
 run_ansible
 
