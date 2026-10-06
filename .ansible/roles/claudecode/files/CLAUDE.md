@@ -77,12 +77,14 @@
 1. **`workflow-guardian` サブエージェントで工程監査を実行する**（変更ファイル一覧と実施済み工程を渡し、PASS判定を得ること。FAILなら未実施工程を実行してからやり直す）
 2. **Step 1で読み込んだPRテンプレートの構成に従ってPRディスクリプションを作成する**（テンプレートがない場合は下記デフォルト構成を使用）
 3. PRのQA手順を追記する
-4. **PRディスクリプションを `/tmp/pr_description.md` に書き出す**
+4. **PRディスクリプションを `/tmp/pr_description_<リポジトリ名>_<ブランチ名(/は-に置換)>.md` に書き出す**
+   - **共通名（`/tmp/pr_description.md` 等）は使わない**（別リポジトリの古い内容が混入するため）
+   - 書き出し後に Read で中身を確認する。確認が済むまで `gh pr create` を実行しない（書き出しと同じ並列バッチに入れない）
 5. push を**自分で実行**する（main/develop への push は git フックで自動ブロックされる）
    - 初回: `git -C <repo_path> push -u origin <branch>`
    - 2回目以降: `git -C <repo_path> push`
    - **注意: `cd && git push` ではなく `git -C` 形式を使うこと**
-6. `gh pr create` を**自分で実行**してPRを作成する
+6. `gh pr create` を**自分で実行**してPRを作成する（`--body-file` には手順4のファイルを指定）。作成後に `gh pr view` で本文が正しいか確認する
 7. 作成したPRのURLをユーザーに報告する
 8. **ワーキングディレクトリをクリーンアップする**: `git -C <repo_path> checkout . && git -C <repo_path> clean -fd`
 
