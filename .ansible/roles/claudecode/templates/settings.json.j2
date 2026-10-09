@@ -60,6 +60,12 @@
             "type": "command",
 {% if ansible_distribution == 'MacOSX' %}
             "command": "terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
+{% elif 'microsoft' in ansible_kernel | lower %}
+{# WSL には D-Bus の通知デーモンがなく notify-send が失敗するため、Windows のトースト通知を使う #}
+{% set wsl_toast_ps %}
+[Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime] > $null; $x = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $t = $x.GetElementsByTagName("text"); $t.Item(0).AppendChild($x.CreateTextNode("Claude Code")) > $null; $t.Item(1).AppendChild($x.CreateTextNode("入力待ちです")) > $null; [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe").Show([Windows.UI.Notifications.ToastNotification]::new($x))
+{% endset %}
+            "command": "powershell.exe -NoProfile -NonInteractive -EncodedCommand {{ wsl_toast_ps | trim | b64encode(encoding='utf-16-le') }}"
 {% else %}
             "command": "notify-send 'Claude Code' '入力待ちです'"
 {% endif %}
