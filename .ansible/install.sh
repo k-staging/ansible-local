@@ -18,7 +18,7 @@ fi
 
 eval $(grep python3_version ${ANSIBLE_DIR}/inventory)
 PYTHON3_VERSION=${python3_version}
-UV_VERSION="0.4.25"
+UV_VERSION="0.13.5"
 
 # USER_NAMEとUSER_HOMEが未定義の場合は自動設定
 if [ -z "${USER_NAME:-}" ]; then
@@ -49,8 +49,9 @@ run_ansible() {
     sudo su - ${USER_NAME} -c "$(cat << EOF
     set -euo pipefail
     # uv のインストール（バージョン固定）
-    if [ ! -e ~/.cargo/bin/uv ]; then
-        curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
+    # バージョンが異なる場合も入れ直す。インストール先は従来どおり ~/.cargo/bin に固定する
+    if [ "\$(~/.cargo/bin/uv --version 2>/dev/null | cut -d' ' -f2)" != "${UV_VERSION}" ]; then
+        curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | UV_INSTALL_DIR="\$HOME/.cargo/bin" sh
     fi
 
     # PATH に uv を追加
@@ -67,11 +68,12 @@ run_ansible() {
 
     # グローバルにPythonパッケージをインストール
     uv pip install --python "\${UV_PYTHON_PATH}" --break-system-packages \
-        ansible>=11.9.0 \
-        neovim>=0.3.1 \
-        pynvim>=0.5.0 \
-        python-lsp-server>=1.12.0 \
-        sqlparse>=0.5.0
+        "pip>=26.2.2" \
+        "ansible>=14.5.0" \
+        "neovim>=0.3.1" \
+        "pynvim>=0.5.0" \
+        "python-lsp-server>=1.12.0" \
+        "sqlparse>=0.5.0"
 
     # binファイルへのシンボリックリンクを作成
     UV_PYTHON_BIN_DIR=\$(dirname "\${UV_PYTHON_PATH}")
