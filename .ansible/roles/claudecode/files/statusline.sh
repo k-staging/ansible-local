@@ -77,7 +77,7 @@ if [ -n "$CWD" ] && command -v gh >/dev/null 2>&1 && command -v git >/dev/null 2
           CACHE_MTIME=0
           if [ -f "$CACHE_FILE" ]; then
             PR_INFO=$(cat "$CACHE_FILE")
-            CACHE_MTIME=$(stat -f %m "$CACHE_FILE" 2>/dev/null || stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)
+            CACHE_MTIME=$(stat -c %Y "$CACHE_FILE" 2>/dev/null || stat -f %m "$CACHE_FILE" 2>/dev/null || echo 0)
           fi
           CACHE_AGE=$(( $(date +%s) - CACHE_MTIME ))
           if [ "$CACHE_AGE" -gt 300 ] && mkdir "${CACHE_FILE}.lock" 2>/dev/null; then
@@ -106,7 +106,7 @@ if [ -n "$CURRENT_VERSION" ] && command -v curl >/dev/null 2>&1; then
   UPDATE_CACHE_MTIME=0
   if [ -f "$UPDATE_CACHE_FILE" ]; then
     LATEST_VERSION=$(cat "$UPDATE_CACHE_FILE")
-    UPDATE_CACHE_MTIME=$(stat -f %m "$UPDATE_CACHE_FILE" 2>/dev/null || stat -c %Y "$UPDATE_CACHE_FILE" 2>/dev/null || echo 0)
+    UPDATE_CACHE_MTIME=$(stat -c %Y "$UPDATE_CACHE_FILE" 2>/dev/null || stat -f %m "$UPDATE_CACHE_FILE" 2>/dev/null || echo 0)
   fi
   UPDATE_CACHE_AGE=$(( $(date +%s) - UPDATE_CACHE_MTIME ))
   if [ "$UPDATE_CACHE_AGE" -gt 3600 ] && mkdir "${UPDATE_CACHE_FILE}.lock" 2>/dev/null; then
@@ -120,7 +120,12 @@ if [ -n "$CURRENT_VERSION" ] && command -v curl >/dev/null 2>&1; then
     ) >/dev/null 2>&1 &
   fi
 fi
+VERSION_SUFFIX=""
+[ -n "$CURRENT_VERSION" ] && VERSION_SUFFIX=" | v${CURRENT_VERSION}"
 UPDATE_SUFFIX=""
-[ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "$CURRENT_VERSION" ] && UPDATE_SUFFIX=" | ${YELLOW}⬆ v${LATEST_VERSION}${RESET}"
+if [ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
+  NEWER_VERSION=$(printf '%s\n%s\n' "$CURRENT_VERSION" "$LATEST_VERSION" | sort -V | tail -1)
+  [ "$NEWER_VERSION" = "$LATEST_VERSION" ] && UPDATE_SUFFIX=" ${YELLOW}⬆ v${LATEST_VERSION}${RESET}"
+fi
 
-printf '%b\n' "${CYAN}[${MODEL}]${RESET}${CWD_SUFFIX} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}${UPDATE_SUFFIX}"
+printf '%b\n' "${CYAN}[${MODEL}]${RESET}${CWD_SUFFIX} ${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MINS}m ${SECS}s${LIMITS}${PR_SUFFIX}${VERSION_SUFFIX}${UPDATE_SUFFIX}"
