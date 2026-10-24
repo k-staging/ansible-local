@@ -1,0 +1,22 @@
+---
+apt_pkg:
+  - automake
+  - bison
+  - build-essential
+  - pkg-config
+  - libevent-dev
+  - libncurses5-dev
+brew_pkg:
+  - automake
+# tmux バージョン (リリースタグを指定)
+tmux_version: "3.7b"
+tmux_main_dir: "~/"
+# tmux セッション起動時に開く window を定義する
+# - dir: tmux の -c で指定する作業ディレクトリ（必須）
+# - command: 起動時に send-keys で送信するコマンド文字列（任意）
+# 注意: command にダブルクォートや特殊文字を含めると生成される .tmux.conf を破損させる可能性があるため避けること
+tmux_windows:
+  - dir: "~/src"
+  - dir: "~/.local/share/nvim"
+    command: "nvim ~/.local/share/nvim/common.sql"
+

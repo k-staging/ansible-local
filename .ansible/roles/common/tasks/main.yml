@@ -1,0 +1,248 @@
+---
+- name: create directory
+  ansible.builtin.file:
+    path: "~/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ working_directory }}"
+
+- name: create /usr/local/bin
+  ansible.builtin.file:
+    path: /usr/local/bin
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: change permission /usr/local/src
+  ansible.builtin.file:
+    path: /usr/local/src
+    state: directory
+    mode: 0777
+  become: yes
+
+- name: setup Ubuntu
+  block:
+    - name: download Google Cloud SDK apt key
+      ansible.builtin.get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /tmp/google-cloud-sdk-key.gpg
+        mode: "0644"
+
+    - name: dearmor Google Cloud SDK apt key
+      ansible.builtin.command: gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg /tmp/google-cloud-sdk-key.gpg
+      args:
+        creates: /usr/share/keyrings/cloud.google.gpg
+      become: yes
+
+    - name: add Google Cloud SDK apt repository
+      ansible.builtin.copy:
+        content: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main\n"
+        dest: /etc/apt/sources.list.d/google-cloud-sdk.list
+        mode: "0644"
+      become: yes
+
+    - name: apt install
+      ansible.builtin.apt:
+        pkg: "{{ item }}"
+        update_cache: yes
+        force: yes
+      become: yes
+      with_items:
+        - "{{ common_pkg }}"
+        - "{{ apt_pkg }}"
+
+    - name: create a symbolic link
+      ansible.builtin.file:
+        src: /usr/share/zoneinfo/Asia/Tokyo
+        dest: /etc/localtime
+        owner: root
+        group: root
+        state: link
+        force: yes
+      become: yes
+
+    - name:
+      ansible.builtin.unarchive:
+        src: "https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip"
+        dest: "~/bin"
+        mode: "0755"
+        remote_src: True
+
+    - name: update wsl.conf
+      ansible.builtin.template:
+        src: wsl.conf.j2
+        dest: /etc/wsl.conf
+        owner: root
+        group: root
+      become: yes
+  when: ansible_distribution in ['Ubuntu', 'Debian']
+
+- name: setup MacOSX
+  block:
+    - name: brew install
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: latest
+        update_homebrew: yes
+      with_items:
+        - "{{ common_pkg }}"
+        - "{{ brew_pkg }}"
+
+    - name: brew linked pkg-config
+      community.general.homebrew:
+        name: pkg-config
+        state: linked
+
+    - name: install google-chrome
+      community.general.homebrew_cask:
+        name: "google-chrome"
+        state: present
+      ignore_errors: yes
+
+    - name: install ghostty
+      community.general.homebrew_cask:
+        name: "ghostty"
+        state: latest
+        # ghostty は auto_updates cask のため、greedy がないと state: latest でも最新化されない
+        greedy: yes
+      ignore_errors: yes
+
+    - name: install slack
+      community.general.homebrew_cask:
+        name: "slack"
+        state: present
+      ignore_errors: yes
+
+    - name: install docker
+      community.general.homebrew_cask:
+        name: "docker"
+        state: present
+      ignore_errors: yes
+
+    - name: install gcloud
+      community.general.homebrew_cask:
+        name: "google-cloud-sdk"
+        state: present
+      ignore_errors: yes
+
+    - name: get bash path
+      shell: brew --prefix bash
+      register: bash_path
+      changed_when: false
+      environment:
+        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
+
+    - name: edit /etc/shells
+      ansible.builtin.lineinfile:
+        dest: /etc/shells
+        line: "{{ bash_path.stdout }}/bin/bash"
+      become: yes
+
+    - name: chsh
+      ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_user_id }}"
+      become: yes
+
+    - name: create ghostty config directory
+      ansible.builtin.file:
+        path: "~/.config/ghostty"
+        state: directory
+        mode: 0755
+
+    - name: copy ghostty config
+      ansible.builtin.copy:
+        src: ghostty_config
+        dest: "~/.config/ghostty/config"
+        mode: 0644
+  when: ansible_distribution == 'MacOSX'
+
+- name: copy config files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/{{ item }}"
+    mode: 0644
+  with_items:
+    - "{{ config_files }}"
+
+- name: copy ssh config files
+  ansible.builtin.copy:
+    src: "config"
+    dest: "~/.ssh/config"
+    mode: 0644
+
+- name: create docker config directory
+  ansible.builtin.file:
+    path: "~/.docker"
+    state: directory
+    mode: "0700"
+
+- name: copy docker config.json
+  ansible.builtin.copy:
+    src: docker_config.json
+    dest: "~/.docker/config.json"
+    mode: "0600"
+
+- name: download git-completion.bash
+  get_url:
+    url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+    dest: ~/bin/git-completion.bash
+    mode: 0755
+
+- name: download git-prompt.sh
+  get_url:
+    url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+    dest: ~/bin/git-prompt.sh
+    mode: 0755
+
+- name: download cloud-sql-proxy
+  ansible.builtin.get_url:
+    url: "https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v{{ cloud_sql_proxy_version }}/cloud-sql-proxy.{{ cloud_sql_proxy_os }}.{{ cloud_sql_proxy_arch }}"
+    dest: ~/bin/cloud-sql-proxy
+    mode: 0755
+  vars:
+    cloud_sql_proxy_os: "{{ 'darwin' if ansible_distribution == 'MacOSX' else 'linux' }}"
+    cloud_sql_proxy_arch: "{{ 'arm64' if ansible_architecture in ['arm64', 'aarch64'] else 'amd64' }}"
+
+- name: Create global git hooks directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/git/hooks"
+    state: directory
+    mode: "0755"
+
+- name: Copy git hooks
+  ansible.builtin.copy:
+    src: "git-hooks/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.config/git/hooks/{{ item }}"
+    mode: "0755"
+  loop:
+    - pre-commit
+    - pre-push
+
+- name: Set global git hooks path
+  community.general.git_config:
+    name: core.hooksPath
+    scope: global
+    value: "{{ ansible_env.HOME }}/.config/git/hooks"
+
+# Claude Code の sandbox 内では SSH 鍵が読めず、macOS では SSH 接続自体も通らないため、
+# GitHub への接続を HTTPS + gh の認証に寄せる
+- name: Get git credential helpers for github
+  ansible.builtin.command: git config --global --get-all credential.https://github.com.helper
+  register: github_credential_helpers
+  changed_when: false
+  check_mode: false
+  failed_when: github_credential_helpers.rc not in [0, 1]
+
+# gh auth setup-git と同じく、先頭の空値で osxkeychain など既存のヘルパーを打ち消す
+- name: Use gh as git credential helper for github
+  ansible.builtin.shell: >-
+    git config --global --unset-all credential.https://github.com.helper;
+    git config --global --add credential.https://github.com.helper '' &&
+    git config --global --add credential.https://github.com.helper '!gh auth git-credential'
+  when: "'gh auth git-credential' not in github_credential_helpers.stdout"
+
+- name: Rewrite github ssh urls to https
+  community.general.git_config:
+    name: url.https://github.com/.insteadOf
+    scope: global
+    value: "git@github.com:"

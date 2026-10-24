@@ -1,0 +1,206 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "disableBypassPermissionsMode": "disable",
+    "allow": [
+      "Read",
+      "Edit(**)",
+      "Edit(//tmp/**)",
+      "Bash",
+      "WebSearch",
+      "WebFetch",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__read_page",
+      "mcp__Claude_in_Chrome__tabs_create_mcp"
+    ],
+    "deny": [
+      "Read(tmp/**)",
+      "Read(node_modules/**)",
+      "Read(storage/**)",
+      "Read(public/assets/**)",
+      "Read(public/packs/**)",
+      "Read(vendor/**)",
+      "Read(db/schema.rb)",
+      "Read(**/*.sqlite3)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(config/master.key)",
+      "Read(config/credentials.yml.enc)",
+      "Read(config/secrets.yml)",
+      "Read(config/database.yml)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.netrc)",
+      "Read(~/.git-credentials)",
+      "Read(~/.npmrc)",
+      "Read(~/.pypirc)",
+      "Read(~/.gem/credentials)",
+      "Read(//mnt/c/Users/*/.ssh/**)",
+      "Read(//mnt/c/Users/*/.aws/**)",
+      "Edit(~/src/**/.git/hooks/**)",
+      "Bash(git reset --hard:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(gh repo archive:*)",
+      "Bash(gh release delete:*)",
+      "Bash(gh secret delete:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh auth token:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh auth git-credential:*)",
+      "Bash(git credential:*)",
+      "Bash(gh auth login:*)",
+      "Bash(gh auth logout:*)",
+      "Bash(gh auth refresh:*)",
+      "Bash(gh auth switch:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(dd :*)",
+      "Bash(mkfs.:*)",
+      "Bash(bash)",
+      "Bash(sh)",
+      "Bash(*> /dev/sd*)",
+      "Bash(terraform apply:*)",
+      "Bash(terraform destroy:*)",
+      "Bash(gcloud * --flags-file*)",
+      "Bash(bash *publish.sh*)",
+      "Bash(./scripts/publish.sh*)",
+      "Bash(git push*/ansible-local.git*)"
+    ],
+    "ask": [
+      "Bash(gh api:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo edit:*)",
+      "Bash(gh secret set:*)",
+      "Bash(gh variable set:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh gist create:*)",
+      "Bash(gh extension install:*)",
+      "Bash(gh alias set:*)",
+      "Bash(gh ssh-key add:*)",
+      "Bash(gh gpg-key add:*)",
+      "Bash(gh repo deploy-key add:*)"
+    ],
+    "additionalDirectories": [
+      "~/src"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "gcloud auth list *",
+      "gcloud config list *",
+      "gcloud config get *",
+      "gcloud config get-value *",
+      "gcloud projects list *",
+      "gcloud projects describe *",
+      "gcloud projects get-iam-policy *",
+      "gcloud run services list *",
+      "gcloud run services describe *",
+      "gcloud run services get-iam-policy *",
+      "gcloud run revisions list *",
+      "gcloud run revisions describe *",
+      "gcloud run jobs list *",
+      "gcloud run jobs describe *",
+      "gcloud run jobs executions list *",
+      "gcloud run jobs executions describe *",
+      "gcloud scheduler jobs list *",
+      "gcloud scheduler jobs describe *",
+      "gcloud logging read *",
+      "gcloud logging sinks list *",
+      "gcloud logging sinks describe *",
+      "gcloud iam service-accounts list *",
+      "gcloud iam service-accounts describe *",
+      "gcloud iam service-accounts get-iam-policy *",
+      "gcloud compute instances list *",
+      "gcloud compute instances describe *",
+      "gcloud sql instances list *",
+      "gcloud sql instances describe *",
+      "gcloud storage ls *",
+      "gcloud storage buckets list *",
+      "gcloud storage buckets describe *",
+      "gcloud secrets list *",
+      "gcloud builds list *",
+      "gcloud builds describe *",
+      "gcloud artifacts docker images list *"{% if ansible_distribution == 'MacOSX' %},
+{# macOS の Seatbelt 内では Go 製 CLI の TLS 検証が失敗するため、gh は sandbox 外で実行する #}
+      "gh *"{% endif %}
+
+    ],
+    "filesystem": {
+      "allowWrite": [
+        "~/.npm"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "*.githubusercontent.com",
+        "registry.npmjs.org",
+        "rubygems.org",
+        "*.rubygems.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "proxy.golang.org",
+        "sum.golang.org",
+        "nodejs.org",
+        "mise.jdx.dev"
+      ]
+    }
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+{% if ansible_distribution == 'MacOSX' %}
+            "command": "terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
+{% elif 'microsoft' in ansible_kernel | lower %}
+{# WSL には D-Bus の通知デーモンがなく notify-send が失敗するため、Windows のトースト通知を使う #}
+{% set wsl_toast_ps %}
+[Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime] > $null; $x = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $t = $x.GetElementsByTagName("text"); $t.Item(0).AppendChild($x.CreateTextNode("Claude Code")) > $null; $t.Item(1).AppendChild($x.CreateTextNode("入力待ちです")) > $null; [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe").Show([Windows.UI.Notifications.ToastNotification]::new($x))
+{% endset %}
+            "command": "powershell.exe -NoProfile -NonInteractive -EncodedCommand {{ wsl_toast_ps | trim | b64encode(encoding='utf-16-le') }}"
+{% else %}
+            "command": "notify-send 'Claude Code' '入力待ちです'"
+{% endif %}
+          },
+          {
+            "type": "command",
+            "command": "GIT_FETCH_DIRS='{{ claudecode_git_fetch_dirs }}' {{ ansible_env.HOME }}/.claude/hooks/git-fetch-throttle.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "{{ ansible_env.HOME }}/.claude/statusline.sh"
+  },
+  "voice": {
+    "enabled": true,
+    "mode": "hold",
+    "autoSubmit": true
+  },
+  "model": "{{ claude_code_model }}",
+  "language": "Japanese",
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+    "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "false",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "{{ claude_code_model }}"{% if claude_code_experimental_features.agent_teams %},
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"{% endif %}
+
+  }
+}

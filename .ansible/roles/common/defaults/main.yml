@@ -1,0 +1,67 @@
+---
+common_pkg:
+  - gh
+  - git
+  - git-lfs
+  - htop
+  - jq
+  - ripgrep
+  - tree
+  - unzip
+apt_pkg:
+  - bubblewrap
+  - g++
+  - google-cloud-cli
+  - language-pack-ja
+  - language-pack-ja-base
+  - libmysqlclient-dev
+  - libnotify-bin
+  - mysql-client
+  - postgresql-client
+  - redis-tools
+  - socat
+  - whois
+  - zip
+  - zstd
+brew_pkg:
+  - autoconf
+  - automake
+  - bash
+  - bash-completion@2
+  - curl
+  - gnu-tar
+  - gnu-sed
+  - hashicorp/tap/terraform
+  - imagemagick@6
+  - libevent
+  - libpq
+  - libyaml
+  - llvm
+  - make
+  - mysql-client@8.0
+  - openssl
+  - pkg-config
+  - pstree
+  - readline
+  - redis
+  - rsync
+  - sqlite
+  - telnet
+  - terminal-notifier
+  - vegeta
+  - wget
+  - watch
+  - yq
+  - zstd
+config_files:
+  - .bashrc
+  - .bash_aliases
+  - .bash_profile
+  - .gitignore
+  - .inputrc
+working_directory:
+  - .aws
+  - bin
+  - src
+cloud_sql_proxy_version: "2.25.4"
+

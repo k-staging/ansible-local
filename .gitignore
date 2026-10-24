@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+.tags
+.claude/worktrees/
+
+# Python/uv関連
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python

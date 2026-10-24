@@ -1,0 +1,12 @@
+[localhost]
+127.0.0.1
+
+[localhost:vars]
+ANSIBLE_SSH_ARGS="-o StrictHostKeyChecking=no"
+ansible_python_interpreter="python3"
+python3_version="3.11.10"
+ruby_version="3.2.2"
+node_version="22.22.2"
+go_version="1.23.10"
+rust_version="1.94.1"
+gitleaks_version="8.30.1"

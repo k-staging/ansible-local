@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  connection: local
+  roles:
+    - role: common
+      tags: common
+    - role: mise
+      tags: mise
+    - role: tmux
+      tags: tmux
+    - role: claudecode
+      tags: claudecode
+    - role: neovim
+      tags: neovim
+  post_tasks:
+    - name: reboot wsl
+      shell: "[ -e /mnt/c/Windows/system32/wsl.exe ] && /mnt/c/Windows/system32/wsl.exe -t Ubuntu"
+      become: yes
