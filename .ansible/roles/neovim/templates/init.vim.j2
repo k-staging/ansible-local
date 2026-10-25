@@ -549,7 +549,6 @@ lua <<EOF
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
-      { name = "copilot" },
       { name = 'nvim_lsp' },
     }, {
       { name = 'buffer' },
@@ -707,15 +706,6 @@ lua <<EOF
   -- sqls (SQL) 設定
   -- sqls.nvim の新方式: lsp/sqls.lua が自動設定
   vim.lsp.enable('sqls')
-
-  -- ============================================
-  -- Copilot 設定
-  -- ============================================
-  require("copilot").setup({
-    suggestion = { enabled = false },
-    panel = { enabled = false },
-    copilot_node_command = vim.fn.expand("~/.local/share/mise/installs/node/{{ node_version }}/bin/node"),
-  })
 
   -- ============================================
   -- Go言語専用設定
