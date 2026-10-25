@@ -32,11 +32,6 @@ neovim_plugins:
   # ディレクトリ移動
   - name: "mattn/vim-findroot"
     version: "76af2f097cf8196b00f049054444966d10c82f95"
-  # copilot
-  - name: "zbirenbaum/copilot.lua"
-    version: "f8d8d872bb319f640d5177dad5fbf01f7a16d7d0"
-  - name: "zbirenbaum/copilot-cmp"
-    version: "b6e5286b3d74b04256d0a7e3bd2908eabec34b44"
   # neo-tree.nvim の依存
   - name: "nvim-lua/plenary.nvim"
     version: "857c5ac632080dba10aae49dba902ce3abf91b35"

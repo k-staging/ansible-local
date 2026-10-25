@@ -103,6 +103,8 @@
     - "cmp-vsnip"
     - "copilot.vim"
     - "vim-qfreplace"
+    - "copilot.lua"
+    - "copilot-cmp"
 
 - name: install neovim plugin
   ansible.builtin.git:
