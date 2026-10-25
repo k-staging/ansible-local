@@ -7,12 +7,12 @@ npm_packages:
   - "typescript-language-server@4.3.3"
   - "typescript@5.7.3"
 
+# Go 1.23.x 固定のため gopls は v0.18.x、dlv は v1.25.x が上限（それ以降は Go 1.24 以上が必要）
 go_packages:
   - "github.com/lighttiger2505/sqls@v0.2.20"
-  - "golang.org/x/tools/gopls@v0.11.0"
+  - "golang.org/x/tools/gopls@v0.18.1"
   - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
-  - "github.com/mdempsky/gocode@v.20150303"
-  - "github.com/go-delve/delve/cmd/dlv@v1.20.1"
+  - "github.com/go-delve/delve/cmd/dlv@v1.25.2"
 
 ruby_gems:
   - "solargraph"
