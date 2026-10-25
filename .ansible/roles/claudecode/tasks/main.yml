@@ -44,7 +44,7 @@
 # ============================================
 - name: create Claude Code directories
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/{{ item | regex_replace('^~/', '') }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/{{ item | regex_replace('^~/', '') }}"
     state: directory
     mode: 0755
   loop: "{{ claudecode_dir }}"
@@ -55,13 +55,13 @@
 - name: copy CLAUDE.md
   ansible.builtin.copy:
     src: "CLAUDE.md"
-    dest: "{{ ansible_env.HOME }}/.claude/CLAUDE.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/CLAUDE.md"
     mode: 0644
 
 - name: copy custom command files
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.claude/commands/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/commands/{{ item }}"
     mode: 0644
   loop:
     - sequential-thinking.md
@@ -71,7 +71,7 @@
 - name: copy statusline script
   ansible.builtin.copy:
     src: "statusline.sh"
-    dest: "{{ ansible_env.HOME }}/.claude/statusline.sh"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/statusline.sh"
     mode: 0755
 
 # ============================================
@@ -80,13 +80,13 @@
 - name: copy git-fetch-throttle hook script
   ansible.builtin.copy:
     src: "hooks/git-fetch-throttle.sh"
-    dest: "{{ ansible_env.HOME }}/.claude/hooks/git-fetch-throttle.sh"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/git-fetch-throttle.sh"
     mode: 0755
 
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
-    dest: "{{ ansible_env.HOME }}/.claude/settings.json"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/settings.json"
     mode: 0644
 
 # ============================================
@@ -95,7 +95,7 @@
 - name: copy Claude rules files
   ansible.builtin.copy:
     src: "claude-rules/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.claude/rules/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/rules/{{ item }}"
     mode: 0644
   loop:
     - ansible.md
@@ -108,7 +108,7 @@
 - name: copy Claude subagent files
   ansible.builtin.copy:
     src: "claude-agents/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.claude/agents/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/agents/{{ item }}"
     mode: 0644
   loop:
     - ansible-validator.md
@@ -130,7 +130,7 @@
 - name: copy Claude skill files
   ansible.builtin.copy:
     src: "claude-skills/{{ item }}/SKILL.md"
-    dest: "{{ ansible_env.HOME }}/.claude/skills/{{ item }}/SKILL.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/skills/{{ item }}/SKILL.md"
     mode: 0644
   loop:
     - backend-dev
@@ -146,7 +146,7 @@
 # ============================================
 - name: check if ~/.claude.json exists
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.claude.json"
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude.json"
   register: claude_json_stat
 
 - name: check if jq is installed
@@ -167,8 +167,8 @@
       ansible.builtin.shell: |
         jq '.mcpServers = $newMcpServers' \
           --argjson newMcpServers "$(cat /tmp/mcpServers.json)" \
-          {{ ansible_env.HOME }}/.claude.json > /tmp/claude.json.tmp && \
-        mv /tmp/claude.json.tmp {{ ansible_env.HOME }}/.claude.json
+          {{ ansible_facts['env']['HOME'] }}/.claude.json > /tmp/claude.json.tmp && \
+        mv /tmp/claude.json.tmp {{ ansible_facts['env']['HOME'] }}/.claude.json
       changed_when: true
 
     - name: remove temporary mcpServers.json
@@ -214,7 +214,7 @@
 # Custom LSP plugins via local marketplace
 - name: create custom-lsp marketplace directory structure
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/{{ item }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/{{ item }}"
     state: directory
     mode: 0755
   loop:
@@ -223,14 +223,14 @@
 
 - name: create custom LSP plugin source directories (root)
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}"
     state: directory
     mode: 0755
   loop: "{{ claude_code_custom_lsp_plugins }}"
 
 - name: create .claude-plugin subdirectory for custom LSP plugins
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin"
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin"
     state: directory
     mode: 0755
   loop: "{{ claude_code_custom_lsp_plugins }}"
@@ -238,32 +238,32 @@
 - name: deploy plugin.json for custom LSP plugins
   ansible.builtin.template:
     src: "lsp_plugin_manifest.json.j2"
-    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin/plugin.json"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin/plugin.json"
     mode: 0644
   loop: "{{ claude_code_custom_lsp_plugins }}"
 
 - name: deploy .lsp.json for custom LSP plugins
   ansible.builtin.template:
     src: "lsp_plugin_lsp.json.j2"
-    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.lsp.json"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.lsp.json"
     mode: 0644
   loop: "{{ claude_code_custom_lsp_plugins }}"
 
 - name: create README for custom LSP plugins
   ansible.builtin.copy:
     content: "# {{ item.name }}\n{{ item.description }}\n"
-    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/README.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/README.md"
     mode: 0644
   loop: "{{ claude_code_custom_lsp_plugins }}"
 
 - name: deploy custom-lsp marketplace.json
   ansible.builtin.template:
     src: "custom_lsp_marketplace.json.j2"
-    dest: "{{ ansible_env.HOME }}/.claude/plugins/custom-marketplace/.claude-plugin/marketplace.json"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/.claude-plugin/marketplace.json"
     mode: 0644
 
 - name: add custom-lsp marketplace
-  ansible.builtin.command: "claude plugin marketplace add {{ ansible_env.HOME }}/.claude/plugins/custom-marketplace"
+  ansible.builtin.command: "claude plugin marketplace add {{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace"
   register: marketplace_add_result
   changed_when: "'Successfully added' in marketplace_add_result.stdout"
   failed_when: false

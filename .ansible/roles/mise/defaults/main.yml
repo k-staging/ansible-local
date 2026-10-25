@@ -1,5 +1,5 @@
 ---
-mise_bin: "{{ ansible_env.HOME }}/.local/bin/mise"
+mise_bin: "{{ ansible_facts['env']['HOME'] }}/.local/bin/mise"
 
 npm_packages:
   - "bash-language-server@5.4.2"

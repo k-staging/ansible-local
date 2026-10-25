@@ -130,7 +130,7 @@
       "gcloud secrets list *",
       "gcloud builds list *",
       "gcloud builds describe *",
-      "gcloud artifacts docker images list *"{% if ansible_distribution == 'MacOSX' %},
+      "gcloud artifacts docker images list *"{% if ansible_facts['distribution'] == 'MacOSX' %},
 {# macOS の Seatbelt 内では Go 製 CLI の TLS 検証が失敗するため、gh は sandbox 外で実行する #}
       "gh *"{% endif %}
 
@@ -163,9 +163,9 @@
         "hooks": [
           {
             "type": "command",
-{% if ansible_distribution == 'MacOSX' %}
+{% if ansible_facts['distribution'] == 'MacOSX' %}
             "command": "terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
-{% elif 'microsoft' in ansible_kernel | lower %}
+{% elif 'microsoft' in ansible_facts['kernel'] | lower %}
 {# WSL には D-Bus の通知デーモンがなく notify-send が失敗するため、Windows のトースト通知を使う #}
 {% set wsl_toast_ps %}
 [Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime] > $null; $x = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $t = $x.GetElementsByTagName("text"); $t.Item(0).AppendChild($x.CreateTextNode("Claude Code")) > $null; $t.Item(1).AppendChild($x.CreateTextNode("入力待ちです")) > $null; [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe").Show([Windows.UI.Notifications.ToastNotification]::new($x))
@@ -177,7 +177,7 @@
           },
           {
             "type": "command",
-            "command": "GIT_FETCH_DIRS='{{ claudecode_git_fetch_dirs }}' {{ ansible_env.HOME }}/.claude/hooks/git-fetch-throttle.sh"
+            "command": "GIT_FETCH_DIRS='{{ claudecode_git_fetch_dirs }}' {{ ansible_facts['env']['HOME'] }}/.claude/hooks/git-fetch-throttle.sh"
           }
         ]
       }
@@ -185,7 +185,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "{{ ansible_env.HOME }}/.claude/statusline.sh"
+    "command": "{{ ansible_facts['env']['HOME'] }}/.claude/statusline.sh"
   },
   "voice": {
     "enabled": true,

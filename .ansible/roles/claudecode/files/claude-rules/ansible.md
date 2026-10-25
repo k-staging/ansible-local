@@ -23,4 +23,4 @@ paths:
 - `ansible.builtin.*` の完全修飾コレクション名(FQCN)を使用
 - `changed_when` / `failed_when` を適切に設定し、冪等性を保つ
 - シークレットは平文で書かない（ansible-vault または変数で管理）
-- `ansible_distribution` でプラットフォーム分岐する
+- `ansible_facts['distribution']` でプラットフォーム分岐する（`ansible_distribution` などトップレベルの facts 変数は deprecated のため使わない）
