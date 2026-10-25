@@ -63,5 +63,5 @@ working_directory:
   - .aws
   - bin
   - src
-cloud_sql_proxy_version: "2.25.4"
+cloud_sql_proxy_version: "2.26.3"
 

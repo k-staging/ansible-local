@@ -2,13 +2,10 @@
 mise_bin: "{{ ansible_facts['env']['HOME'] }}/.local/bin/mise"
 
 npm_packages:
-  - "bash-language-server@5.4.2"
+  - "bash-language-server@5.8.1"
   - "vscode-langservers-extracted@4.5.0"
   - "typescript-language-server@4.3.3"
   - "typescript@5.7.3"
-  - "@modelcontextprotocol/server-sequential-thinking@2025.7.1"
-  - "@upstash/context7-mcp@1.0.26"
-  - "wrangler@4.86.0"
 
 go_packages:
   - "github.com/lighttiger2505/sqls@v0.2.20"

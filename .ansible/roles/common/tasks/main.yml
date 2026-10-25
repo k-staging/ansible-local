@@ -52,6 +52,11 @@
         - "{{ common_pkg }}"
         - "{{ apt_pkg }}"
 
+    - name: apt upgrade
+      ansible.builtin.apt:
+        upgrade: safe
+      become: yes
+
     - name: create a symbolic link
       ansible.builtin.file:
         src: /usr/share/zoneinfo/Asia/Tokyo
@@ -199,6 +204,7 @@
     url: "https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v{{ cloud_sql_proxy_version }}/cloud-sql-proxy.{{ cloud_sql_proxy_os }}.{{ cloud_sql_proxy_arch }}"
     dest: ~/bin/cloud-sql-proxy
     mode: 0755
+    force: yes
   vars:
     cloud_sql_proxy_os: "{{ 'darwin' if ansible_facts['distribution'] == 'MacOSX' else 'linux' }}"
     cloud_sql_proxy_arch: "{{ 'arm64' if ansible_facts['architecture'] in ['arm64', 'aarch64'] else 'amd64' }}"
