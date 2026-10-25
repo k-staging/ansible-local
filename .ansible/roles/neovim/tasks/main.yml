@@ -87,6 +87,23 @@
     path: "{{ neovim_plugin_path }}/codex.nvim"
     state: absent
 
+# TODO: 全マシンへの適用完了後に削除する（未使用プラグインの整理）
+- name: remove unused plugins
+  ansible.builtin.file:
+    path: "{{ neovim_plugin_path }}/{{ item }}"
+    state: absent
+  loop:
+    - "LuaSnip"
+    - "cmp_luasnip"
+    - "nvim-snippy"
+    - "cmp-snippy"
+    - "cmp-nvim-ultisnips"
+    - "cmp-cmdline"
+    - "vim-vsnip"
+    - "cmp-vsnip"
+    - "copilot.vim"
+    - "vim-qfreplace"
+
 - name: install neovim plugin
   ansible.builtin.git:
     repo: "https://github.com/{{ item.name }}.git"
@@ -127,6 +144,7 @@
         url: "https://github.com/mrjackwills/oxker/releases/download/v{{ oxker_version }}/oxker_apple_darwin_aarch64.tar.gz"
         dest: "/tmp/oxker_apple_darwin_aarch64.tar.gz"
         mode: 0644
+        force: true
 
     - name: extract oxker (mac)
       ansible.builtin.unarchive:
@@ -150,6 +168,7 @@
         url: "https://github.com/mrjackwills/oxker/releases/download/v{{ oxker_version }}/oxker_linux_x86_64.tar.gz"
         dest: "/tmp/oxker_linux_x86_64.tar.gz"
         mode: 0644
+        force: true
 
     - name: extract oxker (linux)
       ansible.builtin.unarchive:
@@ -170,9 +189,10 @@
   block:
     - name: download lazygit binary (mac)
       ansible.builtin.get_url:
-        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_Darwin_arm64.tar.gz"
+        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_darwin_arm64.tar.gz"
         dest: "/tmp/lazygit_Darwin_arm64.tar.gz"
         mode: 0644
+        force: true
 
     - name: extract lazygit (mac)
       ansible.builtin.unarchive:
@@ -193,9 +213,10 @@
   block:
     - name: download lazygit binary (linux)
       ansible.builtin.get_url:
-        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_Linux_x86_64.tar.gz"
+        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_linux_x86_64.tar.gz"
         dest: "/tmp/lazygit_Linux_x86_64.tar.gz"
         mode: 0644
+        force: true
 
     - name: extract lazygit (linux)
       ansible.builtin.unarchive:
