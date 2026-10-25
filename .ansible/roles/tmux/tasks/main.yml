@@ -4,7 +4,7 @@
     name: "{{ brew_pkg }}"
     state: latest
     update_homebrew: yes
-  when: ansible_distribution == 'MacOSX' 
+  when: ansible_facts['distribution'] == 'MacOSX' 
 
 - name: 必要なものをインストール
   ansible.builtin.apt:
@@ -12,7 +12,7 @@
     update_cache: yes
     force: yes
   become: yes
-  when: ansible_distribution in ['Ubuntu', 'Debian']
+  when: ansible_facts['distribution'] in ['Ubuntu', 'Debian']
 
 - name: download tmux
   ansible.builtin.git:
@@ -31,13 +31,13 @@
   ansible.builtin.shell: ./configure --disable-utf8proc
   args:
     chdir: "/usr/local/src/tmux"
-  when: ansible_distribution == 'MacOSX' 
+  when: ansible_facts['distribution'] == 'MacOSX' 
 
 - name: execute configure
   ansible.builtin.shell: ./configure
   args:
     chdir: "/usr/local/src/tmux"
-  when: ansible_distribution != 'MacOSX' 
+  when: ansible_facts['distribution'] != 'MacOSX' 
 
 - name: make tmux
   community.general.make:

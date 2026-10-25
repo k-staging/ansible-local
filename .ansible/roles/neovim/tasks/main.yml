@@ -15,7 +15,7 @@
         dest: "/usr/local/src/nvim/"
         remote_src: true
         extra_opts: ["--strip-components=1"]
-  when: ansible_distribution == 'MacOSX' 
+  when: ansible_facts['distribution'] == 'MacOSX' 
 
 - name: download neovim (linux)
   ansible.builtin.unarchive:
@@ -23,7 +23,7 @@
     dest: "/usr/local/src/nvim/"
     remote_src: true
     extra_opts: ["--strip-components=1"]
-  when: ansible_distribution == 'Ubuntu' 
+  when: ansible_facts['distribution'] == 'Ubuntu' 
 
 - name: create neovim symlink
   ansible.builtin.file:
@@ -105,7 +105,7 @@
     state: absent
   loop:
     - "{{ neovim_plugin_path }}/fzf/bin/fzf"
-    - "{{ ansible_env.HOME }}/.fzf.bash"
+    - "{{ ansible_facts['env']['HOME'] }}/.fzf.bash"
   when: neovim_plugin_clone_result.results | selectattr('item.name', 'equalto', 'junegunn/fzf') | map(attribute='changed') | first | default(false)
 
 - name: download fzf binary
@@ -118,7 +118,7 @@
   ansible.builtin.command: ./install --key-bindings --completion --no-update-rc
   args:
     chdir: "{{ neovim_plugin_path }}/fzf"
-    creates: "{{ ansible_env.HOME }}/.fzf.bash"
+    creates: "{{ ansible_facts['env']['HOME'] }}/.fzf.bash"
 
 - name: install oxker (mac)
   block:
@@ -141,7 +141,7 @@
         mode: 0755
         remote_src: true
       become: true
-  when: ansible_distribution == 'MacOSX'
+  when: ansible_facts['distribution'] == 'MacOSX'
 
 - name: install oxker (linux)
   block:
@@ -164,7 +164,7 @@
         mode: 0755
         remote_src: true
       become: true
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
 
 - name: install lazygit (mac)
   block:
@@ -187,7 +187,7 @@
         mode: 0755
         remote_src: true
       become: true
-  when: ansible_distribution == 'MacOSX'
+  when: ansible_facts['distribution'] == 'MacOSX'
 
 - name: install lazygit (linux)
   block:
@@ -210,11 +210,11 @@
         mode: 0755
         remote_src: true
       become: true
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
 
 - name: copy lazygit config
   ansible.builtin.copy:
     src: "lazygit_config.yml"
-    dest: "{{ ansible_env.HOME }}/.config/lazygit/config.yml"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/lazygit/config.yml"
     mode: 0644
 

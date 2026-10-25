@@ -23,7 +23,7 @@ claudecode_dir:
   - "~/.claude/skills/gcp-verify"
 
 # git fetch throttle: directories to scan for git repos (space-separated)
-claudecode_git_fetch_dirs: "{{ ansible_env.HOME }}/src"
+claudecode_git_fetch_dirs: "{{ ansible_facts['env']['HOME'] }}/src"
 
 # Claude Code plugins (non-LSP)
 # https://github.com/anthropics/claude-plugins-official

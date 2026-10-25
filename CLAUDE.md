@@ -53,7 +53,7 @@ cd .ansible
 
 ### 主要なパターン
 - mise による多言語バージョン管理（Node.js, Ruby, Go を統合管理）
-- MacとUbuntu/Debian固有のタスクに`ansible_distribution`によるプラットフォーム検出を使用
+- MacとUbuntu/Debian固有のタスクに`ansible_facts['distribution']`によるプラットフォーム検出を使用
 - ローカル接続モード - Ansibleが実行されているマシン自体を設定
 - バージョンは`.ansible/inventory`で一元管理
 

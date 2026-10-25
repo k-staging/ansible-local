@@ -76,7 +76,7 @@
         owner: root
         group: root
       become: yes
-  when: ansible_distribution in ['Ubuntu', 'Debian']
+  when: ansible_facts['distribution'] in ['Ubuntu', 'Debian']
 
 - name: setup MacOSX
   block:
@@ -131,7 +131,7 @@
       register: bash_path
       changed_when: false
       environment:
-        PATH: /opt/homebrew/bin:{{ ansible_env.PATH }}
+        PATH: /opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}
 
     - name: edit /etc/shells
       ansible.builtin.lineinfile:
@@ -140,7 +140,7 @@
       become: yes
 
     - name: chsh
-      ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_user_id }}"
+      ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_facts['user_id'] }}"
       become: yes
 
     - name: create ghostty config directory
@@ -154,7 +154,7 @@
         src: ghostty_config
         dest: "~/.config/ghostty/config"
         mode: 0644
-  when: ansible_distribution == 'MacOSX'
+  when: ansible_facts['distribution'] == 'MacOSX'
 
 - name: copy config files
   ansible.builtin.copy:
@@ -200,19 +200,19 @@
     dest: ~/bin/cloud-sql-proxy
     mode: 0755
   vars:
-    cloud_sql_proxy_os: "{{ 'darwin' if ansible_distribution == 'MacOSX' else 'linux' }}"
-    cloud_sql_proxy_arch: "{{ 'arm64' if ansible_architecture in ['arm64', 'aarch64'] else 'amd64' }}"
+    cloud_sql_proxy_os: "{{ 'darwin' if ansible_facts['distribution'] == 'MacOSX' else 'linux' }}"
+    cloud_sql_proxy_arch: "{{ 'arm64' if ansible_facts['architecture'] in ['arm64', 'aarch64'] else 'amd64' }}"
 
 - name: Create global git hooks directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/git/hooks"
+    path: "{{ ansible_facts['env']['HOME'] }}/.config/git/hooks"
     state: directory
     mode: "0755"
 
 - name: Copy git hooks
   ansible.builtin.copy:
     src: "git-hooks/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.config/git/hooks/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/git/hooks/{{ item }}"
     mode: "0755"
   loop:
     - pre-commit
@@ -222,7 +222,7 @@
   community.general.git_config:
     name: core.hooksPath
     scope: global
-    value: "{{ ansible_env.HOME }}/.config/git/hooks"
+    value: "{{ ansible_facts['env']['HOME'] }}/.config/git/hooks"
 
 # Claude Code の sandbox 内では SSH 鍵が読めず、macOS では SSH 接続自体も通らないため、
 # GitHub への接続を HTTPS + gh の認証に寄せる
