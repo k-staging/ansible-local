@@ -35,12 +35,6 @@ highlight NeoTreeNormalNC guibg=NONE ctermbg=NONE
 highlight NeoTreeEndOfBuffer guibg=NONE ctermbg=NONE
 
 " ============================================
-" GraphQL / Denops設定
-" ============================================
-" neovim を 0.10.0 以上にあげたらいらなくなる記述
-let g:denops_disable_version_check = 1
-
-" ============================================
 " lualine + bufferline - ステータスライン・タブライン
 " ============================================
 " 使い方:
@@ -557,7 +551,6 @@ lua <<EOF
     sources = cmp.config.sources({
       { name = "copilot" },
       { name = 'nvim_lsp' },
-      { name = 'vsnip' },
     }, {
       { name = 'buffer' },
       { name = 'path' },
