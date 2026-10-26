@@ -235,6 +235,68 @@
       become: true
   when: ansible_facts['distribution'] == 'Ubuntu'
 
+# nvim-treesitter (main ブランチ) はパーサーのビルドに tree-sitter CLI が必要
+- name: install tree-sitter cli (mac)
+  block:
+    - name: download tree-sitter cli (mac)
+      ansible.builtin.get_url:
+        url: "https://github.com/tree-sitter/tree-sitter/releases/download/v{{ tree_sitter_cli_version }}/tree-sitter-cli-macos-arm64.zip"
+        dest: "/tmp/tree-sitter-cli-macos-arm64.zip"
+        mode: 0644
+        force: true
+
+    - name: extract tree-sitter cli (mac)
+      ansible.builtin.unarchive:
+        src: "/tmp/tree-sitter-cli-macos-arm64.zip"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install tree-sitter cli binary (mac)
+      ansible.builtin.copy:
+        src: "/tmp/tree-sitter"
+        dest: "/usr/local/bin/tree-sitter"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_facts['distribution'] == 'MacOSX'
+
+- name: install tree-sitter cli (linux)
+  block:
+    - name: download tree-sitter cli (linux)
+      ansible.builtin.get_url:
+        url: "https://github.com/tree-sitter/tree-sitter/releases/download/v{{ tree_sitter_cli_version }}/tree-sitter-cli-linux-x64.zip"
+        dest: "/tmp/tree-sitter-cli-linux-x64.zip"
+        mode: 0644
+        force: true
+
+    - name: extract tree-sitter cli (linux)
+      ansible.builtin.unarchive:
+        src: "/tmp/tree-sitter-cli-linux-x64.zip"
+        dest: "/tmp/"
+        remote_src: true
+
+    - name: install tree-sitter cli binary (linux)
+      ansible.builtin.copy:
+        src: "/tmp/tree-sitter"
+        dest: "/usr/local/bin/tree-sitter"
+        mode: 0755
+        remote_src: true
+      become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+# nvim-treesitter はプラグインとパーサーのバージョンを揃える必要があるため、インストール後に毎回 update する
+# install / update は変更がなければ何もしない。失敗しても終了コードが 0 のため stderr でも判定する
+# （判定は nvim-treesitter の出力文言に依存するため、プラグイン更新時は文言が変わっていないか確認する）
+- name: install and update treesitter parsers
+  ansible.builtin.command: >-
+    nvim --headless
+    -c "lua require('nvim-treesitter').install(vim.split('{{ neovim_treesitter_parsers | join(',') }}', ',')):wait(300000)"
+    -c "lua require('nvim-treesitter').update():wait(300000)"
+    -c "qa"
+  register: treesitter_install_result
+  changed_when: "'Language installed' in treesitter_install_result.stderr"
+  failed_when: treesitter_install_result.rc != 0 or 'error:' in treesitter_install_result.stderr
+
 - name: copy lazygit config
   ansible.builtin.copy:
     src: "lazygit_config.yml"

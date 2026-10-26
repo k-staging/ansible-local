@@ -1,4 +1,69 @@
 " ============================================
+" ショートカット早見表
+" ============================================
+" <leader> = スペースキー。特に記載がなければノーマルモード。
+" 各機能の詳細は、このファイル内の各セクションの「使い方」を参照。
+"
+" ■ ファイル・検索（結果は新しいタブで開く。すでに開いていればそのタブへ移動）
+"   <Ctrl-p>          ファイル名で検索
+"   <leader>/         ファイル内容を grep（ビジュアルモードでは選択文字列で grep）
+"   <Ctrl-g>          カーソル下の単語で grep
+"   <leader>r         直前の検索を再開
+"   <leader>s         現在のファイルのシンボル（関数・クラス等）を検索
+"   <leader>S         プロジェクト全体のシンボルを検索
+"   <Ctrl-n>          ファイルツリー（neo-tree）を開閉
+"   <leader>a         アウトライン（aerial）を開閉
+"   検索結果内: <Enter> 開く / <Ctrl-v> 縦分割 / <Ctrl-s> 横分割 / <Ctrl-a> 全選択（<Enter> で quickfix へ）
+"
+" ■ コードジャンプ（LSP）
+"   gd                定義へジャンプ（Ctrl+クリックでも可。端末が Ctrl+クリックを横取りする場合は gd を使う）
+"   gD                宣言へジャンプ
+"   gi                実装へジャンプ
+"   <leader>D         型定義へジャンプ
+"   gR                参照を一覧表示
+"   gC                呼び出し元を一覧表示
+"   K                 ドキュメントを表示
+"   <Ctrl-o>          ジャンプ前の位置へ戻る（マウスの戻るボタンでも可）
+"                     ※ ジャンプ先が別タブで開いた場合、元のタブへは <Tab> / <S-Tab> で戻る
+"   マウスの進むボタン ジャンプ後の位置へ進む
+"                     ※ キーボードの <Ctrl-i> は多くの端末で <Tab> と同じキー扱いのため、タブ移動になる
+"   [d / ]d           前/次の診断（エラー・警告）へ移動
+"   <leader>e         診断メッセージを表示
+"   v → an / in       選択範囲を構文単位で拡張/縮小（ビジュアルモードで an / in を繰り返す）
+"
+" ■ 編集（LSP）
+"   <leader>rn        シンボルをリネーム
+"   <leader>ca        コードアクション
+"   <leader>f         フォーマット
+"   <Ctrl-Space>      補完を表示（インサートモード）
+"
+" ■ タブ・ウィンドウ
+"   <Tab> / <S-Tab>   前/次のタブ
+"   <Ctrl-c>          新しいタブ
+"   <Ctrl-h/j/k/l>    ウィンドウ間を移動
+"   ※ nvim を引数なしで起動すると前回のタブを復元する
+"     <leader>qs 復元 / <leader>ql 最後のセッションを復元 / <leader>qd このセッションを保存しない
+"
+" ■ Git
+"   <leader>g         lazygit を開く
+"   <leader>df        差分（diffview）を開く
+"   <leader>h         現在のファイルの変更履歴を表示
+"   gs                変更ファイル一覧（git status）
+"   gl                コミットログ
+"
+" ■ マウス
+"   クリック / ドラッグ  カーソル移動・範囲選択・ウィンドウサイズ変更
+"   ダブルクリック       ファイルツリーでファイルを開く
+"   Ctrl+クリック        定義へジャンプ
+"   右クリック           メニュー（定義・参照・実装・アウトライン・ファイル履歴など）
+"   戻る/進むボタン      ジャンプ前/後の位置へ移動
+"
+" ■ ターミナル
+"   <Ctrl-t>          フローティングターミナルを開閉
+"   :T <command>      下部に分割してターミナルを開く
+"   jk                ターミナル内でノーマルモードに切り替え
+
+" ============================================
 " リーダーキー設定
 " ============================================
 let mapleader = " "  " スペースキーをleaderに設定
@@ -277,6 +342,7 @@ nnoremap <silent> <leader>g :<C-u>lua _lazygit_toggle()<CR>
 " ============================================
 " 使い方:
 "   <leader>df      : DiffViewを開く
+"   <leader>h       : 現在のファイルの変更履歴（コミットごとの差分）を表示
 "   :DiffviewClose  : DiffViewを閉じる
 "   DiffView内で:
 "     ]c / [c       : 次/前の変更箇所へジャンプ
@@ -293,6 +359,7 @@ if status_ok then
 end
 EOF
 nnoremap <silent> <leader>df :<C-u>DiffviewOpen<CR>
+nnoremap <silent> <leader>h :<C-u>DiffviewFileHistory %<CR>
 
 " ============================================
 " terminal - 組み込みターミナル設定
@@ -317,15 +384,30 @@ autocmd TermOpen * startinsert
 "   gs              : Git statusのファイルを検索
 "   gl              : Gitログを表示
 "   ビジュアルモードで <leader>/ : 選択したテキストをgrep検索
+"   <leader>r       : 直前の検索を再開（クエリ・カーソル位置を復元）
+"   <leader>s       : 現在のファイルのシンボル（関数・クラス等）を検索
+"   <leader>S       : プロジェクト全体のシンボルを検索
 "   検索結果内で:
-"     <Enter>       : ファイルを開く
+"     <Enter>       : 新しいタブで開く（すでに開いていればそのタブへ移動）
 "     <Ctrl-t>      : 新しいタブで開く
 "     <Ctrl-v>      : 縦分割で開く
-"     <Ctrl-x>      : 横分割で開く
-"     <Ctrl-a>      : すべて選択/解除をトグル
+"     <Ctrl-s>      : 横分割で開く
+"     <Ctrl-a>      : すべて選択/解除をトグル（複数選択して <Enter> で quickfix に送る）
 lua <<EOF
 local fzf_lua_ok, fzf_lua = pcall(require, "fzf-lua")
 if fzf_lua_ok then
+  -- 検索結果を :tab drop で開く（開いていればそのタブへ移動、なければ新しいタブ）
+  -- 起動直後の空のタブでは新しいタブを作らずにそのまま開く
+  -- 複数選択時は既定の動作どおり quickfix に送る
+  local function tab_drop(selected, opts)
+    if #selected > 1 then
+      return require("fzf-lua.actions").file_sel_to_qf(selected, opts)
+    end
+    local is_empty = vim.api.nvim_buf_get_name(0) == "" and vim.bo.buftype == ""
+      and not vim.bo.modified and vim.fn.line("$") == 1 and vim.fn.getline(1) == ""
+    require("fzf-lua.actions").vimcmd_entry(is_empty and "drop" or "tab drop", selected, opts)
+  end
+
   fzf_lua.setup({
     winopts = {
       height = 0.85,
@@ -339,6 +421,14 @@ if fzf_lua_ok then
       fzf = {
         ["ctrl-a"] = "toggle-all",
       },
+    },
+    actions = {
+      -- true: デフォルトのアクションを引き継いだうえで enter だけ上書きする
+      files = { true, ["enter"] = tab_drop },
+    },
+    -- LSP の結果が 1 件のときも tab drop で開く
+    lsp = {
+      jump1_action = tab_drop,
     },
     files = {
       fd_opts = "--hidden",
@@ -355,6 +445,9 @@ if fzf_lua_ok then
   vim.keymap.set('x', '<leader>/', fzf_lua.grep_visual, { silent = true, desc = "Grep visual selection" })
   vim.keymap.set('n', 'gs', fzf_lua.git_status, { silent = true, desc = "Git status" })
   vim.keymap.set('n', 'gl', fzf_lua.git_commits, { silent = true, desc = "Git log" })
+  vim.keymap.set('n', '<leader>r', fzf_lua.resume, { silent = true, desc = "Resume last search" })
+  vim.keymap.set('n', '<leader>s', fzf_lua.lsp_document_symbols, { silent = true, desc = "Document symbols" })
+  vim.keymap.set('n', '<leader>S', fzf_lua.lsp_live_workspace_symbols, { silent = true, desc = "Workspace symbols" })
 end
 EOF
 
@@ -378,7 +471,8 @@ EOF
 " 使い方:
 "   <Ctrl-n>        : ファイルツリーをトグル（サイドバー表示/非表示）
 "   ツリー内で:
-"     <Enter>       : ファイルを開く/ディレクトリを展開
+"     <Enter>       : ファイルを新しいタブで開く（開いていればそのタブへ移動）/ディレクトリを展開
+"     ダブルクリック : <Enter> と同じ
 "     <BS>          : 親ディレクトリに戻る
 "     a             : 新しいファイル/ディレクトリを作成
 "     d             : ファイル/ディレクトリを削除
@@ -407,6 +501,10 @@ if neotree_ok then
     window = {
       position = "left",
       width = 40,
+      mappings = {
+        ["<cr>"] = "open_tab_drop",
+        ["<2-LeftMouse>"] = "open_tab_drop",
+      },
     },
     default_component_configs = {
       git_status = {
@@ -480,11 +578,14 @@ lua <<EOF
   -- LSP バッファ固有のキーマップ
   -- ============================================
   -- LSPがアタッチされたバッファでのみ有効になるキーマップ
+  -- gd / gi / gR / gC / <Space>D は fzf-lua 経由で、結果が 1 件なら新しいタブで直接開き、
+  -- 複数件ならプレビュー付きの一覧を表示する（すでに開いているファイルはそのタブへ移動）
   -- 使い方:
   --   gD            : 宣言へジャンプ
-  --   gd            : 定義へジャンプ
+  --   gd            : 定義へジャンプ（Ctrl+クリックでも可）
   --   K             : ホバー情報を表示（ドキュメント）
   --   gi            : 実装へジャンプ
+  --   gC            : この関数の呼び出し元を一覧表示
   --   <Ctrl-m>      : 関数シグネチャのヘルプを表示
   --   <Space>wa     : ワークスペースフォルダを追加
   --   <Space>wr     : ワークスペースフォルダを削除
@@ -500,20 +601,23 @@ lua <<EOF
       vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
       local opts = { buffer = ev.buf }
+      local fzf_lua = require('fzf-lua')
       vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+      vim.keymap.set('n', 'gd', fzf_lua.lsp_definitions, opts)
+      vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua require("fzf-lua").lsp_definitions()<CR>', opts)
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+      vim.keymap.set('n', 'gi', fzf_lua.lsp_implementations, opts)
+      vim.keymap.set('n', 'gC', fzf_lua.lsp_incoming_calls, opts)
       vim.keymap.set('n', '<C-m>', vim.lsp.buf.signature_help, opts)
       vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
       vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
       vim.keymap.set('n', '<space>wl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, opts)
-      vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+      vim.keymap.set('n', '<space>D', fzf_lua.lsp_typedefs, opts)
       vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
       vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-      vim.keymap.set('n', 'gR', vim.lsp.buf.references, opts)
+      vim.keymap.set('n', 'gR', fzf_lua.lsp_references, opts)
       vim.keymap.set('n', '<space>f', function()
         vim.lsp.buf.format { async = true }
       end, opts)
@@ -737,14 +841,11 @@ lua <<EOF
 EOF
 
 " ============================================
-" Go言語固有のキーマップと自動コマンド
+" Go言語固有の自動コマンド
 " ============================================
-" 使い方:
-"   <Ctrl-o>        : 定義へジャンプ（Goファイル用）
-"   保存時に自動実行:
-"     - gofmt でフォーマット
-"     - goimports でimport整理
-nnoremap <C-o> :<C-u>lua vim.lsp.buf.definition()<CR>
+" 保存時に自動実行:
+"   - gofmt でフォーマット
+"   - goimports でimport整理
 autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
 autocmd BufWritePre *.go lua goimports(1000)
 
@@ -760,6 +861,27 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+" ============================================
+" マウス操作
+" ============================================
+" 使い方:
+"   クリック        : カーソル移動・ウィンドウ切り替え
+"   ドラッグ        : 範囲選択、ウィンドウ境界のドラッグでサイズ変更
+"   Ctrl+クリック   : 定義へジャンプ（LSP アタッチ時）
+"   右クリック      : メニュー（定義へジャンプ・参照検索・実装へジャンプ・アウトライン・ファイル履歴など）
+"   マウスの戻る/進む ボタン : ジャンプ前/後の位置へ移動（<Ctrl-o> / <Ctrl-i> と同じ）
+set mouse=a
+nnoremap <X1Mouse> <C-o>
+nnoremap <X2Mouse> <C-i>
+" 右クリックメニューの先頭にコードリーディング用の項目を追加する
+" （Go to definition は既定の項目を上書きし、gd と同じく新しいタブで開く）
+nnoremenu 1.10 PopUp.Find\ references       <Cmd>lua require('fzf-lua').lsp_references()<CR>
+nnoremenu 1.20 PopUp.Go\ to\ implementation <Cmd>lua require('fzf-lua').lsp_implementations()<CR>
+nnoremenu 1.30 PopUp.Outline                <Cmd>AerialToggle!<CR>
+nnoremenu 1.40 PopUp.File\ history          <Cmd>DiffviewFileHistory %<CR>
+nnoremenu 1.50 PopUp.-code-reading-         <Nop>
+anoremenu PopUp.Go\ to\ definition          <Cmd>lua require('fzf-lua').lsp_definitions()<CR>
 
 " ============================================
 " インデント関連の設定
@@ -799,26 +921,24 @@ augroup END
 " ============================================
 " nvim-treesitter - 構文解析・ハイライト
 " ============================================
-" 使い方:
-"   <Ctrl-Space>    : 選択範囲をノード単位で拡張（ノーマルモード。インサートモードでは補完トリガー）
-"   <BS>            : 選択範囲を縮小
+" パーサーは Ansible（neovim_treesitter_parsers）でインストールする
+" 使い方（Neovim 0.12 標準のビジュアルモード操作）:
+"   v → an          : 選択範囲をノード単位で拡張（続けて an で更に外側へ）
+"   in              : 選択範囲を縮小
 lua <<EOF
-local treesitter_ok, treesitter = pcall(require, "nvim-treesitter.configs")
+local treesitter_ok = pcall(require, "nvim-treesitter")
 if treesitter_ok then
-  treesitter.setup({
-    ensure_installed = { "ruby", "go", "rust", "typescript", "javascript", "python", "lua", "bash" },
-    auto_install     = false,
-    highlight = { enable = true },
-    indent    = { enable = true },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection    = "<C-space>",
-        node_incremental  = "<C-space>",
-        scope_incremental = false,
-        node_decremental  = "<bs>",
-      },
-    },
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("TreesitterStart", { clear = true }),
+    callback = function(args)
+      -- パーサーのない filetype では何もしない
+      if not pcall(vim.treesitter.start, args.buf) then return end
+      -- インデント定義のある言語のみ treesitter のインデントを使う
+      local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+      if lang and vim.treesitter.query.get(lang, "indents") then
+        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
+    end,
   })
 end
 EOF
@@ -856,14 +976,55 @@ EOF
 " ============================================
 " persistence.nvim - セッション自動保存・復元
 " ============================================
+" 引数なしで nvim を起動すると、そのディレクトリで前回開いていたタブ・ファイルを自動で復元する
+" （ファイルやディレクトリを指定して起動した場合は復元しない）
 " 使い方:
 "   <leader>qs      : 現在の cwd のセッションを復元
 "   <leader>ql      : 最後のセッションを復元
 "   <leader>qd      : セッション保存を無効化（一時的な使い捨て起動）
+" ターミナルはセッションに保存しない
+set sessionoptions-=terminal
 lua <<EOF
 local persistence_ok, persistence = pcall(require, "persistence")
 if persistence_ok then
   persistence.setup()
+
+  local session_group = vim.api.nvim_create_augroup("PersistenceAutoRestore", { clear = true })
+  -- パイプ入力（例: git diff | nvim -）で起動した場合は復元しない
+  vim.api.nvim_create_autocmd("StdinReadPre", {
+    group = session_group,
+    callback = function() vim.g.started_with_stdin = true end,
+  })
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = session_group,
+    nested = true,  -- 復元したバッファで FileType 等の autocmd を発火させる
+    callback = function()
+      -- ターミナル内で起動した入れ子の nvim では、復元も保存もしない（親のセッションを上書きしないため）
+      if vim.env.NVIM then
+        persistence.stop()
+        return
+      end
+      -- headless 起動（Ansible からのパーサーインストール等）では復元しない
+      if vim.fn.argc(-1) == 0 and not vim.g.started_with_stdin and #vim.api.nvim_list_uis() > 0 then
+        persistence.load()
+      end
+    end,
+  })
+  -- 保存前にサイドバー・ターミナルのウィンドウを閉じる（復元時に空のウィンドウが残るのを防ぐ）
+  vim.api.nvim_create_autocmd("User", {
+    group = session_group,
+    pattern = "PersistenceSavePre",
+    callback = function()
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if vim.tbl_contains({ "neo-tree", "aerial" }, vim.bo[buf].filetype) or vim.bo[buf].buftype == "terminal" then
+          -- タブ内の最後のウィンドウは閉じられないため pcall で無視する
+          pcall(vim.api.nvim_win_close, win, true)
+        end
+      end
+    end,
+  })
+
   vim.keymap.set('n', '<leader>qs', function() persistence.load() end,              { silent = true, desc = "Restore session" })
   vim.keymap.set('n', '<leader>ql', function() persistence.load({ last = true }) end, { silent = true, desc = "Restore last session" })
   vim.keymap.set('n', '<leader>qd', function() persistence.stop() end,              { silent = true, desc = "Don't save session" })
