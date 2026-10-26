@@ -2,6 +2,7 @@
 neovim_version: "0.12.6"
 oxker_version: "0.13.4"
 lazygit_version: "0.66.2"
+tree_sitter_cli_version: "0.27.1"
 neovim_plugin_path: "~/.local/share/nvim/site/pack/plugins/start"
 neovim_dir:
   - "{{ neovim_plugin_path }}"
@@ -71,6 +72,16 @@ neovim_plugins:
     version: "645d108a5242ec7b378cbe643eb6d04d4223f034"
   - name: "folke/persistence.nvim"
     version: "b20b2a7887bd39c1a356980b45e03250f3dce49c"
+# nvim-treesitter でインストールするパーサー
+neovim_treesitter_parsers:
+  - "ruby"
+  - "go"
+  - "rust"
+  - "typescript"
+  - "javascript"
+  - "python"
+  - "lua"
+  - "bash"
 db_user: "postgres"
 db_password: ""
 db_dbname: "postgres"

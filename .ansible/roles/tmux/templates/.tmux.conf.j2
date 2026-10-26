@@ -29,6 +29,8 @@ bind - split-window -v
 # マウス操作を有効にする
 set-option -g mouse on
 bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
+# Ctrl+クリックをアプリ（nvim の定義ジャンプ等）に渡す（tmux の既定では渡されない）
+bind -n C-MouseDown1Pane select-pane -t= \; send-keys -M
 
 # コピーモードでvimキーバインドを使う
 setw -g mode-keys vi
