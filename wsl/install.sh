@@ -2,11 +2,11 @@
 CURRENT_DIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
 USER_NAME="$(/mnt/c/Windows/System32/whoami.exe |awk -F "\\" '{print $NF}' | sed -e "s/[\r\n]\+//g")"
 USER_HOME="/home/${USER_NAME}"
-ANSIBLE_DIR="${CURRENT_DIR}/../.ansible"
+ANSIBLE_DIR="${CURRENT_DIR}/../ansible"
 REPO_DIR="$(cd "${CURRENT_DIR}/.." && pwd)"
 
 # ベースの install.sh を読み込む
-source ../.ansible/install.sh
+source ../ansible/install.sh
 
 # wsl で使うためのユーザーを作成する
 create_user() {
@@ -63,7 +63,7 @@ clone_repo() {
     fi
 EOF
 )"
-    ANSIBLE_DIR="${USER_HOME}/src/ansible-local/.ansible"
+    ANSIBLE_DIR="${USER_HOME}/src/ansible-local/ansible"
 }
 
 # 各種処理実行

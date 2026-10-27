@@ -1,0 +1,84 @@
+---
+# Claude Code 設定
+
+# Model for Claude Code main and subagent (single source of truth)
+# settings.json.j2 の model と CLAUDE_CODE_SUBAGENT_MODEL の両方に反映される
+# サブエージェント定義・スキルには model を書かず、この値に揃える
+claude_code_model: "claude-opus-5-5"
+
+# Claude Code directories
+claudecode_dir:
+  - "~/.claude"
+  - "~/.claude/agents"
+  - "~/.claude/rules"
+  - "~/.claude/hooks"
+  - "~/.claude/skills/backend-dev"
+  - "~/.claude/skills/infra-quick-check"
+  - "~/.claude/skills/sql-helper"
+  - "~/.claude/skills/pr-review"
+  - "~/.claude/skills/investigate"
+  - "~/.claude/skills/data-analysis"
+  - "~/.claude/skills/gcp-verify"
+
+# git fetch throttle: directories to scan for git repos (space-separated)
+claudecode_git_fetch_dirs: "{{ ansible_facts['env']['HOME'] }}/src"
+
+# Claude Code plugins (non-LSP)
+# https://github.com/anthropics/claude-plugins-official
+claude_code_plugins:
+  - claude-md-management
+
+# Custom LSP plugins (via custom-lsp marketplace)
+# claude-plugins-official の LSP プラグインは .lsp.json 未同梱のため使用しない
+# LSP サーバーはすべて custom-lsp マーケットプレイス経由で管理する
+claude_code_custom_lsp_plugins:
+  - name: solargraph-lsp
+    description: "Ruby Language Server (Solargraph)"
+    command: solargraph
+    args:
+      - stdio
+    extensions:
+      ".rb": ruby
+      ".rake": ruby
+      ".gemspec": ruby
+  - name: typescript-lsp
+    description: "TypeScript/JavaScript Language Server"
+    command: typescript-language-server
+    args:
+      - --stdio
+    extensions:
+      ".ts": typescript
+      ".tsx": typescriptreact
+      ".js": javascript
+      ".jsx": javascriptreact
+      ".mts": typescript
+      ".cts": typescript
+      ".mjs": javascript
+      ".cjs": javascript
+  - name: gopls-lsp
+    description: "Go Language Server (gopls)"
+    command: gopls
+    args: []
+    extensions:
+      ".go": go
+  - name: rust-analyzer-lsp
+    description: "Rust Language Server (rust-analyzer)"
+    command: rust-analyzer
+    args: []
+    extensions:
+      ".rs": rust
+  - name: pylsp-lsp
+    description: "Python Language Server (pylsp)"
+    command: pylsp
+    args: []
+    extensions:
+      ".py": python
+      ".pyi": python
+
+# Claude Code external marketplace plugins
+# format: { marketplace: "github-owner/repo", alias: "marketplace-name", plugins: ["plugin-name"] }
+claude_code_external_marketplace_plugins: []
+
+# Claude Code experimental features
+claude_code_experimental_features:
+  agent_teams: false

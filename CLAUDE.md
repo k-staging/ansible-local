@@ -20,23 +20,23 @@ cd wsl && bash install.sh
 ### 特定のロールの実行
 ```bash
 # タグを使って特定のロールを実行
-ansible-playbook .ansible/site.yml -i .ansible/inventory --tags "mise,tmux"
+ansible-playbook ansible/site.yml -i ansible/inventory --tags "mise,tmux"
 
 # すべてのロールを実行
-ansible-playbook .ansible/site.yml -i .ansible/inventory
+ansible-playbook ansible/site.yml -i ansible/inventory
 ```
 
 ### 手動でのAnsible実行
 ```bash
-# .ansibleディレクトリから
-cd .ansible
+# ansibleディレクトリから
+cd ansible
 ~/.local/bin/ansible-playbook site.yml -i inventory
 ```
 
 ## アーキテクチャ
 
 ### ディレクトリ構造
-- `/.ansible/` - Ansibleのコア設定
+- `/ansible/` - Ansibleのコア設定
   - `site.yml` - すべてのロールを統括するメインプレイブック
   - `inventory` - バージョン定義: Python 3.14.9、Ruby 3.2.2、Node 22.23.4、Go 1.23.10
   - `roles/` - 個別の設定ロール
@@ -55,11 +55,11 @@ cd .ansible
 - mise による多言語バージョン管理（Node.js, Ruby, Go を統合管理）
 - MacとUbuntu/Debian固有のタスクに`ansible_facts['distribution']`によるプラットフォーム検出を使用
 - ローカル接続モード - Ansibleが実行されているマシン自体を設定
-- バージョンは`.ansible/inventory`で一元管理
+- バージョンは`ansible/inventory`で一元管理
 
 ## 開発ワークフロー
 
-1. `.ansible/roles/<role_name>/`内のロールファイルを変更
+1. `ansible/roles/<role_name>/`内のロールファイルを変更
 2. タグを使って特定のロールを実行して変更をテスト
 3. インストールスクリプトはuvによるPythonのセットアップとAnsibleのインストールを自動的に処理
 4. WSLの場合、設定後にポストタスクでWSLインスタンスを再起動
