@@ -1,0 +1,300 @@
+---
+# ============================================
+# Claude Code Native インストール
+# ============================================
+- name: check if claude is already installed
+  ansible.builtin.command: which claude
+  register: claude_installed_check
+  ignore_errors: true
+  changed_when: false
+
+# インストール後のバージョンアップは Claude Code の自動更新に任せる
+- name: download Claude Code installer
+  ansible.builtin.get_url:
+    url: https://claude.ai/install.sh
+    dest: /tmp/claude-install.sh
+    mode: 0755
+  when: claude_installed_check.rc != 0
+
+- name: run Claude Code installer
+  ansible.builtin.command: /tmp/claude-install.sh
+  when: claude_installed_check.rc != 0
+
+- name: remove Claude Code installer
+  ansible.builtin.file:
+    path: /tmp/claude-install.sh
+    state: absent
+  when: claude_installed_check.rc != 0
+
+# ============================================
+# Claude Code ディレクトリ作成
+# ============================================
+- name: create Claude Code directories
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/{{ item | regex_replace('^~/', '') }}"
+    state: directory
+    mode: 0755
+  loop: "{{ claudecode_dir }}"
+
+# ============================================
+# Claude Code 設定ファイル
+# ============================================
+- name: copy CLAUDE.md
+  ansible.builtin.copy:
+    src: "CLAUDE.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/CLAUDE.md"
+    mode: 0644
+
+# plan.md は組み込みの /plan を上書きしていたため、他のコマンドと合わせて削除する
+- name: remove obsolete custom command files
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/commands/{{ item }}"
+    state: absent
+  loop:
+    - sequential-thinking.md
+    - plan.md
+    - team.md
+
+- name: copy statusline script
+  ansible.builtin.copy:
+    src: "statusline.sh"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/statusline.sh"
+    mode: 0755
+
+# ============================================
+# Claude Code Hooks
+# ============================================
+- name: copy git-fetch-throttle hook script
+  ansible.builtin.copy:
+    src: "hooks/git-fetch-throttle.sh"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/git-fetch-throttle.sh"
+    mode: 0755
+
+- name: deploy settings.json to ~/.claude
+  ansible.builtin.template:
+    src: "settings.json.j2"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/settings.json"
+    mode: 0644
+
+# ============================================
+# Claude Code Rules
+# ============================================
+- name: copy Claude rules files
+  ansible.builtin.copy:
+    src: "claude-rules/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/rules/{{ item }}"
+    mode: 0644
+  loop:
+    - ansible.md
+    - ruby-python.md
+    - infra-config.md
+
+# ============================================
+# Claude Code Agents
+# ============================================
+- name: copy Claude subagent files
+  ansible.builtin.copy:
+    src: "claude-agents/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/agents/{{ item }}"
+    mode: 0644
+  loop:
+    - ansible-validator.md
+    - infra-reviewer.md
+    - docs-updater.md
+    - rails-test-guardian.md
+    - rails-security-auditor.md
+    - rails-performance-optimizer.md
+    - rails-db-migration-reviewer.md
+    - rails-code-reviewer.md
+    - go-code-reviewer.md
+    - shell-script-reviewer.md
+    - regression-checker.md
+    - workflow-guardian.md
+
+# ============================================
+# Claude Code Skills
+# ============================================
+- name: copy Claude skill files
+  ansible.builtin.copy:
+    src: "claude-skills/{{ item }}/SKILL.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/skills/{{ item }}/SKILL.md"
+    mode: 0644
+  loop:
+    - backend-dev
+    - infra-quick-check
+    - sql-helper
+    - pr-review
+    - investigate
+    - data-analysis
+    - gcp-verify
+
+# ============================================
+# MCP Servers 設定
+# ============================================
+- name: check if ~/.claude.json exists
+  ansible.builtin.stat:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude.json"
+  register: claude_json_stat
+
+- name: check if jq is installed
+  ansible.builtin.command: which jq
+  register: jq_check
+  ignore_errors: true
+  changed_when: false
+
+- name: update ~/.claude.json with mcpServers
+  block:
+    - name: copy mcpServers.json
+      ansible.builtin.template:
+        src: "mcpServers.json.j2"
+        dest: "/tmp/mcpServers.json"
+        mode: 0644
+
+    - name: update ~/.claude.json with mcpServers
+      ansible.builtin.shell: |
+        jq '.mcpServers = $newMcpServers' \
+          --argjson newMcpServers "$(cat /tmp/mcpServers.json)" \
+          {{ ansible_facts['env']['HOME'] }}/.claude.json > /tmp/claude.json.tmp && \
+        mv /tmp/claude.json.tmp {{ ansible_facts['env']['HOME'] }}/.claude.json
+      changed_when: true
+
+    - name: remove temporary mcpServers.json
+      ansible.builtin.file:
+        path: "/tmp/mcpServers.json"
+        state: absent
+  when:
+    - claude_json_stat.stat.exists
+    - jq_check.rc == 0
+
+# ============================================
+# Claude Code プラグイン設定
+# ============================================
+- name: check claude command exists for plugins
+  ansible.builtin.command: which claude
+  register: claude_plugin_check
+  ignore_errors: true
+  changed_when: false
+
+- name: install Claude Code plugins from official marketplace
+  ansible.builtin.command: "claude plugin install {{ item }}"
+  loop: "{{ claude_code_plugins }}"
+  register: plugin_install_result
+  changed_when: "'Successfully installed' in plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+# ============================================
+# Claude Code LSP Plugin Setup
+# ============================================
+# LSP plugins from claude-plugins-official ship without .lsp.json and do nothing
+- name: uninstall dummy LSP plugins from official marketplace
+  ansible.builtin.command: "claude plugin uninstall {{ item }}@claude-plugins-official"
+  loop:
+    - typescript-lsp
+    - gopls-lsp
+    - rust-analyzer-lsp
+  register: dummy_uninstall_result
+  changed_when: false  # loop+register: per-iteration stdout not accessible; cleanup task, changed tracking not needed
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+# Custom LSP plugins via local marketplace
+- name: create custom-lsp marketplace directory structure
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - ".claude-plugin"
+    - "plugins"
+
+- name: create custom LSP plugin source directories (root)
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}"
+    state: directory
+    mode: 0755
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: create .claude-plugin subdirectory for custom LSP plugins
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin"
+    state: directory
+    mode: 0755
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy plugin.json for custom LSP plugins
+  ansible.builtin.template:
+    src: "lsp_plugin_manifest.json.j2"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.claude-plugin/plugin.json"
+    mode: 0644
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy .lsp.json for custom LSP plugins
+  ansible.builtin.template:
+    src: "lsp_plugin_lsp.json.j2"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/.lsp.json"
+    mode: 0644
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: create README for custom LSP plugins
+  ansible.builtin.copy:
+    content: "# {{ item.name }}\n{{ item.description }}\n"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item.name }}/README.md"
+    mode: 0644
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+
+- name: deploy custom-lsp marketplace.json
+  ansible.builtin.template:
+    src: "custom_lsp_marketplace.json.j2"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/.claude-plugin/marketplace.json"
+    mode: 0644
+
+- name: add custom-lsp marketplace
+  ansible.builtin.command: "claude plugin marketplace add {{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace"
+  register: marketplace_add_result
+  changed_when: "'Successfully added' in marketplace_add_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: install custom LSP plugins
+  ansible.builtin.command: "claude plugin install {{ item.name }}@custom-lsp"
+  loop: "{{ claude_code_custom_lsp_plugins }}"
+  register: custom_plugin_install_result
+  changed_when: "'Successfully installed' in custom_plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+# Previously installed external plugins that are no longer used
+# 再び使う場合は、下の2タスク両方のリストから外してから claude_code_external_marketplace_plugins に戻す
+- name: uninstall obsolete external plugins
+  ansible.builtin.command: "claude plugin uninstall {{ item }}"
+  loop:
+    - superpowers@superpowers-marketplace
+  changed_when: false  # cleanup task, changed tracking not needed
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: remove obsolete external marketplaces
+  ansible.builtin.command: "claude plugin marketplace remove {{ item }}"
+  loop:
+    - superpowers-marketplace
+  changed_when: false  # cleanup task, changed tracking not needed
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+# External marketplace plugins
+- name: add external marketplaces
+  ansible.builtin.command: "claude plugin marketplace add {{ item.marketplace }}"
+  loop: "{{ claude_code_external_marketplace_plugins }}"
+  register: marketplace_ext_add_result
+  changed_when: "'Successfully added' in marketplace_ext_add_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: install external marketplace plugins
+  ansible.builtin.command: "claude plugin install {{ item.1 }}@{{ item.0.alias | default(item.0.marketplace | split('/') | last | regex_replace('\\.git$', '')) }}"
+  loop: "{{ claude_code_external_marketplace_plugins | subelements('plugins') }}"
+  register: ext_plugin_install_result
+  changed_when: "'Successfully installed' in ext_plugin_install_result.stdout"
+  failed_when: false
+  when: claude_plugin_check.rc == 0
