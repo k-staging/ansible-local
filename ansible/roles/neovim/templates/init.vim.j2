@@ -643,20 +643,13 @@ lua <<EOF
         })
       end
 
-      -- Go / Rust は保存時に自動フォーマット
+      -- Go は保存時に自動フォーマット
       if client.server_capabilities.documentFormattingProvider then
         if client.name == 'gopls' then
           vim.cmd([[
             augroup GoAutoFormat
               autocmd!
               autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = false })
-            augroup END
-          ]])
-        elseif client.name == 'rust_analyzer' then
-          vim.cmd([[
-            augroup RustAutoFormat
-              autocmd!
-              autocmd BufWritePre *.rs lua vim.lsp.buf.format({ async = false })
             augroup END
           ]])
         end
@@ -716,11 +709,6 @@ lua <<EOF
     cmd = { vim.fn.expand('~/.local/share/mise/shims/gopls') },
   })
 
-  -- rust_analyzer (Rust) 設定
-  vim.lsp.config('rust_analyzer', {
-    cmd = { vim.fn.expand('~/.local/share/mise/shims/rust-analyzer') },
-  })
-
   -- pylsp (Python) 設定 - uvでインストールしたPythonを使用
   vim.lsp.config('pylsp', {
     cmd = { vim.fn.expand('~/.local/bin/pylsp') },
@@ -741,7 +729,7 @@ lua <<EOF
   })
 
   -- bashls / eslint / ts_ls / sqls は既定の設定のまま使う
-  vim.lsp.enable({ 'bashls', 'eslint', 'ts_ls', 'gopls', 'rust_analyzer', 'pylsp', 'solargraph', 'sqls' })
+  vim.lsp.enable({ 'bashls', 'eslint', 'ts_ls', 'gopls', 'pylsp', 'solargraph', 'sqls' })
 
   -- ============================================
   -- Go言語専用設定

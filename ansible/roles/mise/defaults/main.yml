@@ -1,18 +1,7 @@
 ---
 mise_bin: "{{ ansible_facts['env']['HOME'] }}/.local/bin/mise"
 
-npm_packages:
-  - "bash-language-server@5.8.1"
-  - "vscode-langservers-extracted@4.5.0"
-  - "typescript-language-server@4.3.3"
-  - "typescript@5.7.3"
-
-# Go 1.23.x 固定のため gopls は v0.18.x、dlv は v1.25.x が上限（それ以降は Go 1.24 以上が必要）
-go_packages:
-  - "github.com/lighttiger2505/sqls@v0.2.20"
-  - "golang.org/x/tools/gopls@v0.18.1"
-  - "github.com/x-motemen/gore/cmd/gore@v0.5.5"
-  - "github.com/go-delve/delve/cmd/dlv@v1.25.2"
+# npm_packages と go_packages は ansible/group_vars/all/versions.yml で管理
 
 ruby_gems:
   - "solargraph"

@@ -61,12 +61,6 @@ claude_code_custom_lsp_plugins:
     args: []
     extensions:
       ".go": go
-  - name: rust-analyzer-lsp
-    description: "Rust Language Server (rust-analyzer)"
-    command: rust-analyzer
-    args: []
-    extensions:
-      ".rs": rust
   - name: pylsp-lsp
     description: "Python Language Server (pylsp)"
     command: pylsp

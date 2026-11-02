@@ -1,0 +1,108 @@
+---
+# バージョン定義はこのファイルで一元管理する
+# 理由があって固定しているものは、同じ行か直前の行に「固定」とコメントを書く
+
+# install.sh で使用（bootstrap 用）
+uv_version: "0.13.6"
+pip_packages:
+  - "pip==26.2.2"
+  - "ansible==14.5.0"
+  - "neovim==0.3.1"
+  - "pynvim==0.6.0"
+  - "python-lsp-server==1.15.0"
+  - "sqlparse==0.6.0"
+  - "ruff==0.17.3"
+
+# 言語ランタイム
+python3_version: "3.14.10"
+ruby_version: "4.0.7"
+node_version: "22.23.4"
+go_version: "1.27.3"
+
+# common
+cloud_sql_proxy_version: "2.26.3"
+
+# mise
+npm_packages:
+  - "bash-language-server@5.8.1"
+  - "vscode-langservers-extracted@4.10.0"
+  - "typescript-language-server@6.0.2"
+  - "typescript@5.9.3"
+
+go_packages:
+  # sqls は v0.2.20 固定。新しいバージョンでは 1 行目がコメント行だと 2 行目以降のクエリが実行できない
+  # （https://github.com/sqls-server/sqls/issues/178 、v0.2.48 以降はモジュールパスも github.com/sqls-server/sqls に変わっている）
+  - "github.com/lighttiger2505/sqls@v0.2.20"
+  - "golang.org/x/tools/gopls@v0.24.0"
+  - "github.com/x-motemen/gore/cmd/gore@v0.7.0"
+  - "github.com/go-delve/delve/cmd/dlv@v1.27.2"
+
+# tmux バージョン (リリースタグを指定)
+tmux_version: "3.7b"
+
+# neovim
+neovim_version: "0.12.6"
+oxker_version: "0.13.4"
+lazygit_version: "0.66.2"
+tree_sitter_cli_version: "0.27.1"
+neovim_plugins:
+  - name: "airblade/vim-gitgutter"
+    version: "90b75207bd9b55d8ac4af15f72b4e935462014d0"
+  - name: "junegunn/fzf"
+    version: "26ff936df038b6a62ec42cf18db27b2ea2bb8ec3"
+  - name: "ibhagwan/fzf-lua"
+    version: "5b88d6f0af7fcb41d4a8bb340bf70d7e3824ee9d"
+  - name: "nvim-neo-tree/neo-tree.nvim"
+    version: "2a768b17c9d16fdffe85a477737e40ac53896e69"
+  - name: "MunifTanjim/nui.nvim"
+    version: "10fc361835c856ba4233ef5ea135b919bf3dce97"
+  - name: "echasnovski/mini.icons"
+    version: "eab3e692d796d78ea6ffc978d8a380ff26fcf4e3"
+  # SQL 関連
+  # sqls サーバーは mise の go_packages で管理（バージョンは go_packages 側のコメントを参照）
+  - name: "nanotee/sqls.nvim"
+    version: "332caa9ab86af1a00259feb01051ea825e8fc461"
+  - name: "mattn/vim-sqlfmt"
+    version: "db6365103e38d274efe7689a002646a4419ae821"
+  # ディレクトリ移動
+  - name: "mattn/vim-findroot"
+    version: "3b21a022efa10c476024cf51be06b459a9cff4a4"
+  # neo-tree.nvim の依存
+  - name: "nvim-lua/plenary.nvim"
+    version: "74b06c6c75e4eeb3108ec01852001636d85a932b"
+  # カラースキーマ
+  - name: "folke/tokyonight.nvim"
+    version: "cdc07ac78467a233fd62c493de29a17e0cf2b2b6"
+  # その他
+  - name: "neovim/nvim-lspconfig"
+    version: "v2.12.0"
+  # ステータスライン・タブライン (lualine + bufferline)
+  - name: "nvim-lualine/lualine.nvim"
+    version: "221ce6b2d999187044529f49da6554a92f740a96"
+  - name: "akinsho/bufferline.nvim"
+    version: "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
+  # 以降は nvim-cmp (補完関連) のプラグイン
+  - name: "hrsh7th/cmp-nvim-lsp"
+    version: "cbc7b02bb99fae35cb42f514762b89b5126651ef"
+  - name: "hrsh7th/cmp-buffer"
+    version: "b74fab3656eea9de20a9b8116afa3cfc4ec09657"
+  - name: "hrsh7th/cmp-path"
+    version: "c642487086dbd9a93160e1679a1327be111cbc25"
+  - name: "hrsh7th/nvim-cmp"
+    version: "2ffe79f1f021def8dd1fcd81deb16f1bb0d989f3"
+  - name: "SirVer/ultisnips"
+    version: "0ca6a21386021e74a91034365809dcca56ed13f0"
+  # ターミナル・Git管理・Docker管理関連
+  - name: "akinsho/toggleterm.nvim"
+    version: "9a88eae817ef395952e08650b3283726786fb5fb"
+  - name: "sindrets/diffview.nvim"
+    version: "4516612fe98ff56ae0415a259ff6361a89419b0a"
+  # コードリーディング支援
+  - name: "nvim-treesitter/nvim-treesitter"
+    version: "a2f694478be07f89c2d03cc17858a8745a400c4b"
+  - name: "nvim-treesitter/nvim-treesitter-context"
+    version: "8decd73460d26ef0a0befb745d022dd1fc2c38b8"
+  - name: "stevearc/aerial.nvim"
+    version: "28fe6e822ae344544c379d60fcb13c9519a1f08a"
+  - name: "folke/persistence.nvim"
+    version: "b20b2a7887bd39c1a356980b45e03250f3dce49c"

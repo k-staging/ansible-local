@@ -33,7 +33,7 @@ git diff --name-only の結果から、変更ファイルを以下のカテゴ�
 | Ansible/インフラ系 | `infra-quick-check` |
 | SQL/ActiveRecord | `sql-helper` |
 
-### 編集後レビュー（Step 4）
+### 編集後レビュー（Step 3）
 | カテゴリ | 必要なエージェント |
 |---------|-----------------|
 | Ansible系 | `ansible-validator`, `infra-reviewer` |
@@ -41,11 +41,11 @@ git diff --name-only の結果から、変更ファイルを以下のカテゴ�
 | Go系 | `go-code-reviewer` |
 | シェル系 | `shell-script-reviewer` |
 | DBマイグレーション系 | `rails-db-migration-reviewer` |
-| テスト系 | `rails-test-guardian` |
 | **全カテゴリ共通** | `regression-checker` |
 
-### テスト（Step 3）
-- テストファイルまたは実装ファイルが変更されている場合、関連テストの実行が必要
+### テスト（Step 4）
+- テストファイルまたは実装ファイルが変更されている場合、レビュー修正の反映後に関連テストの実行が必要
+- テスト系の変更では `rails-test-guardian` でのテスト実行が必要
 
 ## 3. 実施状況の照合
 提供された「実施済み工程リスト」と「必要な工程」を照合し、漏れを検出。

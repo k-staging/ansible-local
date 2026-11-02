@@ -19,7 +19,7 @@ paths:
 - `rails-code-reviewer` でコード品質チェック
 - `rails-security-auditor` でセキュリティチェック
 - `db/migrate/` 変更時は `rails-db-migration-reviewer` で安全性確認
-- `spec/` 変更時は `rails-test-guardian` でテスト実行
+- `spec/` 変更時は `rails-test-guardian` でテスト実行（レビューではなく §3 Step 4 で実行する）
 
 ## Rails マイグレーション実行ルール
 - `db/migrate/` にファイルを作成・編集した場合、**必ず `bin/rails db:migrate` を実行する**

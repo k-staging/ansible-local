@@ -1,6 +1,6 @@
 ---
 name: rails-test-guardian
-description: RSpec/Minitestテストの実行、デバッグ、カバレッジ確認。テストファイルまたは実装ファイル変更後に自動実行。
+description: RSpec/Minitestテストの実行、デバッグ、カバレッジ確認。テストファイルまたは実装ファイル変更後に実行（コード修正フロー中はレビュー修正の反映後に実行）。
 tools: Read, Bash, Grep
 ---
 
