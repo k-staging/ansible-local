@@ -1,0 +1,11 @@
+{
+	"auths": {},
+	"credsStore": "desktop",
+	"credHelpers": {
+{% for region in gcp_artifact_registry_regions %}
+		"{{ region }}-docker.pkg.dev": "gcloud"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+	},
+	"currentContext": "desktop-linux"
+}

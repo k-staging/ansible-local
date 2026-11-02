@@ -38,7 +38,8 @@ cd ansible
 ### ディレクトリ構造
 - `/ansible/` - Ansibleのコア設定
   - `site.yml` - すべてのロールを統括するメインプレイブック
-  - `inventory` - バージョン定義: Python 3.14.9、Ruby 3.2.2、Node 22.23.4、Go 1.23.10
+  - `inventory` - 接続設定
+  - `group_vars/all/versions.yml` - バージョン定義（言語ランタイム、ツール、npm/Go/pip パッケージ、neovim プラグイン）
   - `roles/` - 個別の設定ロール
   - `install.sh` - ベースインストールスクリプト
 - `/mac/` - macOS専用セットアップラッパー
@@ -55,7 +56,7 @@ cd ansible
 - mise による多言語バージョン管理（Node.js, Ruby, Go を統合管理）
 - MacとUbuntu/Debian固有のタスクに`ansible_facts['distribution']`によるプラットフォーム検出を使用
 - ローカル接続モード - Ansibleが実行されているマシン自体を設定
-- バージョンは`ansible/inventory`で一元管理
+- バージョンは`ansible/group_vars/all/versions.yml`で一元管理（理由があって固定しているものは「固定」とコメントする）
 
 ## 開発ワークフロー
 

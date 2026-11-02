@@ -264,6 +264,23 @@
   failed_when: false
   when: claude_plugin_check.rc == 0
 
+# Previously installed custom LSP plugins that are no longer used
+# 再び使う場合は、下の2タスク両方のリストから外してから claude_code_custom_lsp_plugins に戻す
+- name: uninstall obsolete custom LSP plugins
+  ansible.builtin.command: "claude plugin uninstall {{ item }}@custom-lsp"
+  loop:
+    - rust-analyzer-lsp
+  changed_when: false  # cleanup task, changed tracking not needed
+  failed_when: false
+  when: claude_plugin_check.rc == 0
+
+- name: remove obsolete custom LSP plugin source directories
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/plugins/custom-marketplace/plugins/{{ item }}"
+    state: absent
+  loop:
+    - rust-analyzer-lsp
+
 # Previously installed external plugins that are no longer used
 # 再び使う場合は、下の2タスク両方のリストから外してから claude_code_external_marketplace_plugins に戻す
 - name: uninstall obsolete external plugins

@@ -68,7 +68,7 @@
       echo "not_installed"
       exit 0
     fi
-    installed_version=$(go version -m "$bin_path" 2>/dev/null | grep -E "^\s+mod\s+" | awk '{print $3}')
+    installed_version=$({{ mise_bin }} exec -- go version -m "$bin_path" 2>/dev/null | grep -E "^\s+mod\s+" | awk '{print $3}')
     if [ -z "$installed_version" ]; then
       echo "version_unknown"
       exit 0

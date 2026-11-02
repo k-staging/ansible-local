@@ -1,4 +1,5 @@
 ---
+# tmux_version は ansible/group_vars/all/versions.yml で管理
 apt_pkg:
   - automake
   - bison
@@ -8,8 +9,6 @@ apt_pkg:
   - libncurses5-dev
 brew_pkg:
   - automake
-# tmux バージョン (リリースタグを指定)
-tmux_version: "3.7b"
 tmux_main_dir: "~/"
 # tmux セッション起動時に開く window を定義する
 # - dir: tmux の -c で指定する作業ディレクトリ（必須）

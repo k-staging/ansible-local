@@ -21,7 +21,8 @@ create_user() {
     if [ -e /mnt/c/Users/${USER_NAME}/.ssh/id_rsa.pub ]; then
         cat /mnt/c/Users/${USER_NAME}/.ssh/id_rsa.pub > ${USER_HOME}/.ssh/id_rsa.pub
     fi
-    chown -R ${USER_NAME}:${USER_NAME} ${USER_HOME}
+    chown ${USER_NAME}:${USER_NAME} ${USER_HOME} ${USER_HOME}/src
+    chown -R ${USER_NAME}:${USER_NAME} ${USER_HOME}/.ssh
 EOF
 )"
 }
