@@ -9,6 +9,7 @@
       "Bash",
       "WebSearch",
       "WebFetch",
+      "Skill",
       "mcp__Claude_in_Chrome__navigate",
       "mcp__Claude_in_Chrome__computer",
       "mcp__Claude_in_Chrome__tabs_context_mcp",
@@ -50,6 +51,11 @@
       "Bash(gh repo archive:*)",
       "Bash(gh release delete:*)",
       "Bash(gh secret delete:*)",
+      "Bash(gh api *-X DELETE*)",
+      "Bash(gh api *-XDELETE*)",
+      "Bash(gh api *-X=DELETE*)",
+      "Bash(gh api *--method DELETE*)",
+      "Bash(gh api *--method=DELETE*)",
       "Bash(gh pr close:*)",
       "Bash(gh issue close:*)",
       "Bash(gh auth token:*)",
@@ -74,7 +80,13 @@
       "Bash(git push*/ansible-local.git*)"
     ],
     "ask": [
-      "Bash(gh api:*)",
+{# gh api は GET だけ確認なしで通し、書き込みになる指定（メソッド指定・パラメータ・GraphQL）は確認する #}
+      "Bash(gh api *-X*)",
+      "Bash(gh api *--method*)",
+      "Bash(gh api *-f*)",
+      "Bash(gh api *-F*)",
+      "Bash(gh api *--input*)",
+      "Bash(gh api graphql*)",
       "Bash(gh pr merge:*)",
       "Bash(gh repo edit:*)",
       "Bash(gh secret set:*)",
@@ -157,22 +169,35 @@
       ]
     }
   },
+{# 設定見直し用にバックグラウンドで起動した claude -p の終了時には「入力待ち」通知を出さない #}
+{% set claudecode_config_review_guard = '[ -n \\"${CLAUDE_CONFIG_REVIEW_RUNNING:-}\\" ] || ' %}
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CONFIG_REVIEW_INTERVAL_DAYS={{ claudecode_config_review_interval_days }} CONFIG_REVIEW_BUDGET_USD={{ claudecode_config_review_budget_usd }} {{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
 {% if ansible_facts['distribution'] == 'MacOSX' %}
-            "command": "terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
+            "command": "{{ claudecode_config_review_guard }}terminal-notifier -title 'Claude Code' -message '入力待ちです' -sound Ping"
 {% elif 'microsoft' in ansible_facts['kernel'] | lower %}
 {# WSL には D-Bus の通知デーモンがなく notify-send が失敗するため、Windows のトースト通知を使う #}
 {% set wsl_toast_ps %}
 [Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime] > $null; $x = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $t = $x.GetElementsByTagName("text"); $t.Item(0).AppendChild($x.CreateTextNode("Claude Code")) > $null; $t.Item(1).AppendChild($x.CreateTextNode("入力待ちです")) > $null; [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe").Show([Windows.UI.Notifications.ToastNotification]::new($x))
 {% endset %}
-            "command": "powershell.exe -NoProfile -NonInteractive -EncodedCommand {{ wsl_toast_ps | trim | b64encode(encoding='utf-16-le') }}"
+            "command": "{{ claudecode_config_review_guard }}powershell.exe -NoProfile -NonInteractive -EncodedCommand {{ wsl_toast_ps | trim | b64encode(encoding='utf-16-le') }}"
 {% else %}
-            "command": "notify-send 'Claude Code' '入力待ちです'"
+            "command": "{{ claudecode_config_review_guard }}notify-send 'Claude Code' '入力待ちです'"
 {% endif %}
           },
           {

@@ -23,8 +23,8 @@
 
 - name: install mise global tools
   ansible.builtin.shell: "{{ mise_bin }} install"
-  when: mise_config.changed
-  changed_when: true
+  register: mise_install_result
+  changed_when: "'all tools are installed' not in mise_install_result.stderr"
 
 - name: prune unused mise tool installs
   ansible.builtin.shell: "{{ mise_bin }} prune -y"

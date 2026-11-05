@@ -64,7 +64,7 @@ allowed-tools: Read, Grep, Glob
 - 詳細なセキュリティ監査（→ infra-reviewer）
 - パフォーマンス最適化
 - アーキテクチャレビュー
-- Ansible構文詳細検証（→ ansible-validator）
+- Ansible構文詳細検証（→ infra-reviewer）
 
 ## 重要：役割の制限
 
@@ -75,4 +75,4 @@ allowed-tools: Read, Grep, Glob
 - ❌ インフラ構成全体のレビュー（→ Agent）
 - ❌ 実際のコマンド実行・検証（→ Agent）
 
-変更完了後の総合レビューは、必ず`infra-reviewer`または`ansible-validator` Agentに委譲してください。
+変更完了後の総合レビューは、必ず`infra-reviewer` Agentに委譲してください。

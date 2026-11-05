@@ -70,6 +70,18 @@
     dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/git-fetch-throttle.sh"
     mode: 0755
 
+- name: copy config-review hook script
+  ansible.builtin.copy:
+    src: "hooks/config-review.sh"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review.sh"
+    mode: 0755
+
+- name: copy config-review prompt
+  ansible.builtin.copy:
+    src: "hooks/config-review-prompt.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review-prompt.md"
+    mode: 0644
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
@@ -98,9 +110,7 @@
     dest: "{{ ansible_facts['env']['HOME'] }}/.claude/agents/{{ item }}"
     mode: 0644
   loop:
-    - ansible-validator.md
     - infra-reviewer.md
-    - docs-updater.md
     - rails-test-guardian.md
     - rails-security-auditor.md
     - rails-performance-optimizer.md
@@ -109,7 +119,16 @@
     - go-code-reviewer.md
     - shell-script-reviewer.md
     - regression-checker.md
+
+# ansible-validator は infra-reviewer に統合した。workflow-guardian はほぼ PASS しか返さず、docs-updater は呼ばれていないため削除する
+- name: remove obsolete Claude subagent files
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude/agents/{{ item }}"
+    state: absent
+  loop:
+    - ansible-validator.md
     - workflow-guardian.md
+    - docs-updater.md
 
 # ============================================
 # Claude Code Skills
