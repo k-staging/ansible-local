@@ -117,6 +117,7 @@
     - rails-db-migration-reviewer.md
     - rails-code-reviewer.md
     - go-code-reviewer.md
+    - python-code-reviewer.md
     - shell-script-reviewer.md
     - regression-checker.md
 

@@ -122,6 +122,7 @@ SessionStart フックが、セッション履歴をもとにした CLAUDE.md・
   - `db/migrate/` 変更時 → `rails-db-migration-reviewer`
   - `spec/` 変更時 → `rails-test-guardian`（テスト実行。レビューではなく Step 4 で実行する）
 - Go変更 → `go-code-reviewer`
+- Python変更 → `python-code-reviewer`
 - Shell/Bash変更 → `shell-script-reviewer`
 - Step 3-5 の条件に当てはまる場合 → `regression-checker`（Step 3 の最後に1回）
 - データファイルだけの変更 → レビュー不要（Step 3-7）
