@@ -50,7 +50,7 @@
       become: yes
       with_items:
         - "{{ common_pkg }}"
-        - "{{ apt_pkg }}"
+        - "{{ common_apt_pkg }}"
 
     - name: apt upgrade
       ansible.builtin.apt:
@@ -92,7 +92,7 @@
         update_homebrew: yes
       with_items:
         - "{{ common_pkg }}"
-        - "{{ brew_pkg }}"
+        - "{{ common_brew_pkg }}"
 
     - name: brew linked pkg-config
       community.general.homebrew:
@@ -147,6 +147,7 @@
     - name: chsh
       ansible.builtin.command: "chsh -s {{ bash_path.stdout }}/bin/bash {{ ansible_facts['user_id'] }}"
       become: yes
+      when: ansible_facts['user_shell'] != bash_path.stdout ~ '/bin/bash'
 
     - name: create ghostty config directory
       ansible.builtin.file:

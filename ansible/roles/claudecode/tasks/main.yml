@@ -82,6 +82,20 @@
     dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review-prompt.md"
     mode: 0644
 
+- name: copy config-review safety prompt
+  ansible.builtin.copy:
+    src: "hooks/config-review-safety-prompt.md"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review-safety-prompt.md"
+    mode: 0644
+
+# 設定見直しの PR を作るリポジトリ。worktree から実行しても、本体の checkout を指すようにする
+- name: resolve config-review repository
+  ansible.builtin.command: git -C "{{ playbook_dir }}" rev-parse --path-format=absolute --git-common-dir
+  register: claudecode_config_review_git_dir
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
 - name: deploy settings.json to ~/.claude
   ansible.builtin.template:
     src: "settings.json.j2"
@@ -147,6 +161,7 @@
     - investigate
     - data-analysis
     - gcp-verify
+    - delegate
 
 # ============================================
 # MCP Servers 設定

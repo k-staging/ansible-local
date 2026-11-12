@@ -9,7 +9,7 @@ common_pkg:
   - ripgrep
   - tree
   - unzip
-apt_pkg:
+common_apt_pkg:
   - bubblewrap
   - g++
   - google-cloud-cli
@@ -24,7 +24,7 @@ apt_pkg:
   - whois
   - zip
   - zstd
-brew_pkg:
+common_brew_pkg:
   - autoconf
   - automake
   - bash

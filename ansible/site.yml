@@ -1,6 +1,12 @@
 ---
 - hosts: localhost
   connection: local
+  vars:
+    # 再起動する WSL のディストリビューション名
+    # 実行中のディストリ名（WSL_DISTRO_NAME）を使い、取れなければ Ubuntu にする
+    # 変更する場合は -e wsl_distro_name=<名前> で上書きする
+    wsl_distro_name: "{{ lookup('env', 'WSL_DISTRO_NAME') | default('Ubuntu', true) }}"
+    wsl_exe_path: /mnt/c/Windows/system32/wsl.exe
   roles:
     - role: common
       tags: common
@@ -14,5 +20,7 @@
       tags: neovim
   post_tasks:
     - name: reboot wsl
-      shell: "[ -e /mnt/c/Windows/system32/wsl.exe ] && /mnt/c/Windows/system32/wsl.exe -t Ubuntu"
+      ansible.builtin.command: "{{ wsl_exe_path }} -t {{ wsl_distro_name }}"
       become: yes
+      # WSL のカーネル名には microsoft が含まれる（macOS やネイティブ Linux では実行しない）
+      when: "'microsoft' in ansible_facts['kernel'] | lower"

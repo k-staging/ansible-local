@@ -74,10 +74,7 @@
       "Bash(*> /dev/sd*)",
       "Bash(terraform apply:*)",
       "Bash(terraform destroy:*)",
-      "Bash(gcloud * --flags-file*)",
-      "Bash(bash *publish.sh*)",
-      "Bash(./scripts/publish.sh*)",
-      "Bash(git push*/ansible-local.git*)"
+      "Bash(gcloud * --flags-file*)"
     ],
     "ask": [
 {# gh api は GET だけ確認なしで通し、書き込みになる指定（メソッド指定・パラメータ・GraphQL）は確認する #}
@@ -178,7 +175,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "CONFIG_REVIEW_INTERVAL_DAYS={{ claudecode_config_review_interval_days }} CONFIG_REVIEW_BUDGET_USD={{ claudecode_config_review_budget_usd }} {{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review.sh"
+            "command": "CONFIG_REVIEW_INTERVAL_DAYS={{ claudecode_config_review_interval_days }} CONFIG_REVIEW_BUDGET_USD={{ claudecode_config_review_budget_usd }} CONFIG_REVIEW_REPO='{{ claudecode_config_review_git_dir.stdout | default('') | dirname }}' CONFIG_REVIEW_MODEL='{{ claude_code_model }}' {{ ansible_facts['env']['HOME'] }}/.claude/hooks/config-review.sh"
           }
         ]
       }

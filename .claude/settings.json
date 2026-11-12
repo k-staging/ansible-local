@@ -5,7 +5,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/check-versions.sh\" --session-start"
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || bash \"$CLAUDE_PROJECT_DIR/scripts/check-versions.sh\" --session-start"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/cloud-git-guard.sh\" setup"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/cloud-git-guard.sh\" check"
           }
         ]
       }
