@@ -19,11 +19,12 @@ claudecode_dir:
   - "~/.claude/skills/investigate"
   - "~/.claude/skills/data-analysis"
   - "~/.claude/skills/gcp-verify"
+  - "~/.claude/skills/delegate"
 
 # git fetch throttle: directories to scan for git repos (space-separated)
 claudecode_git_fetch_dirs: "{{ ansible_facts['env']['HOME'] }}/src"
 
-# 設定の定期見直し（SessionStart hook から claude -p をバックグラウンドで起動する）
+# 設定の定期見直し（playbook を実行したリポジトリで起動したセッションの SessionStart hook から claude -p をバックグラウンドで起動し、修正の PR を作る）
 # 実行間隔（日）と、1 回あたりの API 予算上限（USD）
 claudecode_config_review_interval_days: 7
 claudecode_config_review_budget_usd: 5
